@@ -1335,15 +1335,16 @@ header {
     display: none !important;
 }
 
-/* Deduction Form Floating Draggable Window */
+/* Deduction Form Floating Draggable & Resizable Window */
 #docket-modal {
     position: fixed;
-    top: 60px;
-    left: calc(50vw - 425px);
-    width: 850px;
-    max-width: 95vw;
-    height: 540px;
-    max-height: 85vh;
+    top: 50px;
+    left: calc(50vw - 440px);
+    width: 880px;
+    max-width: 96vw;
+    height: min(84vh, 760px);
+    min-height: 420px;
+    min-width: 460px;
     background: transparent;
     z-index: 1000;
     display: flex;
@@ -1356,6 +1357,15 @@ header {
     display: none !important;
 }
 
+#docket-modal.expanded {
+    top: 20px !important;
+    left: 3vw !important;
+    width: 94vw !important;
+    height: 92vh !important;
+    max-width: 94vw !important;
+    max-height: 92vh !important;
+}
+
 .docket-paper {
     background: var(--bg-secondary);
     border: 2px solid var(--accent);
@@ -1364,6 +1374,8 @@ header {
     display: flex;
     flex-direction: column;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), 0 0 20px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
 }
 
 .docket-header {
@@ -1375,6 +1387,7 @@ header {
     background: var(--bg-tertiary);
     cursor: move;
     user-select: none;
+    flex-shrink: 0;
 }
 
 .docket-title {
@@ -1383,6 +1396,51 @@ header {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--accent);
+}
+
+.docket-window-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.docket-action-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 1;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+}
+
+.docket-action-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+    background: var(--bg-primary);
+}
+
+.docket-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    height: 18px;
+    cursor: nwse-resize;
+    z-index: 10;
+    background: linear-gradient(135deg, transparent 50%, var(--accent) 50%, var(--accent) 65%, transparent 65%, transparent 80%, var(--accent) 80%);
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+}
+
+.docket-resize-handle:hover {
+    opacity: 1;
 }
 
 .docket-body {

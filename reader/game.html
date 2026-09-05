@@ -216,7 +216,10 @@
         <div class="docket-paper">
             <div class="docket-header">
                 <div class="docket-title" id="docket-title-text">📋 OFFICIAL INVESTIGATION DOCKET</div>
-                <button onclick="window.gameEngine.closeDocket()" style="background: transparent; border: none; color: var(--text-primary); font-size: 18px; cursor: pointer; line-height: 1;">✕</button>
+                <div class="docket-window-actions">
+                    <button id="docket-expand-btn" class="docket-action-btn" title="Toggle Maximize / Restore" onclick="window.gameEngine.toggleDocketExpand()">⤢</button>
+                    <button onclick="window.gameEngine.closeDocket()" class="docket-action-btn" title="Close Docket">✕</button>
+                </div>
             </div>
             <div class="docket-body" id="docket-body-content">
                 <!-- Template and slots rendered dynamically from case data -->
@@ -228,6 +231,7 @@
                 </div>
                 <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn" style="background: var(--success); color: var(--bg-primary);">Verify Deduction ↵</button>
             </div>
+            <div class="docket-resize-handle" title="Drag to resize docket"></div>
         </div>
     </div>
 

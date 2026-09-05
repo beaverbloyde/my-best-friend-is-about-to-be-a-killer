@@ -38,6 +38,11 @@ class DeductionEngine {
         if (this.docketModal) {
             const header = this.docketModal.querySelector(".docket-header");
             this.makeWindowDraggable(this.docketModal, header);
+            const resizeHandle = this.docketModal.querySelector(".docket-resize-handle");
+            if (resizeHandle) {
+                this.makeWindowResizable(this.docketModal, resizeHandle, "docket");
+            }
+            this.restoreDocketSize();
         }
     }
 
@@ -1313,6 +1318,93 @@ class DeductionEngine {
         document.addEventListener("touchend", endDrag);
     }
 
+    makeWindowResizable(modal, handle, storageKeyPrefix = "docket") {
+        if (!modal || !handle) return;
+
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight;
+
+        const startResize = (clientX, clientY) => {
+            this.bringToFront(modal);
+            isResizing = true;
+            startX = clientX;
+            startY = clientY;
+            const rect = modal.getBoundingClientRect();
+            startWidth = rect.width;
+            startHeight = rect.height;
+            document.body.style.userSelect = "none";
+            modal.classList.remove("expanded");
+        };
+
+        const moveResize = (clientX, clientY) => {
+            if (!isResizing) return;
+            const newWidth = Math.max(460, Math.min(window.innerWidth * 0.98, startWidth + (clientX - startX)));
+            const newHeight = Math.max(380, Math.min(window.innerHeight * 0.96, startHeight + (clientY - startY)));
+            modal.style.width = `${newWidth}px`;
+            modal.style.height = `${newHeight}px`;
+        };
+
+        const endResize = () => {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.userSelect = "";
+                const rect = modal.getBoundingClientRect();
+                localStorage.setItem(`${storageKeyPrefix}_width`, Math.round(rect.width));
+                localStorage.setItem(`${storageKeyPrefix}_height`, Math.round(rect.height));
+            }
+        };
+
+        handle.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+            startResize(e.clientX, e.clientY);
+        });
+        document.addEventListener("mousemove", (e) => moveResize(e.clientX, e.clientY));
+        document.addEventListener("mouseup", endResize);
+
+        handle.addEventListener("touchstart", (e) => {
+            if (e.touches.length === 1) {
+                e.stopPropagation();
+                startResize(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+        document.addEventListener("touchmove", (e) => {
+            if (isResizing && e.touches.length === 1) {
+                moveResize(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+        document.addEventListener("touchend", endResize);
+    }
+
+    restoreDocketSize() {
+        if (window.innerWidth <= 900) return;
+        const savedW = localStorage.getItem("docket_width");
+        const savedH = localStorage.getItem("docket_height");
+        if (this.docketModal) {
+            if (savedW && parseInt(savedW, 10) >= 460) {
+                this.docketModal.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
+            }
+            if (savedH && parseInt(savedH, 10) >= 380) {
+                this.docketModal.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
+            }
+        }
+    }
+
+    toggleDocketExpand() {
+        if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
+        if (!this.docketModal) return;
+
+        const isExpanded = this.docketModal.classList.toggle("expanded");
+        const btn = document.getElementById("docket-expand-btn");
+        if (btn) {
+            btn.innerText = isExpanded ? "⤦" : "⤢";
+            btn.title = isExpanded ? "Restore Previous Size" : "Maximize Docket";
+        }
+        if (!isExpanded) {
+            this.restoreDocketSize();
+        }
+        window.sfx?.playClick();
+    }
+
     openLoreModal(loreId) {
         if (!this.currentCase?.lore) return;
         let foundLore = null;
@@ -1821,6 +1913,9 @@ class DeductionEngine {
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (this.docketModal) {
             this.docketModal.classList.remove("hidden");
+            if (!this.docketModal.classList.contains("expanded")) {
+                this.restoreDocketSize();
+            }
             this.bringToFront(this.docketModal);
             window.sfx?.playOpen();
         }
