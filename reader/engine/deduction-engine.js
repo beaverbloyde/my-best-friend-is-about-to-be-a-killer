@@ -943,8 +943,6 @@ class DeductionEngine {
     setupTimelineScrollIndicators() {
         const wrap = document.getElementById("timeline-scroll-wrap");
         const container = document.getElementById("timeline-buttons");
-        const leftBtn = document.getElementById("timeline-scroll-left");
-        const rightBtn = document.getElementById("timeline-scroll-right");
         if (!wrap || !container) return;
 
         const updateIndicators = () => {
@@ -955,30 +953,12 @@ class DeductionEngine {
 
             wrap.classList.toggle("has-overflow-left", hasLeft);
             wrap.classList.toggle("has-overflow-right", hasRight);
-
-            if (leftBtn) leftBtn.classList.toggle("hidden", !hasLeft);
-            if (rightBtn) rightBtn.classList.toggle("hidden", !hasRight);
         };
 
         if (!this._timelineScrollBound) {
             this._timelineScrollBound = true;
             container.addEventListener("scroll", updateIndicators, { passive: true });
             window.addEventListener("resize", updateIndicators);
-
-            if (leftBtn) {
-                leftBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    container.scrollBy({ left: -140, behavior: "smooth" });
-                    setTimeout(updateIndicators, 200);
-                };
-            }
-            if (rightBtn) {
-                rightBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    container.scrollBy({ left: 140, behavior: "smooth" });
-                    setTimeout(updateIndicators, 200);
-                };
-            }
         }
 
         setTimeout(updateIndicators, 50);
