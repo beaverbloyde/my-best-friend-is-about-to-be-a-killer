@@ -1,0 +1,514 @@
+{
+  "id": "chapter_01_morning_routine",
+  "meta": {
+    "title": "CASE 1: MORNING ROUTINE",
+    "subtitle": "",
+    "docketTitle": "\ud83d\udccb MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
+    "author": "Beaver Bloyde",
+    "version": "1.0",
+    "successMessage": "\u262d DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1: The ROVD Unlocked!",
+    "unlocks": {
+      "chapter": "content/27601e10419ce.nwd",
+      "title": "Chapter 1: The ROVD (The Weight of Unfallen Snow)",
+      "description": "Proceed to the Novel Reader to continue reading the story."
+    }
+  },
+  "timeline": {
+    "7:02": {
+      "time": "7:02",
+      "title": "07:02 (Bedroom)",
+      "location": "Bedroom",
+      "clues": [
+        {
+          "type": "Observation",
+          "title": "A distressed young man",
+          "text": "A distressed young man just woke up from a recurring nightmare.",
+          "quote": "Sigh... the [vision]... again."
+        },
+        {
+          "type": "Observation",
+          "title": "Framed Photo",
+          "text": "A framed photo of a young man holding an award.",
+          "quote": "Taken by your [best friend] - A. V."
+        },
+        {
+          "type": "Environment",
+          "title": "Alarm Clock & Calendar",
+          "clock": {
+            "title": "BEDSIDE TELEMETRY",
+            "temperature": "24\u00b0C",
+            "time": "07:02",
+            "date": "[Thursday]"
+          }
+        }
+      ]
+    },
+    "Vision": {
+      "time": "Vision",
+      "title": "Vision",
+      "location": "Vision Boundary",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "Subject",
+          "title": "A terrified young man",
+          "text": "A terrified young man with horror in his eyes standing over a dark pool.",
+          "quote": "NO NO NO! Why did it have to come to this!?"
+        },
+        {
+          "type": "Evidence",
+          "title": "Name plate",
+          "badge": {
+            "avatar": "\ud83d\udc64",
+            "dept": "FEBRAS Hardware Division",
+            "name": "[Aleksey] [Volkov]",
+            "role": "Hardware Engineer"
+          }
+        },
+        {
+          "type": "Evidence",
+          "title": "Metal rod",
+          "text": "A bloody-tip ~2m [metal rod], possibly a high-voltage grounding [lance]."
+        }
+      ]
+    },
+    "7:18": {
+      "time": "7:18",
+      "title": "07:18 (Bathroom)",
+      "location": "Bathroom",
+      "clues": [
+        {
+          "type": "Prescription",
+          "title": "Pill bottle #1",
+          "rx": {
+            "dispensary": "Polyclinic Dispensary #4",
+            "status": "DEPLETED",
+            "drug": "[anti-hallucination] sedatives",
+            "date": "12 [January]",
+            "doctor": ""
+          }
+        },
+        {
+          "type": "Prescription",
+          "title": "Pill bottle #2",
+          "rx": {
+            "dispensary": "Polyclinic Dispensary #4",
+            "status": "DEPLETED",
+            "drug": "Sedative neuro-stabilizer compound",
+            "date": "20 [February]",
+            "doctor": ""
+          }
+        },
+        {
+          "type": "Prescription",
+          "title": "Pill bottle in the hand",
+          "rx": {
+            "dispensary": "Polyclinic Dispensary #4",
+            "status": "PARTIAL",
+            "active": true,
+            "drug": "Prescribed daily [medication] bottle with some pills left.",
+            "date": "21 [March]",
+            "doctor": ""
+          }
+        },
+        {
+          "type": "Observation",
+          "title": "A conflicted young man",
+          "text": "A reluctant young man holding a pill bottle, questioning his diagnosis.",
+          "quote": "These pills are useless. I don't want to admit it but... what if it's true?"
+        }
+      ]
+    },
+    "7:25": {
+      "time": "7:25",
+      "title": "07:25 (Bedroom)",
+      "location": "Bedroom",
+      "clues": [
+        {
+          "type": "Terminal",
+          "title": "Phone",
+          "phone": {
+            "network": "\u262d SOV-NET 5G // ROAMING",
+            "battery": "88%",
+            "time": "07:25",
+            "date": "14th [April]",
+            "messages": [
+              {
+                "app": "MESSAGING APP",
+                "time": "07:22",
+                "sender": "Alex",
+                "text": "Hey bro, wanna go out for a [drink] tonight?"
+              },
+              {
+                "app": "MESSAGING APP",
+                "time": "07:15",
+                "sender": "Mom",
+                "text": "I had a [premonition] last night about you... I'm not spiritual but it was pretty wild (and funny!). I'll call you later."
+              }
+            ]
+          }
+        },
+        {
+          "type": "Audio Log",
+          "title": "Phone Call Log",
+          "audio": {
+            "label": "\u23fa COMM-REC // OUTGOING VOICEMAIL",
+            "time": "00:32 / 00:45",
+            "lines": [
+              {
+                "speaker": "Voicemail Greeting",
+                "text": "This is Professor [Stanislav] [Krotov], Director of Relativistic Field Topology at [PIRM]. I\u2019m currently not available, please leave your message.",
+                "type": "system"
+              },
+              {
+                "speaker": "Young Man",
+                "text": "Professor, I need to call in sick today. My\u2026 um\u2026 head got a bit dizzy. Probably from the [Ripple Sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
+                "type": "user"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "7:50": {
+      "time": "7:50",
+      "title": "07:50 (Bedroom)",
+      "location": "Bedroom",
+      "clues": [
+        {
+          "type": "Observation",
+          "title": "A dressed-up young man",
+          "text": "A dressed-up young man checking himself in the mirror, wearing a thick wool coat and scarf.",
+          "quote": "This should be good..."
+        },
+        {
+          "type": "ID Card",
+          "title": "Name plate",
+          "badge": {
+            "avatar": "\ud83d\udc64",
+            "dept": "FEBRAS PIRM Institute",
+            "name": "[Luka] [Huo]",
+            "role": "Theoretical Physics Department"
+          }
+        },
+        {
+          "type": "Smart Device",
+          "title": "Phone",
+          "phone": {
+            "network": "\u262d SOV-NET 5G // ROAMING",
+            "battery": "86%",
+            "time": "07:50",
+            "date": "14th [April]",
+            "nav": {
+              "arrow": "\u21b1",
+              "subtitle": "GLONASS ACTIVE GUIDANCE (350m)",
+              "instruction": "Turn right at the next crossroad",
+              "destination": "Destination: 1.6 km from [ROVD]"
+            },
+            "messages": [
+              {
+                "app": "MESSAGING APP",
+                "time": "07:50",
+                "sender": "Alex",
+                "text": "Well... I took a [stab] at it anyway. Next time you have to be free!"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "7:56": {
+      "time": "7:56",
+      "title": "07:56 (Outside)",
+      "location": "Outside",
+      "clues": [
+        {
+          "type": "Forensic",
+          "title": "Footprint",
+          "text": "A fresh footprint from heavy winter [valenki] boots heading to the right toward town."
+        },
+        {
+          "type": "Signpost",
+          "title": "Street sign",
+          "text": "A street sign pointing left: Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics ([PIRMGD])."
+        },
+        {
+          "type": "Public Notice",
+          "title": "Poster",
+          "poster": {
+            "logo": "[WSS]",
+            "established": "EST. 2050",
+            "badge": "68th JUBILEE",
+            "headline": "Commemorate the 68th Anniversary of [WSS] Together!",
+            "date": "[Sunday] 10 [April] (Jubilee Plenary)",
+            "venue": "[Vladivostok] Central Plenary Hall",
+            "agenda": [
+              "**What's Next After Time Ripple?** \u2014 Dr. [Krotov]",
+              "**Spacetime Paradigm** \u2014 Jr. Researcher [Luka] [Huo]",
+              "**Recovery Plan & Community Suggestions**"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "lore": {
+    "PIRM": {
+      "id": "lore-pirm",
+      "tag": "FEBRAS ACADEMY ARCHIVE // CLASSIFICATION: SOVIET SCIENCE [DEPT-4]",
+      "title": "Pogranichny Institute of Relativistic Mechanics (PIRMGD)",
+      "registration": "Far East Branch, USSR Academy of Sciences (FEBRAS)",
+      "jurisdiction": "[Pogranichny] Special Scientific District, [Primorsky Krai], [Russia SFSR], [USSR]",
+      "requiredWords": [
+        "PIRM",
+        "PIRMGD"
+      ],
+      "body": "The **Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [PIRM] or [PIRMGD]) was founded as the primary Eastern research center dedicated to macroscopic spacetime curvature, relativistic field topology, and non-linear geodesic manifolds.\n\nUnder the directorship of Professor [Stanislav] [Krotov], the Theoretical Physics Division conducts continuous diagnostic analyses on localized gravitational metric perturbations.\n\nPersonnel hold strict state clearances and maintain collaborative telemetry with regional academic stations across the Far East."
+    },
+    "Ripple Sickness": {
+      "id": "lore-ripple",
+      "tag": "USSR MINISTRY OF HEALTH // CLINICAL BULLETIN NO. 88-B",
+      "title": "Pathology of Post-Ripple Neuropathy (Ripple Sickness)",
+      "diagnosticCode": "N-2118-RS // NEURO-TEMPORAL TRAUMA",
+      "etiology": "Exposure to acute spacetime rupture ([Time Ripple])",
+      "requiredWords": [
+        "Ripple Sickness"
+      ],
+      "body": "**Clinical Manifestations:** Following the regional [Time Ripple], affected individuals demonstrate sensory desynchronization, severe episodic migraines, and intrusive cognitive flashes commonly referred to as [Ripple Sickness].\n\nState polyclinic [doctors] evaluate these anomalies as micro-structural degradation along synaptic [neural pathways], resulting in chronological perceptual delay.\n\n**Therapeutic Directives:** Standard medical dispensaries issue scheduled sedatives and [anti-hallucination] [medication]. Patient response is frequently refractory, prompting ongoing pharmacological reviews across regional medical commissions."
+    },
+    "ROVD": {
+      "id": "lore-rovd",
+      "tag": "MVD PRIMORSKY KRAI // DISTRICT MILITSIYA DIRECTIVE",
+      "title": "Pogranichny District Department of Internal Affairs (ROVD)",
+      "facility": "Regional Militsiya Precinct ([ROVD])",
+      "location": "Central Sector, [Pogranichny], [Primorsky Krai]",
+      "requiredWords": [
+        "ROVD"
+      ],
+      "body": "The **Pogranichny [ROVD]** is the primary law enforcement and public security headquarters for the border district. Its duties include municipal patrols, rapid crisis intervention, forensic registry maintenance, and coordinating security logistics for state institutions such as [PIRM].\n\nThe precinct maintains automated telegraphic connections with Vladivostok central command and operates duty investigator desks 24 hours a day for emergency inquiries and civilian reports.\n\nCitizens registering emergency security or safety alerts are mandated to present initial statements at the duty officer desk."
+    },
+    "WSS": {
+      "id": "lore-wss",
+      "tag": "CENTRAL EXECUTIVE COMMITTEE // HISTORICAL ARCHIVE NO. 2050-WSS",
+      "title": "World Socialist Society (WSS)",
+      "organization": "International Collective Council of Socialist Nations",
+      "established": "EST. 2050 // Global Post-Scarcity Accord",
+      "jurisdiction": "Global Socialist Blocs & Republics ([USSR], [Russia SFSR], Eastern Treaties)",
+      "requiredWords": [
+        "WSS"
+      ],
+      "body": "The **World Socialist Society** ([WSS]) is the supreme international collective council representing unified socialist nations across Earth. Founded in **2050**, the council was established following consecutive years of globally guaranteed basic necessities, unifying previously fractured geopolitical blocs under shared technological and scientific accords.\n\nFor 68 years, the [WSS] governed an era of post-scarcity prosperity until the catastrophic **[Time Ripple]** triggered worldwide electron displacement and infrastructure failure.\n\nAnnual plenary conferences (including the 68th Jubilee Session in [Vladivostok]) coordinate regional economic recovery and emergency scientific directives with academic institutions like [PIRM]."
+    }
+  },
+  "keywordTags": {
+    "Luka": [
+      "name"
+    ],
+    "Huo": [
+      "name"
+    ],
+    "Aleksey": [
+      "name"
+    ],
+    "Volkov": [
+      "name"
+    ],
+    "Stanislav": [
+      "name"
+    ],
+    "Krotov": [
+      "name"
+    ],
+    "Pogranichny": [
+      "location"
+    ],
+    "Primorsky Krai": [
+      "location"
+    ],
+    "Russia SFSR": [
+      "location"
+    ],
+    "USSR": [
+      "location"
+    ],
+    "ROVD": [
+      "location"
+    ],
+    "PIRM": [
+      "location"
+    ],
+    "PIRMGD": [
+      "location"
+    ],
+    "Vladivostok": [
+      "location"
+    ],
+    "stab": [
+      "verb"
+    ],
+    "drink": [
+      "verb"
+    ],
+    "medication": [
+      "medical",
+      "noun"
+    ],
+    "doctors": [
+      "medical",
+      "name"
+    ],
+    "neural pathways": [
+      "medical",
+      "noun"
+    ],
+    "anti-hallucination": [
+      "medical",
+      "noun"
+    ],
+    "Ripple Sickness": [
+      "medical",
+      "temporal",
+      "noun"
+    ],
+    "vision": [
+      "temporal",
+      "noun"
+    ],
+    "Time Ripple": [
+      "temporal",
+      "noun"
+    ],
+    "premonition": [
+      "temporal",
+      "noun"
+    ],
+    "wormhole": [
+      "temporal",
+      "noun"
+    ],
+    "April": [
+      "calendar",
+      "noun"
+    ],
+    "January": [
+      "calendar",
+      "noun"
+    ],
+    "February": [
+      "calendar",
+      "noun"
+    ],
+    "March": [
+      "calendar",
+      "noun"
+    ],
+    "May": [
+      "calendar",
+      "noun"
+    ],
+    "Thursday": [
+      "calendar",
+      "noun"
+    ],
+    "Sunday": [
+      "calendar",
+      "noun"
+    ],
+    "best friend": [
+      "noun"
+    ],
+    "metal rod": [
+      "noun"
+    ],
+    "lance": [
+      "noun"
+    ],
+    "valenki": [
+      "noun"
+    ],
+    "WSS": [
+      "location",
+      "noun"
+    ]
+  },
+  "customCategories": [
+    {
+      "id": "names",
+      "label": "\ud83d\udc64 Names & People",
+      "tag": "name"
+    },
+    {
+      "id": "locations",
+      "label": "\ud83d\udccd Locations & Facilities",
+      "tag": "location"
+    },
+    {
+      "id": "verbs",
+      "label": "\u26a1 Actions & Verbs",
+      "tag": "verb"
+    },
+    {
+      "id": "medical",
+      "label": "\ud83d\udc8a Medical & Pathology",
+      "tag": "medical"
+    },
+    {
+      "id": "temporal",
+      "label": "\ud83c\udf00 Temporal & Anomalies",
+      "tag": "temporal"
+    },
+    {
+      "id": "calendar",
+      "label": "\ud83d\udcc5 Calendar & Dates",
+      "tag": "calendar"
+    },
+    {
+      "id": "nouns",
+      "label": "\ud83d\udce6 General Items",
+      "tag": "noun"
+    }
+  ],
+  "docket": {
+    "template": "**DATE & LOCATION:**\nDay: [slot:day] Date: [num:date:2:DD] Month: [slot:month]  Year: [num:year:4:YYYY]\nCountry: [slot:country1], [slot:country2]  Region: [slot:region]  City: [slot:city]\n\n**CASE CHRONOLOGY:**\n[slot:p1_first] [slot:p1_last] started seeing a [slot:vision_noun] for over [num:months_num:1:#] months since the [slot:ripple_noun].\n\nIn the [slot:vision_noun2], [slot:p2_first] [slot:p2_last], his [slot:rel_noun], used a [slot:weapon_noun] to [slot:action_verb] someone.\n\nThe [slot:med_noun] thought that he had damaged [slot:symptom_noun] which is a common symptom of [slot:sick_noun].\n\nHowever, today, [slot:p1_first2] [slot:p1_last2] decided not to continue his [slot:treat_noun] because he theorized that his [slot:vision_noun3] was a [slot:power_noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd] instead of [slot:dest_pirm]."
+  },
+  "solution": {
+    "date": "14",
+    "day": "Thursday",
+    "month": "April",
+    "year": "2118",
+    "country1": [
+      "Russia SFSR",
+      "USSR"
+    ],
+    "country2": [
+      "USSR",
+      "Russia SFSR"
+    ],
+    "region": "Primorsky Krai",
+    "city": "Pogranichny",
+    "p1_first": "Luka",
+    "p1_last": "Huo",
+    "vision_noun": "vision",
+    "vision_noun2": "vision",
+    "vision_noun3": "vision",
+    "months_num": "3",
+    "ripple_noun": "Time Ripple",
+    "p2_first": "Aleksey",
+    "p2_last": "Volkov",
+    "rel_noun": "best friend",
+    "weapon_noun": "metal rod",
+    "action_verb": "stab",
+    "med_noun": "doctors",
+    "symptom_noun": "neural pathways",
+    "sick_noun": "Ripple Sickness",
+    "p1_first2": "Luka",
+    "p1_last2": "Huo",
+    "treat_noun": "medication",
+    "power_noun": "premonition",
+    "dest_rovd": "ROVD",
+    "dest_pirm": [
+      "PIRM",
+      "PIRMGD"
+    ]
+  }
+}

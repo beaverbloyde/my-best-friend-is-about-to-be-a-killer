@@ -1,0 +1,12 @@
+[
+  {
+    "id": "chapter_01_morning_routine",
+    "title": "Case 1: Morning Routine",
+    "file": "cases/chapter_01_morning_routine.json"
+  },
+  {
+    "id": "case_template",
+    "title": "Case Template / Example Case",
+    "file": "cases/case_template.json"
+  }
+]

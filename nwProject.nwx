@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-05 00:53:43">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="4" autoCount="136" editTime="40725">
+    <name>My Best Friend is (about to be) A Killer</name>
+    <author>Beaver Bloyde</author>
+  </project>
+  <settings>
+    <doBackup>yes</doBackup>
+    <language>en_GB</language>
+    <spellChecking auto="yes">en_US</spellChecking>
+    <lastHandle>
+      <entry key="editor">27601e10419ce</entry>
+      <entry key="viewer">27601e10419ce</entry>
+      <entry key="novel">e3cd568273a1d</entry>
+      <entry key="outline">None</entry>
+    </lastHandle>
+    <autoReplace />
+    <status>
+      <entry key="s03ddec" count="4" color="faded" shape="STAR">New</entry>
+      <entry key="s543b8b" count="0" color="red" shape="TRIANGLE">Note</entry>
+      <entry key="sc8eaea" count="0" color="yellow" shape="CIRCLE_T">Draft</entry>
+      <entry key="s8c0471" count="0" color="green" shape="STAR">Finished</entry>
+    </status>
+    <importance>
+      <entry key="i96c4db" count="3" color="purple" shape="SQUARE">New</entry>
+      <entry key="i28dab4" count="0" color="purple" shape="BLOCK_2">Minor</entry>
+      <entry key="i654a5c" count="0" color="purple" shape="BLOCK_3">Major</entry>
+      <entry key="i917a91" count="0" color="purple" shape="BLOCK_4">Main</entry>
+    </importance>
+  </settings>
+  <content items="6" novelWords="1622" notesWords="0" novelChars="9913" notesChars="0">
+    <item handle="e3cd568273a1d" parent="None" root="e3cd568273a1d" order="0" type="ROOT" class="NOVEL">
+      <meta expanded="yes" />
+      <name status="s03ddec" import="i96c4db">Novel</name>
+    </item>
+    <item handle="9f1ea3b46fcb3" parent="e3cd568273a1d" root="e3cd568273a1d" order="0" type="FILE" class="NOVEL" layout="DOCUMENT">
+      <meta expanded="no" heading="H1" charCount="113" wordCount="22" paraCount="3" cursorPos="67" />
+      <name status="s03ddec" import="i96c4db" active="yes">Title Page</name>
+    </item>
+    <item handle="27601e10419ce" parent="e3cd568273a1d" root="e3cd568273a1d" order="1" type="FILE" class="NOVEL" layout="DOCUMENT">
+      <meta expanded="no" heading="H2" charCount="9800" wordCount="1600" paraCount="45" cursorPos="0" />
+      <name status="s03ddec" import="i96c4db" active="yes">Chapter 1: The ROVD</name>
+    </item>
+    <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
+      <meta expanded="no" />
+      <name status="s03ddec" import="i96c4db">Plot</name>
+    </item>
+    <item handle="b54217faf5137" parent="None" root="b54217faf5137" order="2" type="ROOT" class="CHARACTER">
+      <meta expanded="no" />
+      <name status="s03ddec" import="i96c4db">Characters</name>
+    </item>
+    <item handle="97c76b4710596" parent="None" root="97c76b4710596" order="3" type="ROOT" class="ARCHIVE">
+      <meta expanded="no" />
+      <name status="s03ddec" import="i96c4db">Archive</name>
+    </item>
+    <item handle="2b4f24ec35663" parent="None" root="2b4f24ec35663" order="4" type="ROOT" class="TRASH">
+      <meta expanded="no" />
+      <name status="s03ddec" import="i96c4db">Trash</name>
+    </item>
+  </content>
+</novelWriterXML>

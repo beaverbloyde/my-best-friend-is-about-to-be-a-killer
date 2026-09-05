@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Best Friend is (about to be) A Killer | Terminal Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161a22;
+            --border-color: #2b3240;
+            --accent-color: #e5a93c;
+            --accent-hover: #f5bc56;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --success-color: #4ade80;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background-image: radial-gradient(circle at top right, rgba(229, 169, 60, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(74, 222, 128, 0.03), transparent 40%);
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+        }
+        .header-tag {
+            color: var(--accent-color);
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h1 {
+            font-family: 'Lora', serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .author {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+        .description {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .card {
+            background: #0f1217;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(229, 169, 60, 0.12);
+        }
+        .card-primary {
+            border-color: var(--accent-color);
+            background: linear-gradient(180deg, rgba(229, 169, 60, 0.06) 0%, #0f1217 100%);
+        }
+        .card-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .card-tag.rec {
+            color: var(--success-color);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        .card-primary .card-action {
+            color: #000;
+            background: var(--accent-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        .card-primary:hover .card-action {
+            background: var(--accent-hover);
+        }
+        .footer-note {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-tag">
+            <span>☭</span> LOGOS-3 TERNARY SYSTEM // PRIMORSKY KRAI 2118
+        </div>
+        <h1>My Best Friend is (about to be) A Killer</h1>
+        <div class="author">By Beaver Bloyde &bull; Interactive Detective Experience</div>
+        
+        <p class="description">
+            Welcome to the terminal interface. The experience begins with <strong>Case 1: Morning Routine</strong> (the interactive deductive prologue). Solving the case parameters unlocks the serialized narrative in the Novel Reader.
+        </p>
+
+        <div class="cards-grid">
+            <!-- Card 1: Game Terminal -->
+            <a href="reader/game.html" class="card card-primary">
+                <div>
+                    <div class="card-tag rec">★ START HERE (PROLOGUE)</div>
+                    <div class="card-title">🎮 Case Investigation Terminal</div>
+                    <div class="card-desc">
+                        Step into Luka Huo's morning routine. Reconstruct his waking timeline, inspect bedside telemetry, and fill out the official MVD Deduction Docket to unlock Chapter 1.
+                    </div>
+                </div>
+                <div class="card-action">Launch Case Terminal ↵</div>
+            </a>
+
+            <!-- Card 2: Novel Reader -->
+            <a href="reader/index.html" class="card">
+                <div>
+                    <div class="card-tag">SERIALIZED NOVEL</div>
+                    <div class="card-title">📖 Novel Reader</div>
+                    <div class="card-desc">
+                        Browse the manuscript documents, title page, and lore codex. Chapter 1 is classified and unlocks once Case 1 is verified.
+                    </div>
+                </div>
+                <div class="card-action">Open Novel Reader &rarr;</div>
+            </a>
+        </div>
+
+        <div class="footer-note">
+            PIRMGD Spacetime Field Topology Department // MVD Pogranichny Precinct
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pogranichny 2118 | Terminal Interface</title>
+    <!-- Google Fonts: Soviet / Slavic Typefaces & Monospace -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Outfit:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&family=PT+Mono&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-soviet-amber">
+    <!-- Progress Bar -->
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- Zen Exit Button (Floating) -->
+    <button id="zen-exit-btn" class="icon-btn float-btn hidden" title="Exit Zen Mode (Z / Esc)">
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: var(--text-primary);"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+    </button>
+
+    <!-- Zen Shortcuts Button (Floating) -->
+    <button id="zen-shortcuts-btn" class="icon-btn float-btn hidden" title="Keyboard Shortcuts (? or /)">
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: var(--text-primary);"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 4h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+    </button>
+
+    <!-- Zen Search Button (Floating) -->
+    <button id="zen-search-btn" class="icon-btn float-btn hidden" title="Search Chapters & Notes (Ctrl+K)">
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: var(--text-primary);"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </button>
+
+    <!-- Main App Container -->
+    <div id="app-container">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">☭</span>
+                    <div class="logo-text">
+                        <span class="logo-title">POGRANICHNY 2118</span>
+                        <span class="logo-subtitle">LOGOS-3 Terminal</span>
+                    </div>
+                </div>
+                <button id="sidebar-close-btn" class="icon-btn mobile-only" aria-label="Close sidebar">
+                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="search-input" placeholder="Search chapters & lore...">
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="tabs-header">
+                <button id="tab-manuscript" class="tab-btn active">Chapters</button>
+                <button id="tab-lore" class="tab-btn">Lore Codex</button>
+            </div>
+
+            <!-- Scrollable Navigation Lists -->
+            <div class="nav-content">
+                <!-- Manuscript / Chapters List -->
+                <div id="manuscript-panel" class="tab-panel active">
+                    <ul id="chapters-list" class="nav-list">
+                        <!-- Dynamically populated -->
+                        <li class="nav-placeholder">Loading chapters...</li>
+                    </ul>
+                </div>
+
+                <!-- Lore / Notes List -->
+                <div id="lore-panel" class="tab-panel">
+                    <!-- Categories will be grouped dynamically -->
+                    <div id="lore-categories">
+                        <div class="nav-placeholder">Loading lore...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar Footer / Help -->
+            <div class="sidebar-footer">
+                <button id="sidebar-shortcuts-btn" class="sidebar-help-btn" title="Show Keyboard Shortcuts (? or /)">
+                    <span>Keyboard Shortcuts</span>
+                    <kbd>?</kbd>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Top Controls Header -->
+            <header id="main-header">
+                <div class="header-left">
+                    <button id="sidebar-toggle-btn" class="icon-btn" aria-label="Toggle sidebar">
+                        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                    </button>
+                    <span id="current-chapter-title" class="header-active-title">Loading...</span>
+                </div>
+                <div class="header-right">
+                    <a href="game.html" class="icon-btn text-btn" aria-label="Open Case Investigation Terminal" title="Launch Deduction Case Terminal" style="text-decoration: none; color: var(--accent); border: 1px solid var(--border-color); padding: 4px 10px;">
+                        <span style="color: var(--accent); font-size: 14px;">🎮</span>
+                        <span>Case Terminal</span>
+                    </a>
+                    <button id="search-palette-btn" class="icon-btn text-btn" aria-label="Open search palette" title="Search Chapters & Notes (Ctrl+K)">
+                        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--text-primary);"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <span>Search (Ctrl+K)</span>
+                    </button>
+                    <button id="shortcuts-toggle-btn" class="icon-btn text-btn" aria-label="Open keyboard shortcuts" title="Keyboard Shortcuts (? or /)">
+                        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--text-primary);"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 4h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
+                        <span>Shortcuts (?)</span>
+                    </button>
+                    <button id="settings-toggle-btn" class="icon-btn text-btn" aria-label="Open settings">
+                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        <span>Display Options</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Document Display Wrapper -->
+            <div id="document-wrapper">
+                <article id="reader-container">
+                    <!-- Chapter Metadata Dossier -->
+                    <div id="metadata-dossier" style="display: none;">
+                        <!-- Dynamically filled -->
+                    </div>
+
+                    <!-- Main body of text -->
+                    <div id="document-body">
+                        <!-- Dynamically parsed HTML -->
+                        <div class="loader">
+                            <div class="spinner"></div>
+                            <p>Loading manuscript content...</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Footer Navigation Buttons -->
+                <nav id="chapter-nav">
+                    <button id="prev-chapter-btn" class="nav-arrow-btn">
+                        <svg viewBox="0 0 24 24"><path d="M15.41 16.58L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.42z"/></svg>
+                        <div class="nav-btn-text">
+                            <span class="nav-dir">PREVIOUS</span>
+                            <span id="prev-chapter-title" class="nav-title">Chapter Title</span>
+                        </div>
+                    </button>
+                    <button id="next-chapter-btn" class="nav-arrow-btn">
+                        <div class="nav-btn-text">
+                            <span class="nav-dir">NEXT</span>
+                            <span id="next-chapter-title" class="nav-title">Chapter Title</span>
+                        </div>
+                        <svg viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+                    </button>
+                </nav>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Drawer (Right Side Slide-out) -->
+    <div id="settings-backdrop"></div>
+    <div id="settings-drawer">
+        <div class="drawer-header">
+            <h3>Display Options</h3>
+            <button id="settings-close-btn" class="icon-btn" aria-label="Close settings">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <!-- Color Themes -->
+            <section class="settings-section">
+                <h4>Color Theme</h4>
+                <div class="theme-grid">
+                    <button class="theme-btn theme-soviet-amber active" data-theme="soviet-amber">
+                        <span class="theme-preview" style="background: #100c06; border: 2px solid #ff9900;"></span>
+                        <span class="theme-label">Amber CRT</span>
+                    </button>
+                    <button class="theme-btn theme-soviet-emerald" data-theme="soviet-emerald">
+                        <span class="theme-preview" style="background: #051008; border: 2px solid #00ff66;"></span>
+                        <span class="theme-label">Phosphor</span>
+                    </button>
+                    <button class="theme-btn theme-arctic" data-theme="arctic">
+                        <span class="theme-preview" style="background: #181d24; border: 2px solid #38bdf8;"></span>
+                        <span class="theme-label">Taiga Frost</span>
+                    </button>
+                    <button class="theme-btn theme-gosplan" data-theme="gosplan">
+                        <span class="theme-preview" style="background: #f5eedb; border: 2px solid #b91c1c;"></span>
+                        <span class="theme-label">Gosplan Paper</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Typography Settings -->
+            <section class="settings-section">
+                <h4>Typography</h4>
+                
+                <div class="setting-item">
+                    <label for="font-search-input">Font Family</label>
+                    <div class="font-search-wrapper">
+                        <input type="text" id="font-search-input" placeholder="Search or type font..." autocomplete="off">
+                        <button id="scan-local-fonts-btn" class="font-scan-btn" title="Scan installed system fonts">
+                            🔍
+                        </button>
+                        <div id="font-search-results" class="font-search-dropdown"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="slider-header">
+                        <label for="font-size-slider">Font Size</label>
+                        <span id="font-size-value">18px</span>
+                    </div>
+                    <input type="range" id="font-size-slider" min="14" max="28" value="18" step="1">
+                </div>
+
+                <div class="setting-item">
+                    <div class="slider-header">
+                        <label for="line-height-slider">Line Height</label>
+                        <span id="line-height-value">1.6</span>
+                    </div>
+                    <input type="range" id="line-height-slider" min="1.3" max="2.2" value="1.6" step="0.1">
+                </div>
+
+                <div class="setting-item">
+                    <div class="slider-header">
+                        <label for="container-width-slider">Max Reading Width</label>
+                        <span id="container-width-value">750px</span>
+                    </div>
+                    <input type="range" id="container-width-slider" min="500" max="950" value="750" step="50">
+                </div>
+            </section>
+
+            <!-- Zen Focus Mode -->
+            <section class="settings-section">
+                <div class="setting-row">
+                    <h4>Zen Focus Mode</h4>
+                    <label class="switch-container">
+                        <input type="checkbox" id="zen-mode-toggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <p class="section-desc">Hides all UI elements for absolute reading focus. Press <kbd style="font-family: inherit; background: var(--bg-tertiary); padding: 2px 5px; border-radius: 4px; border: 1px solid var(--border-color); font-size: 11px;">Z</kbd> to toggle.</p>
+
+                <div class="setting-row" id="spotlight-row" style="margin-top: 15px; display: none;">
+                    <label for="spotlight-toggle" style="font-family: var(--font-outfit); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); font-size: 13px;">Paragraph Spotlight</label>
+                    <label class="switch-container">
+                        <input type="checkbox" id="spotlight-toggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item" id="spotlight-size-container" style="margin-top: 15px; display: none;">
+                    <label for="spotlight-size-select" style="font-family: var(--font-outfit); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); font-size: 11px;">Spotlight Focus Size</label>
+                    <select id="spotlight-size-select" style="width: 100%; margin-top: 5px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--border-radius-sm); padding: 6px; font-family: var(--font-inter); outline: none;">
+                        <option value="1">1 Paragraph (Narrow)</option>
+                        <option value="3">3 Paragraphs (Medium - Recommended)</option>
+                        <option value="5">5 Paragraphs (Wide)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Speech Highlight and Custom Colors -->
+            <section class="settings-section">
+                <div class="setting-row">
+                    <h4>Character Dialogue Styling</h4>
+                    <label class="switch-container">
+                        <input type="checkbox" id="speech-styling-toggle" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <p class="section-desc">Identifies speech/dialogue in paragraphs and applies a highlight color to text enclosed in quotes.</p>
+
+                <div class="setting-item" id="highlight-mode-container">
+                    <label for="highlight-mode-select">Highlight Mode</label>
+                    <select id="highlight-mode-select">
+                        <option value="text-only">Color speech text only</option>
+                        <option value="paragraph-border">Subtle side border on paragraph</option>
+                        <option value="paragraph-background">Subtle background highlight</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Case Progression & Locks -->
+            <section class="settings-section">
+                <h4>Case Progression & Locks</h4>
+                <p class="section-desc">Manage investigation unlocks and chapter access for testing or replaying.</p>
+                <div class="progression-btn-group">
+                    <button id="relock-cases-btn" class="progression-action-btn btn-relock" title="Reset all solved case flags and re-lock Chapter 1">
+                        🔒 Re-Lock Chapters (Reset Progress)
+                    </button>
+                    <button id="unlock-cases-btn" class="progression-action-btn" title="Mark all cases as solved and unlock all chapters">
+                        🔓 Unlock All Chapters & Cases
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footnote Tooltip Box -->
+    <div id="footnote-tooltip" class="hidden">
+        <div class="tooltip-content"></div>
+        <button class="tooltip-close" aria-label="Close tooltip">&times;</button>
+    </div>
+
+    <!-- Resume Reading Toast -->
+    <div id="resume-toast" class="toast hidden">
+        <span class="toast-message">Resumed reading where you left off.</span>
+        <button id="toast-restart-btn" class="toast-btn">Restart Chapter</button>
+        <button id="toast-close-btn" class="toast-close" aria-label="Close message">&times;</button>
+    </div>
+
+    <!-- Chapter / Case Unlock Notification Toast -->
+    <div id="unlock-toast" class="toast hidden" style="border-left-color: var(--success); box-shadow: 0 8px 30px rgba(0,0,0,0.8), 0 0 16px rgba(34, 197, 94, 0.25);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 22px;">🔓</span>
+            <div>
+                <div style="font-size: 10px; font-weight: 700; color: var(--success); letter-spacing: 1px; text-transform: uppercase;">CONTENT UNLOCKED</div>
+                <div id="unlock-toast-title" style="font-weight: 600; color: #fff; font-size: 13px;">Next Chapter Available!</div>
+            </div>
+        </div>
+        <a id="unlock-toast-btn" href="#" class="toast-btn" style="text-decoration: none; color: #000; background: var(--success); font-weight: 700; border-color: var(--success); padding: 6px 12px; margin-left: 8px;">
+            Open ↵
+        </a>
+        <button id="unlock-toast-close-btn" class="toast-close" aria-label="Close message">&times;</button>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcuts-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Keyboard Shortcuts</h3>
+                <button id="shortcuts-close-btn" class="modal-close" aria-label="Close shortcuts">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="shortcut-group">
+                    <h5 style="margin-top: 0;">Navigation</h5>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys">
+                            <kbd class="arrow-key"><svg class="kbd-arrow-icon" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></kbd> 
+                            / 
+                            <kbd class="arrow-key"><svg class="kbd-arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></kbd>
+                        </span>
+                        <span>Previous / Next Chapter</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys">
+                            <kbd class="arrow-key"><svg class="kbd-arrow-icon" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></kbd> 
+                            / 
+                            <kbd class="arrow-key"><svg class="kbd-arrow-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></kbd>
+                        </span>
+                        <span>Previous / Next Paragraph</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>[</kbd></span>
+                        <span>Toggle Sidebar</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>K</kbd></span>
+                        <span>Search Chapters & Notes</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h5>Zen Mode & Display</h5>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>Z</kbd></span>
+                        <span>Toggle Zen Focus Mode</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>+</kbd> / <kbd>-</kbd></span>
+                        <span>Increase / Decrease Font Size</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>Esc</kbd></span>
+                        <span>Exit Zen / Close Drawers</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>?</kbd> / <kbd>/</kbd></span>
+                        <span>Show Keyboard Shortcuts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search / Command Palette Modal -->
+    <div id="search-palette-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content search-palette-content">
+            <div class="search-palette-header">
+                <svg class="search-palette-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="search-palette-input" placeholder="Search chapters, characters, settings, lore..." autocomplete="off">
+                <button id="search-palette-close-btn" class="modal-close" aria-label="Close search">&times;</button>
+            </div>
+            <div class="search-palette-body">
+                <div id="search-palette-results" class="search-results-list">
+                    <!-- Dynamically filled with results -->
+                </div>
+            </div>
+            <div class="search-palette-footer">
+                <span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span>
+                <span><kbd>↵ Enter</kbd> Open</span>
+                <span><kbd>Esc</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Script Loading -->
+    <script src="app.js"></script>
+</body>
+</html>

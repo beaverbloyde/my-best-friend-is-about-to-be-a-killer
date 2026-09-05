@@ -1,0 +1,17 @@
+{
+  "version": "2.0",
+  "rules": [
+    {
+      "target": "content/27601e10419ce.nwd",
+      "targetType": "chapter",
+      "targetTitle": "Chapter 1: The ROVD",
+      "requires": {
+        "type": "case",
+        "id": "chapter_01_morning_routine",
+        "title": "Case 1: Morning Routine",
+        "url": "game.html?case=cases/chapter_01_morning_routine.json",
+        "teaser": "Reconstruct the morning timeline to verify the case docket and unlock this chapter."
+      }
+    }
+  ]
+}

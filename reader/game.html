@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS-3 | Case Investigation Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="engine/deduction-engine.css">
+</head>
+<body>
+
+    <!-- Top Application Bar -->
+    <header>
+        <div class="header-left">
+            <div class="header-title">
+                <span style="color: var(--accent);">☭</span>
+                <span id="header-case-title">LOGOS-3 CASE TERMINAL</span>
+            </div>
+            
+            <!-- Case Selection Controls -->
+            <div class="header-controls">
+                <select id="case-selector" class="case-select-dropdown" title="Select pre-installed case">
+                    <option value="cases/chapter_01_morning_routine.json">Case 1: Morning Routine</option>
+                    <option value="cases/case_template.json">Example / Template Case</option>
+                </select>
+
+                <label class="engine-btn" title="Open any custom case .json file from your computer">
+                    <input type="file" id="case-file-input" accept=".json" style="display: none;">
+                    📂 Load Case JSON
+                </label>
+
+                <button class="engine-btn" id="tutorial-btn" onclick="window.gameEngine.openTutorial()" title="Open Investigator Field Manual & Tutorial">
+                    ❓ How to Play
+                </button>
+
+                <a href="index.html" class="engine-btn" style="text-decoration: none; color: var(--accent); border-color: var(--accent);" title="Return to Novel Reader">
+                    📖 Novel Reader
+                </a>
+            </div>
+        </div>
+
+        <div class="header-status">
+            KEYWORDS: <span id="kw-count" style="color: var(--accent); font-weight: 700;">0/0</span>
+        </div>
+    </header>
+
+    <!-- Timeline Navigation Bar -->
+    <nav class="timeline-bar">
+        <span class="timeline-label">TIMELINE:</span>
+        <div id="timeline-buttons" style="display: flex; gap: 8px; overflow-x: auto; align-items: center;">
+            <!-- Rendered dynamically by DeductionEngine -->
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        
+        <!-- Center Stage: Scene Clues & Formatted Artifacts -->
+        <main class="scene-container" id="scene-container">
+            <!-- Rendered dynamically by DeductionEngine -->
+        </main>
+
+        <!-- Right Sidebar: Keyword Tray & Lore Archive -->
+        <aside class="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab-btn active" id="tab-words-btn" onclick="switchSidebarTab('words')">
+                    Tray Words
+                </button>
+                <button class="sidebar-tab-btn" id="tab-lore-btn" onclick="switchSidebarTab('lore')">
+                    Lore Codex (<span id="lore-count">0/0</span>)
+                </button>
+            </div>
+
+            <!-- Words Tray Tab -->
+            <div class="sidebar-content" id="sidebar-words">
+                <!-- Granular Tag Filter Chips Bar -->
+                <div class="filter-bar" id="filter-chips-bar">
+                    <!-- Rendered dynamically by DeductionEngine -->
+                </div>
+
+                <!-- Sort Control -->
+                <div class="sort-bar">
+                    <span>SORT ORDER:</span>
+                    <select class="sort-select" id="sort-select" onchange="window.gameEngine.setKeywordSort(this.value)">
+                        <option value="alpha-asc">A → Z (Alphabetical)</option>
+                        <option value="alpha-desc">Z → A (Reverse)</option>
+                        <option value="category">Categorized Grouping</option>
+                    </select>
+                </div>
+
+                <!-- Word Tray Grid -->
+                <div class="tray-grid" id="tray-grid">
+                    <!-- Words rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Lore Codex Tab -->
+            <div class="sidebar-content" id="sidebar-lore" style="display: none;">
+                <div style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 6px;">
+                    State dossiers and institutional archives decrypted by keyword discovery. Click an unlocked file to open its pop-up document window.
+                </div>
+                <div id="lore-list" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Lore cards rendered dynamically -->
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Draggable Multi-Lore Windows Container -->
+    <div id="lore-windows-container"></div>
+
+    <!-- Bottom Deduction Bar -->
+    <div class="docket-toggle-bar">
+        <div style="color: var(--text-secondary); font-size: 12px;">
+            <span id="progress-text">Deduction Progress: 0/0 slots filled</span>
+        </div>
+        <button class="open-docket-btn" onclick="window.gameEngine.openDocket()">Open Case Docket (Space)</button>
+    </div>
+
+    <!-- Onboarding / How to Play Modal -->
+    <div id="tutorial-modal" class="hidden">
+        <div class="tutorial-paper">
+            <div class="tutorial-header">
+                <div class="tutorial-title">🔰 FIELD INVESTIGATOR MANUAL // LOGOS-3 OPERATIONAL GUIDE</div>
+                <button onclick="window.gameEngine.closeTutorial()" style="background: transparent; border: none; color: var(--text-primary); font-size: 18px; cursor: pointer; line-height: 1;" title="Close manual">✕</button>
+            </div>
+            <div class="tutorial-body">
+                <div class="tutorial-intro">
+                    Welcome to the <strong>LOGOS-3 Incident Reconstruction Terminal</strong>. As an investigative analyst, your objective is to review timeline fragments, decrypt intelligence dossiers, collect vital keywords, and complete the official <strong>Case Docket</strong>.
+                </div>
+
+                <div class="tutorial-steps-grid">
+                    <div class="tutorial-card">
+                        <div class="tutorial-card-header">
+                            <span class="tutorial-step-num">01</span>
+                            <span class="tutorial-card-icon">🔍</span>
+                            <span class="tutorial-card-title">Collect Keywords</span>
+                        </div>
+                        <p>Hover over or tap highlighted <span class="kw" style="display:inline-block; padding: 1px 6px;">[Keywords]</span> in observations, smart devices, audio logs, and dossiers to add them to your <strong>Evidence Tray</strong>.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <div class="tutorial-card-header">
+                            <span class="tutorial-step-num">02</span>
+                            <span class="tutorial-card-icon">🗂️</span>
+                            <span class="tutorial-card-title">Examine Clues & Lore</span>
+                        </div>
+                        <p>Navigate the <strong>Timeline</strong> bar to inspect scenes chronologically. Open the <strong>Lore Codex</strong> tab to decrypt background personnel files and drag open multi-window dossiers.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <div class="tutorial-card-header">
+                            <span class="tutorial-step-num">03</span>
+                            <span class="tutorial-card-icon">📋</span>
+                            <span class="tutorial-card-title">Assemble the Docket</span>
+                        </div>
+                        <p>Press <kbd>Space</kbd> or click <strong>Open Case Docket</strong>. Drag words from your tray (or click a word then click a blank) into <span class="slot" style="display:inline-block; padding: 1px 6px;">[ ? ]</span> slots, and type numerical deductions.</p>
+                    </div>
+
+                    <div class="tutorial-card">
+                        <div class="tutorial-card-header">
+                            <span class="tutorial-step-num">04</span>
+                            <span class="tutorial-card-icon">⚖️</span>
+                            <span class="tutorial-card-title">Verify Your Theory</span>
+                        </div>
+                        <p>Click <strong>Verify Deduction</strong>. The system evaluates your theory with three status levels: <strong style="color:var(--success);">✓ Correct</strong>, <strong style="color:var(--accent);">⚠️ Almost there</strong> (&lt;3 errors), or <strong style="color:var(--danger);">❌ Incorrect</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="tutorial-tips-box">
+                    <strong>💡 PRO INVESTIGATOR TIPS:</strong>
+                    <ul>
+                        <li>Windows (Docket and Lore dossiers) are <strong>draggable</strong> and can be arranged anywhere on your desk. Clicking any window brings it to the front.</li>
+                        <li>You can drag words directly from one docket slot to another, or drag them back to the tray to clear them.</li>
+                        <li>Look out for environmental details: calendars, clocks, audio logs, and prescription stamps often hold crucial deductive math!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tutorial-footer">
+                <label class="tutorial-checkbox-label">
+                    <input type="checkbox" id="tutorial-dont-show">
+                    <span>Don't show this guide automatically on startup</span>
+                </label>
+                <button onclick="window.gameEngine.closeTutorial()" class="open-docket-btn" style="background: var(--accent); color: #000; font-weight: 700;">
+                    Acknowledge & Begin Investigation ↵
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deduction Docket Modal -->
+    <div id="docket-modal" class="hidden">
+        <div class="docket-paper">
+            <div class="docket-header">
+                <div class="docket-title" id="docket-title-text">📋 OFFICIAL INVESTIGATION DOCKET</div>
+                <button onclick="window.gameEngine.closeDocket()" style="background: transparent; border: none; color: var(--text-primary); font-size: 18px; cursor: pointer; line-height: 1;">✕</button>
+            </div>
+            <div class="docket-body" id="docket-body-content">
+                <!-- Template and slots rendered dynamically from case data -->
+            </div>
+            <div class="docket-footer">
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="window.gameEngine.clearDocket()" class="time-btn" title="Clear only docket slots">Clear Slots</button>
+                    <button onclick="window.gameEngine.resetCaseProgress()" class="time-btn" title="Reset all keywords, lore dossiers, and progress for this case">Restart Case ↺</button>
+                </div>
+                <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn" style="background: var(--success); color: #000;">Verify Deduction ↵</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications & Mobile Touch Ghost -->
+    <div id="toast"></div>
+    <div id="touch-drag-ghost"></div>
+
+    <!-- Slot Autocomplete Suggestion Dropdown Popover -->
+    <div id="slot-picker-popover" class="slot-picker-popover hidden">
+        <div class="slot-picker-search-row">
+            <span class="slot-picker-icon">🔍</span>
+            <span id="slot-picker-constraint-badge" class="slot-picker-constraint-badge" style="display: none;"></span>
+            <input type="text" id="slot-picker-input" class="slot-picker-input" placeholder="Search keywords..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button type="button" id="slot-picker-clear-btn" class="slot-picker-clear-btn" onclick="window.gameEngine.clearActiveSlot()" title="Clear this slot">✕ Clear</button>
+            <button type="button" id="slot-picker-close-btn" class="slot-picker-close-btn" onclick="window.gameEngine.closeSlotPicker()" title="Close">✕</button>
+        </div>
+        <div class="slot-picker-list" id="slot-picker-list">
+            <!-- Dynamically populated -->
+        </div>
+    </div>
+
+    <!-- Case Victory / Novel Chapter Unlocked Modal -->
+    <div id="victory-modal" class="hidden">
+        <div class="victory-paper">
+            <div class="victory-header">
+                <div class="victory-header-left">
+                    <span class="victory-soviet-star">☭</span>
+                    <span class="victory-header-tag">MVD COGNITIVE VERIFICATION // CASE SOLVED</span>
+                </div>
+                <button onclick="window.gameEngine.closeVictoryModal()" class="modal-close-btn" title="Close">✕</button>
+            </div>
+            <div class="victory-body">
+                <div class="victory-stamp">✓ VERIFIED</div>
+                <h2 class="victory-title">DEDUCTION HYPOTHESIS CONFIRMED</h2>
+                <p class="victory-message" id="victory-message-text">
+                    All case parameters have been verified. Chapter 1: The ROVD has been unlocked in the Novel Reader!
+                </p>
+                <div class="victory-unlocked-card">
+                    <div class="unlocked-card-header">
+                        <span>📖 NOVEL CHAPTER UNLOCKED</span>
+                        <span class="unlocked-badge">READY TO READ</span>
+                    </div>
+                    <div class="unlocked-card-title">Chapter 1: The ROVD (The Weight of Unfallen Snow)</div>
+                    <p class="unlocked-card-desc">Proceed to the Novel Reader to continue reading the story.</p>
+                </div>
+            </div>
+            <div class="victory-footer">
+                <button onclick="window.gameEngine.closeVictoryModal()" class="time-btn" style="padding: 10px 16px;">
+                    Stay in Terminal
+                </button>
+                <a id="victory-read-btn" href="index.html?file=content/27601e10419ce.nwd" class="open-docket-btn" style="background: var(--success); color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
+                    📖 Read Chapter 1 in Novel Reader ↵
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Tab Switcher Helper -->
+    <script>
+        function switchSidebarTab(tab) {
+            document.getElementById('tab-words-btn').classList.toggle('active', tab === 'words');
+            document.getElementById('tab-lore-btn').classList.toggle('active', tab === 'lore');
+            document.getElementById('sidebar-words').style.display = tab === 'words' ? 'flex' : 'none';
+            document.getElementById('sidebar-lore').style.display = tab === 'lore' ? 'flex' : 'none';
+        }
+    </script>
+
+    <!-- Bundled Fallback Case (ensures offline file:// execution) -->
+    <script src="cases/chapter_01_morning_routine.js"></script>
+
+    <!-- Core Deduction Engine -->
+    <script src="engine/deduction-engine.js"></script>
+
+    <!-- Initialize Game Engine -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.gameEngine = new DeductionEngine({
+                defaultCase: window.BUNDLED_DEFAULT_CASE,
+                registryUrl: "cases/cases_registry.json"
+            });
+            window.gameEngine.init();
+        });
+    </script>
+</body>
+</html>

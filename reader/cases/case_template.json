@@ -1,0 +1,112 @@
+{
+  "id": "case_template",
+  "meta": {
+    "title": "EXAMPLE / TEMPLATE CASE",
+    "subtitle": "DISTRICT 4 // 14 JUNE 2026",
+    "docketTitle": "\ud83d\udccb OFFICIAL INVESTIGATION DOCKET",
+    "author": "Your Name",
+    "version": "1.0",
+    "successMessage": "Case Successfully Solved!"
+  },
+  "timeline": {
+    "08:00": {
+      "time": "08:00",
+      "title": "08:00 (Crime Scene)",
+      "location": "Warehouse Sector",
+      "clues": [
+        {
+          "type": "Physical Evidence",
+          "title": "Broken Watch",
+          "text": "A smashed wrist watch found near the dock stopped at exactly [08:15].",
+          "quote": "Looks like the struggle occurred right after sunrise."
+        },
+        {
+          "type": "Witness",
+          "title": "Security Guard Note",
+          "text": "Guard on duty noted that suspect [Viktor] fled on a [motorcycle] towards the [harbor]."
+        },
+        {
+          "type": "Terminal",
+          "title": "Phone Artifact Example",
+          "phone": {
+            "network": "SOV-NET 5G",
+            "battery": "92%",
+            "time": "08:05",
+            "date": "14th [June]",
+            "messages": [
+              {
+                "sender": "Unknown Caller",
+                "time": "07:55",
+                "text": "Meet me at the [warehouse] before shift starts."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "lore": {
+    "Harbor Sector": {
+      "id": "lore-harbor",
+      "tag": "MUNICIPAL ARCHIVE",
+      "title": "Old Harbor Storage Logistics",
+      "facility": "Old Harbor Depot 9",
+      "location": "Sector B, Port Bay",
+      "requiredWords": [
+        "harbor"
+      ],
+      "body": "The **Old Harbor** handles heavy cargo shipments from the eastern coast.\n\nKey shipping routes are monitored under municipal security oversight."
+    }
+  },
+  "initialKeywords": [
+    "North",
+    "South",
+    { "word": "fled", "category": "verb" },
+    { "word": "arrived", "category": "verb" }
+  ],
+  "keywordTags": {
+    "08:15": [
+      "calendar",
+      "noun"
+    ],
+    "June": [
+      "calendar",
+      "noun"
+    ],
+    "Viktor": [
+      "name"
+    ],
+    "motorcycle": [
+      "noun"
+    ],
+    "harbor": [
+      "location"
+    ],
+    "warehouse": [
+      "location"
+    ],
+    "North": [
+      "location"
+    ],
+    "South": [
+      "location"
+    ],
+    "fled": [
+      "verb"
+    ],
+    "arrived": [
+      "verb"
+    ]
+  },
+  "docket": {
+    "template": "**INCIDENT SUMMARY:**\nAt [num:time_hour:2:HH]:[num:time_min:2:MM], the suspect named [slot:suspect_name:name] [slot:action:verb] on a [slot:vehicle_noun:noun] towards the [slot:destination:location]."
+  },
+  "solution": {
+    "time_hour": "08",
+    "time_min": "15",
+    "suspect_name": "Viktor",
+    "action": "fled",
+    "vehicle_noun": "motorcycle",
+    "destination": "harbor"
+  }
+}
