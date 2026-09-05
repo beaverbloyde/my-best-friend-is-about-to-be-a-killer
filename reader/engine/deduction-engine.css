@@ -1344,7 +1344,7 @@ header {
     max-width: 96vw;
     height: min(84vh, 760px);
     min-height: 420px;
-    min-width: 460px;
+    min-width: min(460px, 94vw);
     background: transparent;
     z-index: 1000;
     display: flex;
@@ -1812,13 +1812,29 @@ header {
     }
 
     #docket-modal, .lore-viewer-modal {
-        top: 10px !important;
-        left: 2.5vw !important;
-        width: 95vw !important;
-        max-width: 95vw !important;
-        height: 88vh !important;
-        max-height: 88vh !important;
+        top: 8px !important;
+        left: 8px !important;
+        right: 8px !important;
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+        min-width: 0 !important;
+        height: calc(100dvh - 16px) !important;
+        max-height: calc(100dvh - 16px) !important;
+        min-height: 0 !important;
         transform: none !important;
+        box-sizing: border-box !important;
+        position: fixed !important;
+    }
+
+    .docket-paper, .lore-viewer-paper {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .docket-resize-handle,
+    #docket-expand-btn {
+        display: none !important;
     }
 
     .docket-body, .lore-viewer-body {

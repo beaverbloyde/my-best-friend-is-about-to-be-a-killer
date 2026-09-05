@@ -1279,6 +1279,7 @@ class DeductionEngine {
         let startX, startY, initialLeft, initialTop;
 
         const startDrag = (clientX, clientY, target) => {
+            if (window.innerWidth <= 900) return;
             if (target.tagName === "BUTTON" || target.closest("button") || target.tagName === "INPUT") return;
             this.bringToFront(modal);
             isDragging = true;
@@ -1325,6 +1326,7 @@ class DeductionEngine {
         let startX, startY, startWidth, startHeight;
 
         const startResize = (clientX, clientY) => {
+            if (window.innerWidth <= 900) return;
             this.bringToFront(modal);
             isResizing = true;
             startX = clientX;
