@@ -1338,18 +1338,18 @@ header {
 /* Deduction Form Floating Draggable & Resizable Window */
 #docket-modal {
     position: fixed;
-    top: 50px;
-    left: calc(50vw - 440px);
-    width: 880px;
-    max-width: 96vw;
-    height: min(84vh, 760px);
-    min-height: 420px;
+    top: 40px;
+    left: max(16px, calc(50vw - 460px));
+    width: 920px;
+    max-width: calc(100vw - 32px);
+    height: auto;
+    max-height: calc(100vh - 60px);
     min-width: min(460px, 94vw);
     background: transparent;
     z-index: 1000;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     pointer-events: auto;
 }
 

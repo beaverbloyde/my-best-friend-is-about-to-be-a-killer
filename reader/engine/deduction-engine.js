@@ -1385,9 +1385,13 @@ class DeductionEngine {
         if (this.docketModal) {
             if (savedW && parseInt(savedW, 10) >= 460) {
                 this.docketModal.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
+            } else {
+                this.docketModal.style.width = "";
             }
             if (savedH && parseInt(savedH, 10) >= 380) {
                 this.docketModal.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
+            } else {
+                this.docketModal.style.height = "";
             }
         }
     }
