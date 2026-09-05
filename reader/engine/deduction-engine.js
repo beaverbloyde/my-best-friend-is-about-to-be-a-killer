@@ -936,6 +936,53 @@ class DeductionEngine {
             btn.id = `btn-time-${key.replace(/[^a-zA-Z0-9]/g, "_")}`;
             container.appendChild(btn);
         }
+
+        this.setupTimelineScrollIndicators();
+    }
+
+    setupTimelineScrollIndicators() {
+        const wrap = document.getElementById("timeline-scroll-wrap");
+        const container = document.getElementById("timeline-buttons");
+        const leftBtn = document.getElementById("timeline-scroll-left");
+        const rightBtn = document.getElementById("timeline-scroll-right");
+        if (!wrap || !container) return;
+
+        const updateIndicators = () => {
+            const scrollLeft = container.scrollLeft;
+            const maxScrollLeft = container.scrollWidth - container.clientWidth;
+            const hasLeft = scrollLeft > 8;
+            const hasRight = maxScrollLeft > 8 && scrollLeft < maxScrollLeft - 8;
+
+            wrap.classList.toggle("has-overflow-left", hasLeft);
+            wrap.classList.toggle("has-overflow-right", hasRight);
+
+            if (leftBtn) leftBtn.classList.toggle("hidden", !hasLeft);
+            if (rightBtn) rightBtn.classList.toggle("hidden", !hasRight);
+        };
+
+        if (!this._timelineScrollBound) {
+            this._timelineScrollBound = true;
+            container.addEventListener("scroll", updateIndicators, { passive: true });
+            window.addEventListener("resize", updateIndicators);
+
+            if (leftBtn) {
+                leftBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    container.scrollBy({ left: -140, behavior: "smooth" });
+                    setTimeout(updateIndicators, 200);
+                };
+            }
+            if (rightBtn) {
+                rightBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    container.scrollBy({ left: 140, behavior: "smooth" });
+                    setTimeout(updateIndicators, 200);
+                };
+            }
+        }
+
+        setTimeout(updateIndicators, 50);
+        setTimeout(updateIndicators, 300);
     }
 
     selectTime(timeKey) {
@@ -944,7 +991,12 @@ class DeductionEngine {
 
         document.querySelectorAll(".time-btn").forEach(btn => btn.classList.remove("active"));
         const activeBtn = document.getElementById(`btn-time-${timeKey.replace(/[^a-zA-Z0-9]/g, "_")}`);
-        if (activeBtn) activeBtn.classList.add("active");
+        if (activeBtn) {
+            activeBtn.classList.add("active");
+            try {
+                activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+            } catch(e) {}
+        }
 
         const data = this.currentCase.timeline[timeKey];
         const container = document.getElementById("scene-container");

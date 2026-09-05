@@ -278,50 +278,171 @@ header {
 .timeline-bar {
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
-    padding: 8px 20px;
+    padding: 6px 16px;
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
     align-items: center;
+    gap: 10px;
+    position: relative;
+    user-select: none;
 }
 
 .timeline-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--text-tertiary);
-    margin-right: 8px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.timeline-scroll-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.timeline-buttons {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    align-items: center;
+    width: 100%;
+    padding: 4px 2px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.timeline-buttons::-webkit-scrollbar {
+    height: 4px;
+}
+.timeline-buttons::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+.timeline-buttons::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Edge Fade Indicators */
+.timeline-scroll-wrap::before,
+.timeline-scroll-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 28px;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.2s ease;
+    opacity: 0;
+}
+
+.timeline-scroll-wrap::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-secondary) 15%, transparent 100%);
+}
+
+.timeline-scroll-wrap::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-secondary) 15%, transparent 100%);
+}
+
+.timeline-scroll-wrap.has-overflow-left::before {
+    opacity: 1;
+}
+
+.timeline-scroll-wrap.has-overflow-right::after {
+    opacity: 1;
+}
+
+/* Scroll Chevron Buttons (Active on overflow) */
+.timeline-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: var(--bg-primary);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 3;
+    opacity: 0.9;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    padding: 0;
+    line-height: 1;
+}
+
+.timeline-nav-arrow:hover {
+    opacity: 1;
+    background: var(--accent);
+    color: #000;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.timeline-nav-arrow.timeline-nav-prev {
+    left: 2px;
+}
+
+.timeline-nav-arrow.timeline-nav-next {
+    right: 2px;
+}
+
+.timeline-nav-arrow.hidden {
+    display: none;
 }
 
 .time-btn {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.1s;
+    transition: all 0.15s ease;
     white-space: nowrap;
+    flex-shrink: 0;
+    border-radius: 3px;
 }
 
 .time-btn:hover {
     color: var(--text-primary);
     border-color: var(--text-secondary);
+    background: var(--bg-primary);
 }
 
 .time-btn.active {
     background: var(--accent);
-    color: var(--bg-primary);
+    color: #000;
     border-color: var(--accent);
     box-shadow: 0 0 10px var(--accent-glow);
+    font-weight: 700;
 }
 
 .time-btn.vision-btn {
     border-color: var(--danger);
     color: var(--danger);
+}
+.time-btn.vision-btn.active {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 .time-btn.vision-btn.active {
