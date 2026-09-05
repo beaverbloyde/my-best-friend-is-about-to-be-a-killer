@@ -1,13 +1,13 @@
 %%~name: Chapter 1.2: The Man on the News
 %%~path: e3cd568273a1d/8e0179d6fe5e5
 %%~kind: NOVEL/DOCUMENT
-%%~hash: b7b066e83cf2c0d412f2fa6615d07c8c0e49bb01
-%%~date: 2026-09-05 13:29:09/2026-09-06 00:05:00
+%%~hash: 454342517ebfe8c8d1b3bc138ad9e3a261b160a8
+%%~date: 2026-09-05 13:29:09/2026-09-06 00:14:44
 ## Chapter 1.2: The Man on the News
 
 Luka pieced together what he had seen in the vision, committing as many details to memory as he could before letting the projection gently dissolve. As his eyes began darting around the lobby again, Nadezhda leaned forward from behind the desk.
 
-“You’re back? I got a bit worried there. You’ve been spacing out for…” She glanced down at the counter on her terminal. “…nearly three full minutes.”
+“You’re back? I got a bit worried there. You’ve been spacing out for…” She glanced down at the clock on her terminal. “…nearly three full minutes.”
 
 “—Ah. Yeah, I’m back,” Luka muttered, giving his head a quick shake to clear away the lingering sensory blur.
 
@@ -17,13 +17,13 @@ Luka pieced together what he had seen in the vision, committing as many details 
 
 Nadezhda’s eyes widened in genuine shock the moment her surname left his mouth. This was their first time meeting; there was simply no way he could have known her family name. Except—
 
-She suddenly burst into a quiet giggle. “Aha! You almost had me! For a second I thought, _how on earth could you know my name?!_ But then I remembered—” She picked up the engraved brass nameplate resting squarely on the front of her counter. The irony was that Luka hadn’t even noticed it until now. “And look—me, getting promoted this year? Skipping an entire intermediate grade, no less? I’m flattered, comrade, but you really don't have to invent stories just to cheer me up.” She offered a gentle, self-effacing smile, clearly believing it was too good to be true.
+She suddenly burst into a quiet giggle. “Aha! You almost had me! For a second I thought, _how on earth could you know my name?!_ But then I remembered—” She picked up the engraved brass nameplate resting squarely on the front of her counter. The irony was that Luka hadn’t even noticed it until now. “And look—me, getting promoted this year? Skipping an entire rank, no less? I’m flattered, comrade, but you really don't have to invent stories just to hype me up.” She offered a gentle, self-effacing smile, clearly believing it was too good to be true.
 
 Luka let out a quiet, defeated sigh. If that nameplate hadn't been sitting on the counter, she might have actually believed him. Worse, he had no idea what specific case or achievement led to her promotion, so he couldn't offer any verifiable context. He had hit a complete dead end.
 
-Seeing the deep disappointment and weariness settle over his features, Nadezhda’s smile softened into something much more serious. She realized he wasn't playing a game. Folding her hands over the desk, she spoke with sincere, unvarnished warmth.
+Seeing the deep disappointment and weariness settle over his features, Nadezhda’s smile softened into something much more serious. Folding her hands over the desk, she spoke with sincere, unvarnished warmth.
 
-“Hey. I was speaking as a Militsiya officer just now, but let me be real with you for a moment,” she said gently. “I can see how much this is weighing on you, comrade. I can’t promise any official miracles, but if it helps put your mind at ease, I can log your report directly into the district incident ledger.”
+“Hey. I was speaking as a Militsiya officer just now, but let me be real with you for a moment,” she said gently. “I can see how much this is weighing on you, comrade. I can’t promise much, but if it helps put your mind at ease, I can log your report directly into the district incident ledger.”
 
 Luka’s eyes lit up with a sudden, fragile spark of hope. It wasn’t the immediate intervention he had dreamed of, but simply being taken seriously—even a little—felt like an immense weight lifting from his chest.
 
@@ -31,17 +31,21 @@ Luka’s eyes lit up with a sudden, fragile spark of hope. It wasn’t the immed
 
 “Don’t mention it. Happy to help,” she reassured him, pulling up a fresh intake docket on her screen. “Alright then. Is your name spelled exactly as it appears on your institute badge, Comrade Kho…?” She paused, catching the unfamiliar cadence of the surname. “Are you Chinese?”
 
-“Yes, half-Chinese. My father is from Harbin, and my mother is Russian,” Luka replied.
+“Yes, half-Chinese. My father is Chinese, and my mother is Russian,” Luka replied.
 
-“I see. So it’s pronounced _Huo_, right?” She attempted the softer initial consonant—not entirely standard Russian phonetics, but a conscious, respectable effort.
+“I see. So it’s pronounced _Huo_, right?” She attempted the softer initial consonant—not entirely accurate, but a conscious, respectable effort.
 
-“Yes, exactly. But _Kho_ is completely fine too—I know the aspirated sound is tricky for native Russian speakers,” Luka said sympathetically. In truth, there were plenty of Russian consonant clusters that still tied his own tongue in knots.
+“Yes, exactly. But _Kho_ is completely fine too—I know it’s tricky for native Russian speakers,” Luka said sympathetically. In truth, there were plenty of Russian consonant clusters that still tied his own tongue in knots.
 
 “No, no, it’s only right that I try. Your Russian is practically native; pronouncing your name properly is the least I can do,” she replied with modest determination. Her fingers hovered over the keyboard. “Now then—who is your best friend, Comrade Huo?”
 
 “Aleksey Volkov. He’s an experimental hardware engineer at PIRM,” he answered.
 
-Nadezhda typed the name into the balanced-ternary terminal. After a brief chime, she synchronized the query with an electro-cellulose sheet she had on hand, sliding it across the polished counter toward him. Within half a second, the microscopic pigments shifted and settled, blooming into a crisp, high-definition portrait against the matte beige paper.
+Nadezhda typed the name into the balanced-ternary terminal[footnote:fd1vc]. After a brief chime, she synchronized the query with an e-paper[footnote:frn5j] she had on hand, sliding it across the polished counter toward him. Within half a second, the microscopic pigments shifted and settled, blooming into a crisp, high-definition portrait against the matte beige paper.
+
+%Footnote.fd1vc: A computer terminal operating on balanced ternary logic {-1, 0, +1} (False, Indeterminate, True) descended from the historical Soviet *Setun* architecture, optimized for macro-logistics, neural modeling, and state administration.
+
+%Footnote.frn5j: A flexible, durable electro-cellulose sheet displaying crisp text and images via bistable magnetic micro-pigments with zero glare, consuming power only during page refreshes.
 
 “Is this Aleksey Volkov?” she asked.
 
@@ -55,11 +59,11 @@ Once she had his verbal confirmation, Nadezhda tapped the terminal key to bind t
 
 As Luka worked on the form, she asked a few more clarifying questions about his premonition of Alex, quietly transcribing his answers into her console. The data mirrored onto the e-paper in real time, the typed Cyrillic characters blossoming across the sheet with a faint, rhythmic sweep of pigment.
 
-Luka handed the stylus back, but noticed Nadezhda glancing back and forth between her glowing terminal screen and a physical stack of traditional paper, diligently copying the entire statement with a classic ballpoint pen. 
+Luka handed the stylus back, but noticed Nadezhda glancing back and forth between her glowing terminal screen and a physical traditional paper, diligently copying the entire statement with a classic ballpoint pen. 
 
-Noticing his curious gaze, she gave a dry, wry smile. “Please bear with me… The new post-Ripple civil protocol strictly mandates a non-electronic, hard-copy duplicate of all citizen filings.”
+Noticing his curious gaze, she gave a dry, wry smile. “Please bear with me… The new post-Ripple protocol strictly mandates a _non-electronic_ copy of all documents.”
 
-Luka nodded knowingly. PIRM was operating under the exact same analog redundancy rules.
+Luka nodded knowingly. PIRM was currently operating under the exact same rules.
 
 After a minute, she passed the physical paper manifest and pen over so he could apply his ink signature. She carefully cross-checked the electronic sheet against the physical paper before sliding both securely into her desk drawer.
 
@@ -69,7 +73,7 @@ After a minute, she passed the physical paper manifest and pen over so he could 
 
 “Gladly,” she said. But just as Luka pushed his chair back to stand up, she raised a hand. “Wait—before you head out, comrade. Have you seen this man anywhere around the district yesterday, or perhaps late last night?”
 
-She slid another electro-cellulose sheet across the counter. This time, the pigments settled into an official MVD bulletin—a wanted notice bearing the sharp, middle-aged portrait of Igor Valentinovich Romashin. 
+She slid another e-paper across the counter. This time, the pigments settled into an official MVD bulletin—a wanted notice bearing the sharp, middle-aged portrait of Igor Valentinovich Romashin. 
 
 A familiar name. Luka frowned, certain he had seen this man’s face somewhere on the news just recently…
 
