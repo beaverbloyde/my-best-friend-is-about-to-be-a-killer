@@ -90,21 +90,40 @@
 
 /* Theme: Gosplan Cellulose Paper */
 .theme-gosplan {
-    --bg-primary: #f5eedb;
-    --bg-secondary: #ede2c5;
-    --bg-tertiary: #e0d2af;
-    --border-color: #c9b991;
-    --text-primary: #2d261e;
-    --text-secondary: #5c4e3d;
-    --text-tertiary: #8a7863;
-    --accent: #b91c1c;
-    --accent-rgb: 185, 28, 28;
-    --accent-glow: rgba(185, 28, 28, 0.12);
-    --accent-secondary: #991b1b;
-    --accent-secondary-glow: rgba(153, 27, 27, 0.1);
-    --shadow: 0 8px 30px rgba(45, 38, 30, 0.08);
+    --bg-primary: #fbf7ee;
+    --bg-secondary: #f0e9d6;
+    --bg-tertiary: #e3d9c1;
+    --border-color: #8f7d69;
+    --text-primary: #0a0705;
+    --text-secondary: #241c15;
+    --text-tertiary: #473a2e;
+    --accent: #8b1818;
+    --accent-rgb: 139, 24, 24;
+    --accent-glow: rgba(139, 24, 24, 0.15);
+    --accent-secondary: #6e1010;
+    --accent-secondary-glow: rgba(110, 16, 16, 0.1);
+    --shadow: 0 8px 30px rgba(10, 7, 5, 0.1);
     --glow-strength: 0px;
-    --speech-default: #b91c1c;
+    --speech-default: #0a0705;
+}
+
+/* Theme: Monochrome CRT / Microfiche */
+.theme-monochrome {
+    --bg-primary: #0d0d0d;
+    --bg-secondary: #171717;
+    --bg-tertiary: #262626;
+    --border-color: #404040;
+    --text-primary: #f5f5f5;
+    --text-secondary: #b8b8b8;
+    --text-tertiary: #757575;
+    --accent: #ffffff;
+    --accent-rgb: 255, 255, 255;
+    --accent-glow: rgba(255, 255, 255, 0.22);
+    --accent-secondary: #cccccc;
+    --accent-secondary-glow: rgba(200, 200, 200, 0.15);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.85);
+    --glow-strength: 4px;
+    --speech-default: #f5f5f5;
 }
 
 /* 3. Base Elements & Typography */
@@ -145,12 +164,15 @@ body {
     font-weight: 600;
     transition: all 0.15s ease;
     user-select: text;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.reader-kw:hover {
-    background: rgba(var(--accent-rgb, 185, 28, 28), 0.2);
-    border-bottom-style: solid;
-    box-shadow: 0 0 8px var(--accent-glow);
+@media (hover: hover) and (pointer: fine) {
+    .reader-kw:hover {
+        background: rgba(var(--accent-rgb, 185, 28, 28), 0.2);
+        border-bottom-style: solid;
+        box-shadow: 0 0 8px var(--accent-glow);
+    }
 }
 
 .reader-kw.collected {
@@ -408,7 +430,7 @@ body {
 /* Main Top Header Controls */
 #main-header {
     height: var(--header-height);
-    padding: 0 30px;
+    padding: 0 20px;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--bg-primary);
     display: flex;
@@ -416,13 +438,18 @@ body {
     align-items: center;
     z-index: 90;
     transition: background-color var(--transition-normal);
+    max-width: 100%;
+    box-sizing: border-box;
+    gap: 12px;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     overflow: hidden;
+    min-width: 0;
+    flex: 1;
 }
 .header-active-title {
     font-family: var(--font-mono);
@@ -433,12 +460,14 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .header-right {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 /* Button & Icon Styles - Mechanical Keypads */
@@ -1530,7 +1559,68 @@ button.char-color-picker-wrapper {
     }
     
     #main-header {
-        padding: 0 15px;
+        padding: 0 10px;
+        gap: 8px;
+    }
+    
+    .header-left {
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+    }
+    
+    .header-active-title {
+        font-size: 12px;
+    }
+
+    .header-right {
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    /* Convert wide text buttons to compact icon buttons */
+    .header-right .icon-btn.text-btn {
+        width: 36px;
+        height: 36px;
+        padding: 0 !important;
+        justify-content: center;
+        min-width: 36px;
+    }
+
+    .header-right .icon-btn.text-btn > span {
+        display: none !important;
+    }
+
+    .header-right a.icon-btn.text-btn {
+        padding: 0 !important;
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-right a.icon-btn.text-btn > span:first-child {
+        display: inline-flex !important;
+        font-size: 16px !important;
+        margin: 0 !important;
+    }
+
+    /* Compact BGM widget in header on mobile */
+    .header-right .bgm-header-widget {
+        padding: 0 6px !important;
+        height: 36px;
+        width: auto !important;
+        min-width: 0;
+    }
+
+    .header-right .bgm-header-widget .bgm-mini-track-label {
+        display: none !important;
+    }
+
+    .header-right .bgm-header-widget .bgm-mini-play-btn,
+    .header-right .bgm-header-widget .bgm-mini-eq {
+        display: inline-flex !important;
     }
     
     #document-wrapper {
@@ -1545,6 +1635,59 @@ button.char-color-picker-wrapper {
     #settings-drawer {
         width: 100%;
         right: -100%;
+    }
+}
+
+@media (max-width: 600px) {
+    #main-header {
+        padding: 0 8px;
+        gap: 6px;
+    }
+
+    .header-left {
+        gap: 6px;
+    }
+
+    .header-right {
+        gap: 4px;
+    }
+
+    .header-right .icon-btn {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+    }
+
+    .header-right .bgm-header-widget {
+        height: 34px;
+        padding: 0 5px !important;
+    }
+
+    /* Hide desktop keyboard shortcuts toggle on touchscreen devices */
+    #shortcuts-toggle-btn {
+        display: none !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .header-active-title {
+        max-width: 110px;
+    }
+
+    .header-right .icon-btn {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+    }
+
+    .header-right .icon-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .header-right .bgm-header-widget {
+        height: 30px;
+        padding: 0 4px !important;
     }
 }
 

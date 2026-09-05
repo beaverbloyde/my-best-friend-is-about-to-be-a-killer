@@ -13,6 +13,89 @@
     --success: #22c55e;
     --font-mono: "IBM Plex Mono", monospace;
     --font-serif: "Lora", Georgia, serif;
+    --game-font-size: 13px;
+    --game-line-height: 1.5;
+    --game-font-family: var(--font-mono);
+}
+
+/* Theme 1: Soviet Amber CRT (Default) */
+body.theme-soviet-amber {
+    --bg-primary: #100c06;
+    --bg-secondary: #1a140a;
+    --bg-tertiary: #271f10;
+    --border-color: #3d3019;
+    --border-highlight: #ff9900;
+    --text-primary: #ffb833;
+    --text-secondary: #d99626;
+    --text-tertiary: #8c5d11;
+    --accent: #ff9900;
+    --accent-glow: rgba(255, 153, 0, 0.25);
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+/* Theme 2: Emerald Phosphor (PIRM Mainframe) */
+body.theme-soviet-emerald {
+    --bg-primary: #051008;
+    --bg-secondary: #0c1c11;
+    --bg-tertiary: #142a1b;
+    --border-color: #1e3f28;
+    --border-highlight: #00ff66;
+    --text-primary: #33ff77;
+    --text-secondary: #22cc5c;
+    --text-tertiary: #147335;
+    --accent: #00ff66;
+    --accent-glow: rgba(0, 255, 102, 0.25);
+    --danger: #ef4444;
+    --success: #00ff66;
+}
+
+/* Theme 3: Arctic Taiga / Pogranichny Frost */
+body.theme-arctic {
+    --bg-primary: #181d24;
+    --bg-secondary: #222933;
+    --bg-tertiary: #2c3542;
+    --border-color: #3b4656;
+    --border-highlight: #38bdf8;
+    --text-primary: #e6edf5;
+    --text-secondary: #a9b8cc;
+    --text-tertiary: #6b7a8f;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.25);
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+/* Theme 4: Gosplan Cellulose Paper */
+body.theme-gosplan {
+    --bg-primary: #fbf7ee;
+    --bg-secondary: #f0e9d6;
+    --bg-tertiary: #e3d9c1;
+    --border-color: #8f7d69;
+    --border-highlight: #8b1818;
+    --text-primary: #0a0705;
+    --text-secondary: #241c15;
+    --text-tertiary: #473a2e;
+    --accent: #8b1818;
+    --accent-glow: rgba(139, 24, 24, 0.18);
+    --danger: #8b1818;
+    --success: #15803d;
+}
+
+/* Theme 5: Monochrome CRT / Microfiche */
+body.theme-monochrome {
+    --bg-primary: #0d0d0d;
+    --bg-secondary: #171717;
+    --bg-tertiary: #262626;
+    --border-color: #404040;
+    --border-highlight: #ffffff;
+    --text-primary: #f5f5f5;
+    --text-secondary: #b8b8b8;
+    --text-tertiary: #757575;
+    --accent: #ffffff;
+    --accent-glow: rgba(255, 255, 255, 0.22);
+    --danger: #e5e5e5;
+    --success: #ffffff;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,13 +103,95 @@
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: var(--font-mono);
+    font-family: var(--game-font-family, var(--font-mono));
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: var(--game-font-size, 13px);
+    line-height: var(--game-line-height, 1.5);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dynamic Font & Typography Scaling Rules */
+.scene-container,
+.scene-header,
+.clue-grid,
+.clue-card,
+.clue-title,
+.clue-desc,
+.clue-quote,
+.clue-thought,
+.kw,
+.slot,
+.num-slot,
+.time-btn,
+.sidebar,
+.sidebar-content,
+.tray-grid,
+.lore-card,
+.lore-desc,
+.lore-content,
+.docket-modal,
+.docket-content,
+.docket-text,
+.docket-sentence,
+.statement-box,
+.statement-text,
+.evidence-card,
+.evidence-content,
+.dialogue-bubble,
+.audio-dialogue,
+.poster-panel,
+.tutorial-body,
+.tutorial-intro {
+    font-family: var(--game-font-family, var(--font-mono)) !important;
+}
+
+.scene-title {
+    font-size: calc(1.35 * var(--game-font-size, 13px)) !important;
+}
+
+.clue-title,
+.scene-header,
+.header-title {
+    font-size: calc(1.08 * var(--game-font-size, 13px)) !important;
+}
+
+.scene-container,
+.clue-card,
+.clue-desc,
+.evidence-content,
+.statement-text,
+.dialogue-bubble,
+.audio-dialogue,
+.lore-content,
+.tutorial-intro {
+    font-size: var(--game-font-size, 13px) !important;
+    line-height: var(--game-line-height, 1.5) !important;
+}
+
+.docket-content,
+.docket-text,
+.docket-sentence {
+    font-size: calc(1.08 * var(--game-font-size, 13px)) !important;
+    line-height: calc(1.5 * var(--game-line-height, 1.5)) !important;
+}
+
+.slot,
+.num-slot {
+    font-size: var(--game-font-size, 13px) !important;
+    height: calc(1.85 * var(--game-font-size, 13px)) !important;
+    line-height: calc(1.75 * var(--game-font-size, 13px)) !important;
+}
+
+.clue-quote,
+.clue-thought,
+.kw,
+.tray-word-card,
+.lore-desc,
+.time-btn {
+    font-size: calc(0.92 * var(--game-font-size, 13px)) !important;
 }
 
 /* Top Bar */
@@ -155,13 +320,13 @@ header {
 }
 
 .time-btn.vision-btn {
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: var(--danger);
+    color: var(--danger);
 }
 
 .time-btn.vision-btn.active {
-    background: #ef4444;
-    color: #fff;
+    background: var(--danger);
+    color: var(--bg-primary);
 }
 
 /* Main Workspace Grid */
@@ -254,14 +419,24 @@ header {
     background: var(--bg-tertiary);
     padding: 8px 10px;
     border-left: 2px solid var(--accent);
-    color: #ffe099;
-    font-size: 12px;
+    color: var(--text-primary);
+    margin-top: 6px;
+}
+
+.clue-thought {
+    font-family: var(--font-serif);
+    font-style: italic;
+    background: var(--bg-tertiary);
+    padding: 8px 10px;
+    border-left: 2px solid var(--accent);
+    color: var(--text-primary);
+    margin-top: 6px;
 }
 
 /* Clickable and Draggable Keywords inside text */
 .kw {
     display: inline-block;
-    background: rgba(255, 153, 0, 0.12);
+    background: var(--bg-tertiary);
     border: 1px solid var(--accent);
     color: var(--text-primary);
     padding: 1px 5px;
@@ -270,12 +445,15 @@ header {
     transition: all 0.1s;
     margin: 0 1px;
     user-select: text;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.kw:hover {
-    background: var(--accent);
-    color: var(--bg-primary);
-    box-shadow: 0 0 6px var(--accent-glow);
+@media (hover: hover) and (pointer: fine) {
+    .kw:hover {
+        background: var(--accent);
+        color: var(--bg-primary);
+        box-shadow: 0 0 6px var(--accent-glow);
+    }
 }
 
 .kw:active {
@@ -285,16 +463,18 @@ header {
 /* Grayed-out Collected Keywords (still draggable and re-usable) */
 .kw.collected {
     background: transparent !important;
-    border-color: #554a36 !important;
-    color: #8c7e65 !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-tertiary) !important;
     cursor: grab;
 }
 
-.kw.collected:hover {
-    background: rgba(255, 153, 0, 0.15) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 6px var(--accent-glow) !important;
+@media (hover: hover) and (pointer: fine) {
+    .kw.collected:hover {
+        background: var(--bg-tertiary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--accent) !important;
+        box-shadow: 0 0 6px var(--accent-glow) !important;
+    }
 }
 
 .kw.collected:active {
@@ -307,13 +487,13 @@ header {
 
 /* 1. Mobile Phone & OS Screen */
 .phone-device {
-    background: #0d0a05;
-    border: 1px solid #5a4522;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
     font-family: var(--font-mono);
     border-radius: 2px;
 }
@@ -323,7 +503,7 @@ header {
     justify-content: space-between;
     font-size: 9px;
     color: var(--text-tertiary);
-    border-bottom: 1px dashed #3d3019;
+    border-bottom: 1px dashed var(--border-color);
     padding-bottom: 4px;
     text-transform: uppercase;
 }
@@ -331,7 +511,7 @@ header {
 .phone-clock-display {
     text-align: center;
     padding: 6px 0;
-    border-bottom: 1px solid #271f10;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .phone-clock-time {
@@ -353,8 +533,8 @@ header {
 }
 
 .phone-notif-card {
-    background: #191309;
-    border: 1px solid #3d3019;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     padding: 6px 8px;
     font-size: 11px;
     border-left: 2px solid var(--accent);
@@ -375,15 +555,16 @@ header {
 }
 
 .phone-notif-body {
-    color: #e5b35c;
+    color: var(--text-secondary);
     margin-top: 2px;
     font-size: 11px;
     line-height: 1.3;
 }
 
 .phone-nav-banner {
-    background: #141f11;
-    border: 1px solid #2e5225;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--success);
     padding: 8px 10px;
     display: flex;
     gap: 10px;
@@ -392,16 +573,16 @@ header {
 
 .phone-nav-arrow {
     font-size: 22px;
-    color: #4ade80;
+    color: var(--success);
     font-weight: 700;
 }
 
 /* 2. Official Poster & Notice */
 .poster-card {
-    background: #17120a;
-    border: 2px solid #5a4522;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
     padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -412,7 +593,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #3d3019;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 6px;
 }
 
@@ -420,7 +601,7 @@ header {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #271f10;
+    background: var(--bg-tertiary);
     border: 1px solid var(--accent);
     padding: 2px 8px;
     font-weight: 700;
@@ -428,7 +609,7 @@ header {
 }
 
 .poster-soviet-star {
-    color: #ef4444;
+    color: var(--danger);
     font-size: 13px;
 }
 
@@ -440,7 +621,7 @@ header {
 
 .poster-badge {
     background: var(--accent);
-    color: #000;
+    color: var(--bg-primary);
     font-size: 9px;
     font-weight: 700;
     padding: 2px 6px;
@@ -451,14 +632,14 @@ header {
 .poster-headline {
     font-size: 13px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
     margin-top: 4px;
     line-height: 1.3;
 }
 
 .poster-meta-bar {
-    background: #0d0a05;
-    border: 1px dashed #3d3019;
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-color);
     padding: 6px 8px;
     font-size: 10px;
     color: var(--text-secondary);
@@ -468,16 +649,15 @@ header {
 }
 
 .poster-panel-list {
-    font-size: 11px;
-    color: #d1a868;
+    color: var(--text-secondary);
     margin-left: 14px;
     line-height: 1.4;
 }
 
 /* 3. Audio Voicemail Player */
 .audio-player-box {
-    background: #0d0a05;
-    border: 1px solid #5a4522;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     padding: 8px 10px;
     display: flex;
     flex-direction: column;
@@ -488,7 +668,7 @@ header {
     display: flex;
     justify-content: space-between;
     font-size: 9px;
-    color: #ef4444;
+    color: var(--danger);
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -497,32 +677,32 @@ header {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    font-size: 11px;
     line-height: 1.4;
 }
 
 .audio-line-system {
-    color: #9ca3af;
-    border-left: 2px solid #6b7280;
+    color: var(--text-tertiary);
+    border-left: 2px solid var(--border-color);
     padding-left: 6px;
 }
 
 .audio-line-user {
-    color: #fed7aa;
+    color: var(--text-primary);
     border-left: 2px solid var(--accent);
     padding-left: 6px;
 }
 
 /* 4. Polyclinic Rx Badges & ID Cards */
 .rx-badge {
-    background: #140f07;
-    border: 1px solid #3d3019;
-    border-left: 3px solid #8c5d11;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent);
     padding: 6px 8px;
     font-size: 11px;
     display: flex;
     flex-direction: column;
     gap: 2px;
+    color: var(--text-primary);
 }
 
 .rx-header {
@@ -534,8 +714,8 @@ header {
 }
 
 .id-badge-card {
-    background: #140f07;
-    border: 1px solid #3d3019;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     padding: 8px 10px;
     display: flex;
     gap: 10px;
@@ -544,9 +724,9 @@ header {
 
 .id-badge-avatar {
     font-size: 24px;
-    background: #271f10;
+    background: var(--bg-tertiary);
     padding: 4px 8px;
-    border: 1px solid #3d3019;
+    border: 1px solid var(--border-color);
 }
 
 .id-badge-info {
@@ -564,7 +744,7 @@ header {
 .id-badge-name {
     font-size: 12px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 /* Right Sidebar: Keyword Tray & Lore Archive */
@@ -691,7 +871,7 @@ header {
     text-transform: uppercase;
     color: var(--text-tertiary);
     letter-spacing: 1px;
-    border-bottom: 1px solid #271f10;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 2px;
 }
 
@@ -711,21 +891,18 @@ header {
     cursor: grab;
     user-select: none;
     transition: all 0.1s;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.tray-word:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 6px var(--accent-glow);
+@media (hover: hover) and (pointer: fine) {
+    .tray-word:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 6px var(--accent-glow);
+    }
 }
 
 .tray-word:active {
     cursor: grabbing;
-}
-
-.tray-word.selected {
-    background: var(--accent);
-    color: var(--bg-primary);
-    border-color: var(--accent);
 }
 
 /* Lore Cards */
@@ -743,7 +920,7 @@ header {
 
 .lore-card:hover {
     border-color: var(--accent);
-    background: rgba(255, 153, 0, 0.08);
+    background: var(--bg-secondary);
 }
 
 .lore-card.locked {
@@ -794,6 +971,30 @@ header {
 }
 
 .lore-viewer-modal.hidden { display: none; }
+
+.table-viewer-modal {
+    width: 780px !important;
+    max-width: 96vw !important;
+    height: auto !important;
+    max-height: 88vh !important;
+}
+
+.clue-table-trigger-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clue-table-trigger-card:hover {
+    background: var(--bg-secondary);
+    box-shadow: 0 0 12px var(--accent-glow);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
 
 .lore-viewer-paper {
     background: var(--bg-secondary);
@@ -975,7 +1176,7 @@ header {
 .tutorial-card-title {
     font-weight: 700;
     font-size: 13px;
-    color: #fff;
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1023,23 +1224,38 @@ header {
     justify-content: space-between;
     align-items: center;
     background: var(--bg-tertiary);
-    flex-wrap: wrap;
-    gap: 12px;
 }
 
-.tutorial-checkbox-label {
+.tutorial-footer-btn {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border: none;
+    padding: 8px 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.tutorial-footer-btn:hover {
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.tutorial-footer-checkbox {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-tertiary);
     cursor: pointer;
     user-select: none;
 }
 
-.tutorial-checkbox-label input[type="checkbox"] {
-    accent-color: var(--accent);
-    cursor: pointer;
+/* Global Hidden Utility */
+.hidden {
+    display: none !important;
 }
 
 /* Deduction Form Floating Draggable Window */
@@ -1059,11 +1275,13 @@ header {
     pointer-events: auto;
 }
 
-#docket-modal.hidden { display: none; }
+#docket-modal.hidden {
+    display: none !important;
+}
 
 .docket-paper {
     background: var(--bg-secondary);
-    border: 2px solid var(--border-highlight);
+    border: 2px solid var(--accent);
     width: 100%;
     height: 100%;
     display: flex;
@@ -1087,6 +1305,7 @@ header {
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
+    color: var(--accent);
 }
 
 .docket-body {
@@ -1113,7 +1332,7 @@ header {
     height: 24px;
     line-height: 22px;
     border-bottom: 2px dashed var(--accent);
-    background: rgba(255, 153, 0, 0.08);
+    background: var(--bg-tertiary);
     padding: 0 8px;
     text-align: center;
     font-weight: 600;
@@ -1126,7 +1345,7 @@ header {
 }
 
 .slot:hover {
-    background: rgba(255, 153, 0, 0.2);
+    background: var(--bg-secondary);
     border-bottom-style: solid;
 }
 
@@ -1138,12 +1357,13 @@ header {
 
 .slot.drag-over {
     border: 2px solid var(--accent) !important;
-    background: rgba(255, 153, 0, 0.3) !important;
+    background: var(--bg-secondary) !important;
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .num-slot {
     display: inline-block;
-    background: rgba(255, 153, 0, 0.08);
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-bottom: 2px dashed var(--accent);
     color: var(--text-primary);
@@ -1159,7 +1379,7 @@ header {
 }
 
 .num-slot:focus {
-    background: rgba(255, 153, 0, 0.2);
+    background: var(--bg-secondary);
     border-color: var(--accent);
 }
 
@@ -1170,19 +1390,20 @@ header {
 
 .num-slot.drag-over {
     border: 2px solid var(--accent) !important;
-    background: rgba(255, 153, 0, 0.3) !important;
+    background: var(--bg-secondary) !important;
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .slot.wrong, .num-slot.wrong {
     border-color: var(--danger) !important;
     color: var(--danger) !important;
-    background: rgba(239, 68, 68, 0.15) !important;
+    background: var(--bg-secondary) !important;
 }
 
 .slot.correct, .num-slot.correct {
     border-color: var(--success) !important;
     color: var(--success) !important;
-    background: rgba(34, 197, 94, 0.15) !important;
+    background: var(--bg-secondary) !important;
 }
 
 /* Toast Message */
@@ -1272,9 +1493,9 @@ header {
 }
 
 .slot-picker-clear-btn {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #fca5a5;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--danger);
+    color: var(--danger);
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
@@ -1286,9 +1507,9 @@ header {
 }
 
 .slot-picker-clear-btn:hover {
-    background: rgba(239, 68, 68, 0.3);
+    background: var(--danger);
     border-color: var(--danger);
-    color: #fff;
+    color: var(--bg-primary);
 }
 
 .slot-picker-close-btn {
@@ -1336,11 +1557,11 @@ header {
 .slot-picker-item.highlighted {
     background: var(--bg-tertiary);
     border-color: var(--accent);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .slot-picker-item.active-choice {
-    background: rgba(255, 153, 0, 0.15);
+    background: var(--bg-tertiary);
     border-color: var(--accent);
     color: var(--accent);
     font-weight: 700;
@@ -1580,7 +1801,7 @@ header {
 .victory-title {
     font-size: 18px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -1628,7 +1849,7 @@ header {
 .unlocked-card-title {
     font-size: 14px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .unlocked-card-desc {
@@ -1685,7 +1906,7 @@ header {
 .case-locked-title {
     font-size: 20px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
     letter-spacing: 1px;
 }
 
@@ -1727,7 +1948,7 @@ header {
     justify-content: center;
     gap: 8px;
     background: var(--accent);
-    color: #000;
+    color: var(--bg-primary);
     font-weight: 700;
     font-size: 13px;
     padding: 10px 20px;
@@ -1739,6 +1960,212 @@ header {
 }
 
 .case-locked-action-btn:hover {
-    background: #ffaa22;
+    filter: brightness(1.15);
     transform: translateY(-1px);
 }
+
+/* ============================================================
+   GAME TERMINAL DISPLAY & THEME SETTINGS
+   ============================================================ */
+
+/* CRT Scanlines Overlay */
+body.crt-scanlines::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+    z-index: 9999;
+    background-size: 100% 3px, 6px 100%;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* Settings Modal Backdrop & Dialog */
+#game-settings-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#game-settings-modal.hidden {
+    display: none !important;
+}
+
+.game-settings-dialog {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent-glow);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.game-settings-header {
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-settings-header-title {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.game-settings-body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.game-settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.game-settings-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Theme Cards Grid */
+.game-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.game-theme-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: left;
+}
+
+.game-theme-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+}
+
+.game-theme-card.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    background: var(--bg-secondary);
+}
+
+.game-theme-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.game-theme-card-name {
+    font-weight: 600;
+}
+
+/* Range Sliders */
+.game-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
+}
+
+.game-slider-val {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 12px;
+}
+
+.game-range-input {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+    background: var(--bg-primary);
+    border-radius: 2px;
+    height: 6px;
+}
+
+/* Select Dropdown */
+.game-settings-select {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 2px;
+}
+
+.game-settings-select:focus {
+    border-color: var(--accent);
+}
+
+/* Toggle Checkbox Row */
+.game-toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 6px 0;
+}
+
+.game-toggle-container input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Settings Modal Footer */
+.game-settings-footer {
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-color);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+

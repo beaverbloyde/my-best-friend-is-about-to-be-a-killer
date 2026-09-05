@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOGOS-3 | Case Investigation Terminal</title>
+    <!-- Google Fonts: Soviet / Slavic Typefaces & Monospace -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="engine/deduction-engine.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Outfit:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&family=PT+Mono&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="engine/deduction-engine.css?v=2.2">
+    <link rel="stylesheet" href="engine/bgm-player.css?v=2.2">
 </head>
-<body>
+<body class="theme-soviet-amber">
 
     <!-- Top Application Bar -->
     <header>
@@ -35,7 +40,19 @@
                     ❓ How to Play
                 </button>
 
-                <a href="index.html" class="engine-btn" style="text-decoration: none; color: var(--accent); border-color: var(--accent);" title="Return to Novel Reader">
+                <button class="engine-btn" id="game-settings-btn" onclick="window.gameEngine.openSettings()" title="Terminal Display & Theme Options">
+                    ⚙️ Options
+                </button>
+
+                <button id="bgm-header-widget" class="engine-btn bgm-header-widget" aria-label="Open BGM Audio Deck" title="Toggle Music (M) / Tape Deck (Shift+M)">
+                    <span class="bgm-mini-play-btn">▶</span>
+                    <span class="bgm-mini-track-label">BGM: Ambient</span>
+                    <div class="bgm-mini-eq">
+                        <span></span><span></span><span></span>
+                    </div>
+                </button>
+
+                <a href="index.html?v=2.2" class="engine-btn" style="text-decoration: none; color: var(--accent); border-color: var(--accent);" title="Return to Novel Reader">
                     📖 Novel Reader
                 </a>
             </div>
@@ -185,7 +202,7 @@
                     <input type="checkbox" id="tutorial-dont-show">
                     <span>Don't show this guide automatically on startup</span>
                 </label>
-                <button onclick="window.gameEngine.closeTutorial()" class="open-docket-btn" style="background: var(--accent); color: #000; font-weight: 700;">
+                <button onclick="window.gameEngine.closeTutorial()" class="open-docket-btn" style="background: var(--accent); color: var(--bg-primary); font-weight: 700;">
                     Acknowledge & Begin Investigation ↵
                 </button>
             </div>
@@ -207,7 +224,7 @@
                     <button onclick="window.gameEngine.clearDocket()" class="time-btn" title="Clear only docket slots">Clear Slots</button>
                     <button onclick="window.gameEngine.resetCaseProgress()" class="time-btn" title="Reset all keywords, lore dossiers, and progress for this case">Restart Case ↺</button>
                 </div>
-                <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn" style="background: var(--success); color: #000;">Verify Deduction ↵</button>
+                <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn" style="background: var(--success); color: var(--bg-primary);">Verify Deduction ↵</button>
             </div>
         </div>
     </div>
@@ -259,9 +276,112 @@
                 <button onclick="window.gameEngine.closeVictoryModal()" class="time-btn" style="padding: 10px 16px;">
                     Stay in Terminal
                 </button>
-                <a id="victory-read-btn" href="index.html?file=content/27601e10419ce.nwd" class="open-docket-btn" style="background: var(--success); color: #000; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
+                <a id="victory-read-btn" href="index.html?file=content/27601e10419ce.nwd" class="open-docket-btn" style="background: var(--success); color: var(--bg-primary); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
                     📖 Read Chapter 1 in Novel Reader ↵
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Display & Theme Settings Modal -->
+    <div id="game-settings-modal" class="hidden">
+        <div class="game-settings-dialog">
+            <div class="game-settings-header">
+                <div class="game-settings-header-title">
+                    <span style="color: var(--accent);">☭</span>
+                    <span>LOGOS-3 // DISPLAY & THEME CONFIG</span>
+                </div>
+                <button onclick="window.gameEngine.closeSettings()" class="modal-close-btn" title="Close Settings">✕</button>
+            </div>
+            
+            <div class="game-settings-body">
+                <!-- Color Theme Grid -->
+                <div class="game-settings-section">
+                    <div class="game-settings-label">COLOR THEME</div>
+                    <div class="game-theme-grid">
+                        <button class="game-theme-card active" data-theme="soviet-amber">
+                            <span class="game-theme-swatch" style="background: #100c06; border-color: #ff9900;"></span>
+                            <span class="game-theme-card-name">Amber CRT</span>
+                        </button>
+                        <button class="game-theme-card" data-theme="soviet-emerald">
+                            <span class="game-theme-swatch" style="background: #051008; border-color: #00ff66;"></span>
+                            <span class="game-theme-card-name">Phosphor</span>
+                        </button>
+                        <button class="game-theme-card" data-theme="arctic">
+                            <span class="game-theme-swatch" style="background: #181d24; border-color: #38bdf8;"></span>
+                            <span class="game-theme-card-name">Taiga Frost</span>
+                        </button>
+                        <button class="game-theme-card" data-theme="gosplan">
+                            <span class="game-theme-swatch" style="background: #f5eedb; border-color: #b91c1c;"></span>
+                            <span class="game-theme-card-name">Gosplan Paper</span>
+                        </button>
+                        <button class="game-theme-card" data-theme="monochrome">
+                            <span class="game-theme-swatch" style="background: #0d0d0d; border-color: #ffffff;"></span>
+                            <span class="game-theme-card-name">Monochrome</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Font Size Slider -->
+                <div class="game-settings-section">
+                    <div class="game-slider-header">
+                        <label for="game-font-size-slider">WORKSPACE TEXT SIZE</label>
+                        <span id="game-font-size-val" class="game-slider-val">13px</span>
+                    </div>
+                    <input type="range" id="game-font-size-slider" min="11" max="20" step="1" value="13" class="game-range-input">
+                </div>
+
+                <!-- Line Spacing Slider -->
+                <div class="game-settings-section">
+                    <div class="game-slider-header">
+                        <label for="game-line-height-slider">LINE SPACING</label>
+                        <span id="game-line-height-val" class="game-slider-val">1.5</span>
+                    </div>
+                    <input type="range" id="game-line-height-slider" min="1.2" max="2.0" step="0.1" value="1.5" class="game-range-input">
+                </div>
+
+                <!-- Typography Family -->
+                <div class="game-settings-section">
+                    <label class="game-settings-label" for="game-font-family-select">TYPOGRAPHY</label>
+                    <select id="game-font-family-select" class="game-settings-select">
+                        <option value="'IBM Plex Mono', monospace">IBM Plex Mono (Soviet Terminal)</option>
+                        <option value="'JetBrains Mono', monospace">JetBrains Mono (Code Monospace)</option>
+                        <option value="'Inter', sans-serif">Inter (Clean System Sans)</option>
+                        <option value="'Outfit', sans-serif">Outfit (Modern Dystopian)</option>
+                        <option value="'Lora', Georgia, serif">Lora (Literary Dossier Serif)</option>
+                        <option value="'PT Serif', Georgia, serif">PT Serif (Official State Slavic Serif)</option>
+                    </select>
+                </div>
+
+                <!-- CRT Scanlines Toggle -->
+                <div class="game-settings-section">
+                    <label class="game-toggle-container">
+                        <span>CRT SCANLINES & PHOSPHOR FLICKER</span>
+                        <input type="checkbox" id="game-scanlines-toggle">
+                    </label>
+                </div>
+
+                <!-- Tactile Mechanical Sound Effects (SFX) -->
+                <div class="game-settings-section">
+                    <label class="game-toggle-container">
+                        <span>TACTILE MECHANICAL SFX</span>
+                        <input type="checkbox" id="game-sfx-toggle" checked>
+                    </label>
+                    <div class="game-slider-header" style="margin-top: 4px;">
+                        <label for="game-sfx-vol-slider">SFX VOLUME</label>
+                        <span id="game-sfx-vol-val" class="game-slider-val">45%</span>
+                    </div>
+                    <input type="range" id="game-sfx-vol-slider" min="0" max="100" step="5" value="45" class="game-range-input">
+                </div>
+            </div>
+            
+            <div class="game-settings-footer">
+                <button onclick="window.gameEngine.resetDisplaySettings()" class="time-btn" style="padding: 6px 12px; font-size: 11px;">
+                    ↺ Reset Defaults
+                </button>
+                <button onclick="window.gameEngine.closeSettings()" class="open-docket-btn" style="padding: 6px 16px; font-size: 11px;">
+                    Done ↵
+                </button>
             </div>
         </div>
     </div>
@@ -279,8 +399,14 @@
     <!-- Bundled Fallback Case (ensures offline file:// execution) -->
     <script src="cases/chapter_01_morning_routine.js"></script>
 
+    <!-- Tactile Sound Effects Engine -->
+    <script src="engine/sfx.js?v=2.2"></script>
+
+    <!-- Background Music Player -->
+    <script src="engine/bgm-player.js?v=2.2"></script>
+
     <!-- Core Deduction Engine -->
-    <script src="engine/deduction-engine.js"></script>
+    <script src="engine/deduction-engine.js?v=2.2"></script>
 
     <!-- Initialize Game Engine -->
     <script>

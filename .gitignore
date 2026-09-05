@@ -4,3 +4,4 @@ Thumbs.db
 
 # Logs & temp
 *.log
+*.lock

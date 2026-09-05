@@ -6,10 +6,10 @@
     "docketTitle": "\ud83d\udccb MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
     "author": "Beaver Bloyde",
     "version": "1.0",
-    "successMessage": "\u262d DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1: The ROVD Unlocked!",
+    "successMessage": "☭ DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1.1: Crime in the Future Unlocked!",
     "unlocks": {
       "chapter": "content/27601e10419ce.nwd",
-      "title": "Chapter 1: The ROVD (The Weight of Unfallen Snow)",
+      "title": "Chapter 1.1: Crime in the Future",
       "description": "Proceed to the Novel Reader to continue reading the story."
     }
   },
@@ -20,10 +20,10 @@
       "location": "Bedroom",
       "clues": [
         {
-          "type": "Observation",
+          "type": "Subject",
           "title": "A distressed young man",
           "text": "A distressed young man just woke up from a recurring nightmare.",
-          "quote": "Sigh... the [vision]... again."
+          "thought": "Sigh... the [vision]... again."
         },
         {
           "type": "Observation",
@@ -53,7 +53,7 @@
           "type": "Subject",
           "title": "A terrified young man",
           "text": "A terrified young man with horror in his eyes standing over a dark pool.",
-          "quote": "NO NO NO! Why did it have to come to this!?"
+          "thought": "NO NO NO! Why did it have to come to this!?"
         },
         {
           "type": "Evidence",
@@ -115,7 +115,7 @@
           "type": "Observation",
           "title": "A conflicted young man",
           "text": "A reluctant young man holding a pill bottle, questioning his diagnosis.",
-          "quote": "These pills are useless. I don't want to admit it but... what if it's true?"
+          "thought": "These pills are useless. I don't want to admit it but... what if it's true?"
         }
       ]
     },
@@ -176,10 +176,10 @@
       "location": "Bedroom",
       "clues": [
         {
-          "type": "Observation",
+          "type": "Subject",
           "title": "A dressed-up young man",
           "text": "A dressed-up young man checking himself in the mirror, wearing a thick wool coat and scarf.",
-          "quote": "This should be good..."
+          "thought": "This should be good..."
         },
         {
           "type": "ID Card",

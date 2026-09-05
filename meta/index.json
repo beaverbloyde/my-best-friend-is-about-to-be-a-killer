@@ -1,18 +1,34 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-05 13:23:35"
+    "timestamp": "2026-09-05 18:18:11"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
     "9f1ea3b46fcb3": {
       "T0001": {
-        "meta": {"level": "H1", "title": "My Best Friend is (about to be) a Killer", "line": 7, "tag": "", "counts": [72, 14, 2]}
+        "meta": {"level": "H1", "title": "My Best Friend is (about to be) a Killer", "line": 3, "tag": "", "counts": [72, 14, 2]}
       }
     },
     "27601e10419ce": {
       "T0001": {
         "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
+      }
+    },
+    "8e0179d6fe5e5": {
+      "T0001": {
+        "meta": {"level": "H2", "title": "Chapter 1.2: The Charred Body", "line": 1, "tag": "", "counts": [29, 5, 0]}
+      }
+    },
+    "9768d4a80e03f": {
+      "T0001": {
+        "meta": {"level": "H2", "title": "Preface", "line": 1, "tag": "", "counts": [7, 1, 0]}
+      },
+      "T0002": {
+        "meta": {"level": "H3", "title": "Disclaimer", "line": 2, "tag": "", "counts": [282, 43, 1]}
+      },
+      "T0003": {
+        "meta": {"level": "H3", "title": "Interactive Novel", "line": 5, "tag": "", "counts": [172, 28, 1]}
       }
     }
   }

@@ -5,6 +5,11 @@
     "file": "cases/chapter_01_morning_routine.json"
   },
   {
+    "id": "chapter_01_award_ceremony",
+    "title": "Case 2: Award Ceremony",
+    "file": "cases/chapter_01_award_ceremony.json"
+  },
+  {
     "id": "case_template",
     "title": "Case Template / Example Case",
     "file": "cases/case_template.json"

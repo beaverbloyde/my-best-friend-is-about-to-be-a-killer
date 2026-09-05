@@ -2,13 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        if (window.location.pathname.endsWith('/reader')) {
+            window.location.replace(window.location.pathname + '/' + window.location.search + window.location.hash);
+        }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pogranichny 2118 | Terminal Interface</title>
     <!-- Google Fonts: Soviet / Slavic Typefaces & Monospace -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Outfit:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&family=PT+Mono&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.2">
+    <link rel="stylesheet" href="engine/bgm-player.css?v=2.2">
 </head>
 <body class="theme-soviet-amber">
     <!-- Progress Bar -->
@@ -99,7 +108,14 @@
                     <span id="current-chapter-title" class="header-active-title">Loading...</span>
                 </div>
                 <div class="header-right">
-                    <a href="game.html" class="icon-btn text-btn" aria-label="Open Case Investigation Terminal" title="Launch Deduction Case Terminal" style="text-decoration: none; color: var(--accent); border: 1px solid var(--border-color); padding: 4px 10px;">
+                    <button id="bgm-header-widget" class="icon-btn text-btn bgm-header-widget" aria-label="Open BGM Audio Deck" title="Toggle Music (M) / Tape Deck (Shift+M)">
+                        <span class="bgm-mini-play-btn">▶</span>
+                        <span class="bgm-mini-track-label">BGM: Ambient</span>
+                        <div class="bgm-mini-eq">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </button>
+                    <a href="game.html?v=2.2" class="icon-btn text-btn" aria-label="Open Case Investigation Terminal" title="Launch Deduction Case Terminal" style="text-decoration: none; color: var(--accent); border: 1px solid var(--border-color); padding: 4px 10px;">
                         <span style="color: var(--accent); font-size: 14px;">🎮</span>
                         <span>Case Terminal</span>
                     </a>
@@ -186,6 +202,10 @@
                     <button class="theme-btn theme-gosplan" data-theme="gosplan">
                         <span class="theme-preview" style="background: #f5eedb; border: 2px solid #b91c1c;"></span>
                         <span class="theme-label">Gosplan Paper</span>
+                    </button>
+                    <button class="theme-btn theme-monochrome" data-theme="monochrome">
+                        <span class="theme-preview" style="background: #0d0d0d; border: 2px solid #ffffff;"></span>
+                        <span class="theme-label">Monochrome</span>
                     </button>
                 </div>
             </section>
@@ -277,6 +297,25 @@
                         <option value="paragraph-border">Subtle side border on paragraph</option>
                         <option value="paragraph-background">Subtle background highlight</option>
                     </select>
+                </div>
+            </section>
+
+            <!-- Tactile Mechanical Sound Effects (SFX) -->
+            <section class="settings-section">
+                <div class="setting-row">
+                    <h4>Tactile Sound Effects</h4>
+                    <label class="switch-container">
+                        <input type="checkbox" id="reader-sfx-toggle" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <p class="section-desc">Mechanical microswitch clicks, snaps, and typewriter clacks on navigation and UI interaction.</p>
+                <div class="setting-item" style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+                        <label for="reader-sfx-volume-slider" style="font-family: var(--font-outfit); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);">SFX Volume</label>
+                        <span id="reader-sfx-volume-val" style="color: var(--accent); font-family: var(--font-mono); font-size: 11px;">45%</span>
+                    </div>
+                    <input type="range" id="reader-sfx-volume-slider" min="0" max="100" step="5" value="45" style="width: 100%; accent-color: var(--accent);">
                 </div>
             </section>
 
@@ -375,6 +414,14 @@
                         <span>Exit Zen / Close Drawers</span>
                     </div>
                     <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>M</kbd></span>
+                        <span>Toggle BGM Audio (Play / Pause)</span>
+                    </div>
+                    <div class="shortcut-row">
+                        <span class="shortcut-keys"><kbd>Shift</kbd> + <kbd>M</kbd></span>
+                        <span>Open LOGOS Audio Tape Deck</span>
+                    </div>
+                    <div class="shortcut-row">
                         <span class="shortcut-keys"><kbd>?</kbd> / <kbd>/</kbd></span>
                         <span>Show Keyboard Shortcuts</span>
                     </div>
@@ -406,6 +453,8 @@
     </div>
 
     <!-- Background Script Loading -->
-    <script src="app.js"></script>
+    <script src="engine/sfx.js?v=2.2"></script>
+    <script src="engine/bgm-player.js?v=2.2"></script>
+    <script src="app.js?v=2.2"></script>
 </body>
 </html>

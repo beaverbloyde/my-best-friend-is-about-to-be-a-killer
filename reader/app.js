@@ -4,7 +4,8 @@
 
 (function () {
     // 1. Path Resolver: Adapt depending on whether we run from /reader/ or the root
-    const isSubFolder = window.location.pathname.includes('/reader/');
+    const pathname = window.location.pathname;
+    const isSubFolder = pathname.includes('/reader/') || pathname.endsWith('/reader') || pathname.includes('/reader');
     const basePath = isSubFolder ? '../' : './';
 
     // 2. State Management
@@ -153,6 +154,7 @@
 
     function markChapterAsRead(path) {
         if (!path || !path.endsWith('.nwd')) return;
+        if (!isChapterUnlocked(path)) return;
         autoCollectAllChapterKeywords(path);
         const alreadyRead = localStorage.getItem(`chapter_read_${path}`) === 'true';
         if (!alreadyRead) {
@@ -550,6 +552,28 @@
             applySettings();
             saveSettings();
         });
+
+        // Tactile SFX Controls
+        const sfxToggle = document.getElementById('reader-sfx-toggle');
+        const sfxSlider = document.getElementById('reader-sfx-volume-slider');
+        const sfxVal = document.getElementById('reader-sfx-volume-val');
+
+        if (sfxToggle && window.sfx) {
+            sfxToggle.checked = window.sfx.enabled;
+            sfxToggle.addEventListener('change', (e) => {
+                window.sfx.setEnabled(e.target.checked);
+            });
+        }
+
+        if (sfxSlider && window.sfx) {
+            sfxSlider.value = Math.round(window.sfx.volume * 100);
+            if (sfxVal) sfxVal.innerText = `${sfxSlider.value}%`;
+            sfxSlider.addEventListener('input', (e) => {
+                const vol = parseInt(e.target.value, 10) / 100;
+                window.sfx.setVolume(vol);
+                if (sfxVal) sfxVal.innerText = `${e.target.value}%`;
+            });
+        }
 
         // Case and chapter progression management buttons
         const relockBtn = document.getElementById('relock-cases-btn');
@@ -1740,7 +1764,6 @@
             const newNextBtn = nextBtn.cloneNode(true);
             nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
             newNextBtn.addEventListener('click', () => {
-                if (activeDocPath) markChapterAsRead(activeDocPath);
                 navigateToDocument(nextDoc.path);
             });
         } else {

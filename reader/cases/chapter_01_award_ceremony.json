@@ -1,0 +1,318 @@
+{
+  "id": "chapter_01_award_ceremony",
+  "meta": {
+    "title": "CASE 2: THE CONFERRAL CEREMONY",
+    "subtitle": "Vladivostok Higher School of the MVD",
+    "docketTitle": "📋 MVD FORM // CEREMONIAL CONFERRAL EVALUATION",
+    "author": "Beaver Bloyde",
+    "version": "1.0",
+    "successMessage": "☭ DEDUCTION VERIFIED! Case 2: Award Ceremony Confirmed. Chapter 1.2: The Charred Body Unlocked!",
+    "unlocks": {
+      "chapter": "content/8e0179d6fe5e5.nwd",
+      "title": "Chapter 1.2: The Charred Body",
+      "description": "Proceed to the Novel Reader to continue reading the story."
+    }
+  },
+  "timeline": {
+    "Vision": {
+      "time": "Vision",
+      "title": "Vision",
+      "location": "Vision Boundary",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "Subject",
+          "title": "A proud woman officer",
+          "text": "A proud woman officer is shaking hand with her superior.",
+          "thought": "I have so many to thanks... What should I even say on the podium?"
+        },
+        {
+          "type": "Observation",
+          "title": "Shoulder Insignia of the woman officer",
+          "text": "A shoulder pad: 1 red stripe in the middle, bearing [1 star]."
+        },
+        {
+          "type": "Observation",
+          "title": "Shoulder Insignia in the presentation box",
+          "text": "A velvet-lined presentation box holding a new pair of shoulder pads: 1 red stripe in the middle, bearing [3 stars]."
+        },
+        {
+          "type": "Subject",
+          "title": "A senior officer",
+          "text": "A senior officer is shaking hand with the newly promoted officer.",
+          "spoken": "Congratulations, glad to see my disciple get promoted. A step closer to being a [Captain]."
+        },
+        {
+          "type": "Observation",
+          "title": "Shoulder Insignia of the senior officer",
+          "text": "A shoulder pad: [1 big star] in the middle with embroidered oak leaves."
+        },
+        {
+          "type": "Subject",
+          "title": "The host",
+          "text": "The host of the ceremony is holding a microphone in one hand and the [Roster] in another.",
+          "thought": "I haven't flipped a page in my roster yet... This is going to be long..."
+        },
+        {
+          "type": "Data Table",
+          "title": "Roster",
+          "table": {
+            "caption": "USSR MINISTRY OF INTERNAL AFFAIRS // REGIONAL CONFERRAL ROSTER NO. 14 — (Revision 1: Extraordinary promotions rescheduled to top)",
+            "headers": [
+              "No.",
+              "Officer Candidate",
+              "Division",
+              "Current Rank",
+              "Conferred Rank"
+            ],
+            "rows": [
+              [
+                "01",
+                "[Anton] [Belov]",
+                "Motorized Patrol",
+                "[Junior Lieutenant]",
+                "[Senior Lieutenant]"
+              ],
+              [
+                "02",
+                "[Elena] [Petrova]",
+                "Forensic Pathology",
+                "[Lieutenant]",
+                "[Captain]"
+              ],
+              [
+                "03",
+                "[Sasha] [Lebedev]",
+                "Communications",
+                "[Senior Lieutenant]",
+                "[Major]"
+              ],
+              [
+                "04",
+                "[Nadezhda] [Morozova]",
+                "Special Investigation",
+                "[Junior Lieutenant]",
+                "[Senior Lieutenant]"
+              ],
+              [
+                "05",
+                "[Ksenia] [Pavlova]",
+                "Judicial Inquiries",
+                "[Senior Lieutenant]",
+                "[Captain]"
+              ],
+              [
+                "06",
+                "[Zhenya] [Sokolov]",
+                "Technical Records",
+                "[Junior Lieutenant]",
+                "[Lieutenant]"
+              ],
+              [
+                "07",
+                "[Boris] [Volkov]",
+                "Administration",
+                "[Captain]",
+                "[Major]"
+              ],
+              [
+                "08",
+                "[Viktor] [Smirnov]",
+                "Highway Division",
+                "[Lieutenant]",
+                "[Senior Lieutenant]"
+              ]
+            ],
+            "footer": "Presented by: The Commandant of [Vladivostok] Higher School of [MVD], [Major General]."
+          }
+        },
+        {
+          "type": "Public Notice",
+          "title": "Banner",
+          "poster": {
+            "logo": "[MVD]",
+            "established": "",
+            "badge": "Award Ceremony",
+            "headline": "Honoring the Foremost Officers of the [Primorsky Krai] OVD",
+            "date": "[2118]",
+            "venue": "[Vladivostok] Higher School of [MVD]"
+          }
+        }
+      ]
+    }
+  },
+  "lore": {
+    "MVD": {
+      "id": "lore-mvd",
+      "tag": "USSR STATE DIRECTORY // LAW ENFORCEMENT & INSTITUTIONS",
+      "title": "Ministry of Internal Affairs (MVD)",
+      "facility": "Vladivostok Higher School of the MVD",
+      "location": "Vladivostok, Primorsky Krai, Russian SFSR",
+      "diagnosticCode": "MVD-STRUCT-2118 // REGIONAL INSTITUTIONS",
+      "etiology": "Civil Order, Forensic Inquiries, and Frontier Security",
+      "requiredWords": [
+        "MVD"
+      ],
+      "body": "The **Ministry of Internal Affairs ([MVD])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [USSR].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([ROVD]). In the Far East, the **[Vladivostok] Higher School of the [MVD]** serves as the primary regional academy for officer training, procedural jurisprudence, and forensic education."
+    }
+  },
+  "keywordTags": {
+    "Nadezhda": [
+      "name"
+    ],
+    "Morozova": [
+      "name"
+    ],
+    "Anton": [
+      "name"
+    ],
+    "Belov": [
+      "name"
+    ],
+    "Elena": [
+      "name"
+    ],
+    "Petrova": [
+      "name"
+    ],
+    "Zhenya": [
+      "name"
+    ],
+    "Sokolov": [
+      "name"
+    ],
+    "Sasha": [
+      "name"
+    ],
+    "Lebedev": [
+      "name"
+    ],
+    "Ksenia": [
+      "name"
+    ],
+    "Pavlova": [
+      "name"
+    ],
+    "Viktor": [
+      "name"
+    ],
+    "Smirnov": [
+      "name"
+    ],
+    "Boris": [
+      "name"
+    ],
+    "Volkov": [
+      "name"
+    ],
+    "Junior Lieutenant": [
+      "rank"
+    ],
+    "Lieutenant": [
+      "rank"
+    ],
+    "Senior Lieutenant": [
+      "rank"
+    ],
+    "Captain": [
+      "rank"
+    ],
+    "Major": [
+      "rank"
+    ],
+    "Major General": [
+      "rank"
+    ],
+    "Vladivostok": [
+      "location"
+    ],
+    "Primorsky Krai": [
+      "location"
+    ],
+    "Pogranichny": [
+      "location"
+    ],
+    "ROVD": [
+      "location"
+    ],
+    "MVD": [
+      "location",
+      "noun"
+    ],
+    "PIRM": [
+      "location"
+    ],
+    "USSR": [
+      "location"
+    ],
+    "1 star": [
+      "insignia",
+      "noun"
+    ],
+    "3 stars": [
+      "insignia",
+      "noun"
+    ],
+    "1 big star": [
+      "insignia",
+      "noun"
+    ],
+    "Roster": [
+      "noun"
+    ],
+    "2118": [
+      "calendar"
+    ]
+  },
+  "customCategories": [
+    {
+      "id": "names",
+      "label": "👤 Names & People",
+      "tag": "name"
+    },
+    {
+      "id": "ranks",
+      "label": "🎖️ Officer Ranks",
+      "tag": "rank"
+    },
+    {
+      "id": "locations",
+      "label": "📍 Locations & Precincts",
+      "tag": "location"
+    },
+    {
+      "id": "insignia",
+      "label": "⭐ Stars & Insignia",
+      "tag": "insignia"
+    },
+    {
+      "id": "nouns",
+      "label": "📦 Objects & Documents",
+      "tag": "noun"
+    },
+    {
+      "id": "calendar",
+      "label": "📅 Dates & Years",
+      "tag": "calendar"
+    }
+  ],
+  "docket": {
+    "template": "**OFFICER RANK HIERARCHY (From Low to High):**\n[slot:r1:rank] ➔ [slot:r2:rank] ➔ [slot:r3:rank] ➔ [slot:r4:rank] ➔ [slot:r5:rank] ➔ [slot:r6:rank]\n\n**WHAT IS GOING TO HAPPEN:**\nYear: [num:year:4:YYYY]\nCity: [slot:city:location]\nRegion: [slot:region:location]\n\n[slot:p_first:name] [slot:p_last:name], currently holding the rank: [slot:rank_old:rank], will be promoted to rank: [slot:rank_new:rank].\nShe will be awarded by an officer of rank: [slot:awarder_rank:rank]."
+  },
+  "solution": {
+    "r1": "Junior Lieutenant",
+    "r2": "Lieutenant",
+    "r3": "Senior Lieutenant",
+    "r4": "Captain",
+    "r5": "Major",
+    "r6": "Major General",
+    "year": "2118",
+    "city": "Vladivostok",
+    "region": "Primorsky Krai",
+    "p_first": "Nadezhda",
+    "p_last": "Morozova",
+    "rank_old": "Junior Lieutenant",
+    "rank_new": "Senior Lieutenant",
+    "awarder_rank": "Major General"
+  }
+}

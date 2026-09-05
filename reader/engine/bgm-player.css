@@ -1,0 +1,523 @@
+/* ============================================================
+   SOVIET TAPE DECK // RETRO BGM AUDIO PLAYER
+   ============================================================ */
+
+:root {
+    --bgm-panel-bg: rgba(18, 20, 24, 0.96);
+    --bgm-panel-border: #3a4454;
+    --bgm-accent: #e0a96d;
+    --bgm-accent-glow: rgba(224, 169, 109, 0.25);
+    --bgm-active: #00ff9d;
+    --bgm-active-glow: rgba(0, 255, 157, 0.25);
+    --bgm-red: #d63031;
+    --bgm-text: #d0d7de;
+    --bgm-text-dim: #768390;
+}
+
+/* Header Trigger Button / Compact Widget */
+.bgm-header-widget {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color, #30363d);
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-primary, #c9d1d9);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.bgm-header-widget:hover {
+    border-color: var(--bgm-accent);
+    background: rgba(224, 169, 109, 0.08);
+}
+
+.bgm-header-widget.is-playing {
+    border-color: var(--bgm-active);
+    color: #ffffff;
+    box-shadow: 0 0 8px var(--bgm-active-glow);
+}
+
+.bgm-mini-play-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bgm-mini-track-label {
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+/* Mini Equalizer Bars in Header */
+.bgm-mini-eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+    width: 14px;
+}
+
+.bgm-mini-eq span {
+    width: 2px;
+    height: 3px;
+    background: var(--bgm-text-dim);
+    border-radius: 1px;
+    transition: height 0.1s ease;
+}
+
+.is-playing .bgm-mini-eq span:nth-child(1) {
+    background: var(--bgm-active);
+    animation: bgmEqBar 0.6s infinite ease-in-out alternate;
+}
+.is-playing .bgm-mini-eq span:nth-child(2) {
+    background: var(--bgm-active);
+    animation: bgmEqBar 0.8s infinite ease-in-out alternate 0.2s;
+}
+.is-playing .bgm-mini-eq span:nth-child(3) {
+    background: var(--bgm-active);
+    animation: bgmEqBar 0.5s infinite ease-in-out alternate 0.4s;
+}
+
+@keyframes bgmEqBar {
+    0% { height: 3px; }
+    50% { height: 11px; }
+    100% { height: 5px; }
+}
+
+/* Expanded Tape Deck Modal / Popover */
+.bgm-popover-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.bgm-popover-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bgm-deck-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 440px;
+    background: var(--bgm-panel-bg);
+    border: 1px solid var(--bgm-panel-border);
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    z-index: 9999;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--bgm-text);
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bgm-deck-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Deck Header */
+.bgm-deck-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+.bgm-deck-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--bgm-accent);
+}
+
+.bgm-deck-close {
+    background: none;
+    border: none;
+    color: var(--bgm-text-dim);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.bgm-deck-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Reel-to-Reel Cassette Visualizer */
+.bgm-cassette-display {
+    background: #0d0f12;
+    border: 1px solid #22272e;
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bgm-cassette-display::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(224, 169, 109, 0.4), transparent);
+}
+
+.bgm-reels-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 12px;
+}
+
+.bgm-reel {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 3px solid #333a44;
+    background: radial-gradient(circle, #1a1e24 25%, #0e1116 70%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bgm-reel::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #333a44;
+    border: 2px solid #1a1e24;
+}
+
+.bgm-reel-spokes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.bgm-reel-spokes::before,
+.bgm-reel-spokes::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 2px;
+    background: #444c56;
+    transform: translate(-50%, -50%);
+}
+
+.bgm-reel-spokes::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.is-playing .bgm-reel-spokes {
+    animation: bgmReelSpin 4s linear infinite;
+}
+
+@keyframes bgmReelSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.bgm-tape-bridge {
+    flex: 1;
+    height: 4px;
+    background: #2d333b;
+    margin: 0 10px;
+    position: relative;
+    border-radius: 2px;
+}
+
+.bgm-tape-bridge::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 100%;
+    background: repeating-linear-gradient(90deg, #373e47 0px, #373e47 4px, transparent 4px, transparent 8px);
+}
+
+/* Track Info in Deck */
+.bgm-deck-track-info {
+    text-align: center;
+}
+
+.bgm-deck-now-playing {
+    font-size: 10px;
+    color: var(--bgm-text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.bgm-deck-track-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.bgm-deck-track-artist {
+    font-size: 11px;
+    color: var(--bgm-accent);
+}
+
+/* Channel / Playlist Dropdown */
+.bgm-control-group {
+    margin-bottom: 12px;
+}
+
+.bgm-control-label {
+    display: block;
+    font-size: 10px;
+    color: var(--bgm-text-dim);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.bgm-select {
+    width: 100%;
+    background: #0d0f12;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    color: #ffffff;
+    padding: 7px 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.bgm-select:focus {
+    border-color: var(--bgm-accent);
+}
+
+/* Transport Buttons */
+.bgm-transport {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 16px 0 14px 0;
+}
+
+.bgm-btn {
+    background: #1c2128;
+    border: 1px solid #373e47;
+    border-radius: 6px;
+    color: #c9d1d9;
+    padding: 8px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.bgm-btn:hover {
+    background: #2d333b;
+    color: #fff;
+    border-color: var(--bgm-accent);
+}
+
+.bgm-btn-primary {
+    background: rgba(224, 169, 109, 0.15);
+    border-color: var(--bgm-accent);
+    color: #ffffff;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+.bgm-btn-primary:hover {
+    background: var(--bgm-accent);
+    color: #121418;
+}
+
+.is-playing .bgm-btn-primary {
+    background: rgba(0, 255, 157, 0.15);
+    border-color: var(--bgm-active);
+    color: var(--bgm-active);
+}
+
+.is-playing .bgm-btn-primary:hover {
+    background: var(--bgm-active);
+    color: #0d0f12;
+}
+
+/* Time Scrubber & Counter */
+.bgm-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 14px 0;
+    padding: 6px 10px;
+    background: rgba(13, 15, 18, 0.7);
+    border: 1px solid #22272e;
+    border-radius: 4px;
+}
+
+.bgm-time-display {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--bgm-accent);
+    min-width: 40px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.bgm-seeker-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.bgm-seeker-slider {
+    width: 100%;
+    height: 6px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #21262d;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.bgm-seeker-slider:hover {
+    background: #30363d;
+}
+
+.bgm-seeker-slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bgm-accent);
+    cursor: pointer;
+    box-shadow: 0 0 6px var(--bgm-accent-glow);
+    border: 1px solid #ffffff;
+}
+
+.bgm-seeker-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bgm-accent);
+    cursor: pointer;
+    box-shadow: 0 0 6px var(--bgm-accent-glow);
+    border: 1px solid #ffffff;
+}
+
+.is-playing .bgm-seeker-slider::-webkit-slider-thumb {
+    background: var(--bgm-active);
+    box-shadow: 0 0 6px var(--bgm-active-glow);
+}
+
+.is-playing .bgm-seeker-slider::-moz-range-thumb {
+    background: var(--bgm-active);
+    box-shadow: 0 0 6px var(--bgm-active-glow);
+}
+
+/* Volume Control */
+.bgm-volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #0d0f12;
+    border: 1px solid #22272e;
+    border-radius: 4px;
+}
+
+.bgm-volume-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--bgm-accent);
+    cursor: pointer;
+}
+
+.bgm-volume-val {
+    font-size: 11px;
+    width: 32px;
+    text-align: right;
+    color: var(--bgm-text-dim);
+}
+
+/* Custom File / Stream Input */
+.bgm-custom-box {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    gap: 8px;
+}
+
+.bgm-file-label {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    padding: 6px;
+    background: #161b22;
+    border: 1px dashed #3a4454;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--bgm-text-dim);
+    transition: all 0.2s;
+}
+
+.bgm-file-label:hover {
+    border-color: var(--bgm-accent);
+    color: var(--bgm-text);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .bgm-mini-track-label {
+        display: none;
+    }
+    .bgm-deck-panel {
+        width: 94%;
+        padding: 12px;
+    }
+}

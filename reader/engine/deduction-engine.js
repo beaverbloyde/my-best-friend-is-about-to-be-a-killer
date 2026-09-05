@@ -30,6 +30,7 @@ class DeductionEngine {
 
         this.initDOM();
         this.initEventListeners();
+        this.initDisplaySettings();
     }
 
     initDOM() {
@@ -58,6 +59,7 @@ class DeductionEngine {
                 this.closeTutorial();
                 this.closeDocket();
                 this.closeLoreModal();
+                this.closeSettings();
             }
         });
 
@@ -68,6 +70,15 @@ class DeductionEngine {
             tutModal.addEventListener("click", (e) => {
                 if (e.target === tutModal) {
                     this.closeTutorial();
+                }
+            });
+        }
+
+        const settingsModal = document.getElementById("game-settings-modal");
+        if (settingsModal) {
+            settingsModal.addEventListener("click", (e) => {
+                if (e.target === settingsModal) {
+                    this.closeSettings();
                 }
             });
         }
@@ -84,12 +95,173 @@ class DeductionEngine {
         if (caseSelector) {
             caseSelector.addEventListener("change", (e) => {
                 const val = e.target.value;
-                if (val) this.loadCaseFromUrl(val);
+                if (val) {
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set("case", val);
+                    window.history.replaceState({}, "", newUrl);
+                    this.loadCaseFromUrl(val);
+                }
             });
         }
 
         this.initSlotDragAndDrop();
         this.initTouchDragAndDrop();
+    }
+
+    initDisplaySettings() {
+        // Retrieve stored settings or share with novel reader
+        const savedTheme = localStorage.getItem('game-theme') || localStorage.getItem('reader-theme') || 'soviet-amber';
+        const savedFontSize = parseInt(localStorage.getItem('game-font-size') || '13', 10);
+        const savedLineHeight = parseFloat(localStorage.getItem('game-line-height') || '1.5');
+        const savedFontFamily = localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace";
+        const savedScanlines = localStorage.getItem('game-scanlines') === 'true';
+
+        this.currentDisplaySettings = {
+            theme: savedTheme,
+            fontSize: isNaN(savedFontSize) ? 13 : savedFontSize,
+            lineHeight: isNaN(savedLineHeight) ? 1.5 : savedLineHeight,
+            fontFamily: savedFontFamily,
+            scanlines: savedScanlines
+        };
+
+        this.applyDisplaySettings(this.currentDisplaySettings);
+
+        // Bind Theme Cards click
+        document.querySelectorAll('.game-theme-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                if (theme) {
+                    this.currentDisplaySettings.theme = theme;
+                    this.applyDisplaySettings(this.currentDisplaySettings);
+                }
+            });
+        });
+
+        // Bind Font Size Slider
+        const sizeSlider = document.getElementById('game-font-size-slider');
+        if (sizeSlider) {
+            sizeSlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.fontSize = parseInt(e.target.value, 10);
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind Line Height Slider
+        const lhSlider = document.getElementById('game-line-height-slider');
+        if (lhSlider) {
+            lhSlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.lineHeight = parseFloat(e.target.value);
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind Font Family Dropdown
+        const fontSelect = document.getElementById('game-font-family-select');
+        if (fontSelect) {
+            fontSelect.addEventListener('change', (e) => {
+                this.currentDisplaySettings.fontFamily = e.target.value;
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind CRT Scanlines Toggle
+        const scanlinesToggle = document.getElementById('game-scanlines-toggle');
+        if (scanlinesToggle) {
+            scanlinesToggle.addEventListener('change', (e) => {
+                this.currentDisplaySettings.scanlines = e.target.checked;
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind SFX Controls
+        const sfxToggle = document.getElementById('game-sfx-toggle');
+        const sfxSlider = document.getElementById('game-sfx-vol-slider');
+        const sfxVal = document.getElementById('game-sfx-vol-val');
+
+        if (sfxToggle && window.sfx) {
+            sfxToggle.checked = window.sfx.enabled;
+            sfxToggle.addEventListener('change', (e) => {
+                window.sfx.setEnabled(e.target.checked);
+            });
+        }
+
+        if (sfxSlider && window.sfx) {
+            sfxSlider.value = Math.round(window.sfx.volume * 100);
+            if (sfxVal) sfxVal.innerText = `${sfxSlider.value}%`;
+            sfxSlider.addEventListener('input', (e) => {
+                const vol = parseInt(e.target.value, 10) / 100;
+                window.sfx.setVolume(vol);
+                if (sfxVal) sfxVal.innerText = `${e.target.value}%`;
+            });
+        }
+    }
+
+    applyDisplaySettings(settings) {
+        if (!settings) return;
+
+        // 1. Theme class on body
+        document.body.classList.remove('theme-soviet-amber', 'theme-soviet-emerald', 'theme-arctic', 'theme-gosplan', 'theme-monochrome');
+        document.body.classList.add(`theme-${settings.theme}`);
+
+        document.querySelectorAll('.game-theme-card').forEach(card => {
+            card.classList.toggle('active', card.dataset.theme === settings.theme);
+        });
+
+        // 2. Font Size
+        document.documentElement.style.setProperty('--game-font-size', `${settings.fontSize}px`);
+        document.body.style.setProperty('--game-font-size', `${settings.fontSize}px`);
+        const sizeValEl = document.getElementById('game-font-size-val');
+        if (sizeValEl) sizeValEl.innerText = `${settings.fontSize}px`;
+        const sizeSlider = document.getElementById('game-font-size-slider');
+        if (sizeSlider && parseInt(sizeSlider.value, 10) !== settings.fontSize) sizeSlider.value = settings.fontSize;
+
+        // 3. Line Height
+        document.documentElement.style.setProperty('--game-line-height', settings.lineHeight);
+        document.body.style.setProperty('--game-line-height', settings.lineHeight);
+        const lhValEl = document.getElementById('game-line-height-val');
+        if (lhValEl) lhValEl.innerText = settings.lineHeight;
+        const lhSlider = document.getElementById('game-line-height-slider');
+        if (lhSlider && parseFloat(lhSlider.value) !== settings.lineHeight) lhSlider.value = settings.lineHeight;
+
+        // 4. Font Family
+        document.documentElement.style.setProperty('--game-font-family', settings.fontFamily);
+        document.body.style.setProperty('--game-font-family', settings.fontFamily);
+        const fontSelect = document.getElementById('game-font-family-select');
+        if (fontSelect && fontSelect.value !== settings.fontFamily) fontSelect.value = settings.fontFamily;
+
+        // 5. CRT Scanlines
+        document.body.classList.toggle('crt-scanlines', !!settings.scanlines);
+        const scanlinesToggle = document.getElementById('game-scanlines-toggle');
+        if (scanlinesToggle) scanlinesToggle.checked = !!settings.scanlines;
+
+        // Persist
+        localStorage.setItem('reader-theme', settings.theme);
+        localStorage.setItem('game-theme', settings.theme);
+        localStorage.setItem('game-font-size', settings.fontSize);
+        localStorage.setItem('game-line-height', settings.lineHeight);
+        localStorage.setItem('game-font-family', settings.fontFamily);
+        localStorage.setItem('game-scanlines', !!settings.scanlines);
+    }
+
+    openSettings() {
+        const modal = document.getElementById('game-settings-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    closeSettings() {
+        const modal = document.getElementById('game-settings-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    resetDisplaySettings() {
+        this.currentDisplaySettings = {
+            theme: 'soviet-amber',
+            fontSize: 13,
+            lineHeight: 1.5,
+            fontFamily: "'IBM Plex Mono', monospace",
+            scanlines: false
+        };
+        this.applyDisplaySettings(this.currentDisplaySettings);
     }
 
     async init() {
@@ -187,11 +359,36 @@ class DeductionEngine {
         };
     }
 
+    syncCaseSelector(targetUrl = null, caseData = null) {
+        const selector = document.getElementById("case-selector");
+        if (!selector || !selector.options.length) return;
+
+        const currentTarget = targetUrl || this.currentCaseUrl || (caseData ? (caseData._sourceUrl || caseData.file) : null);
+        const currentCaseId = caseData ? caseData.id : (this.currentCase ? this.currentCase.id : null);
+
+        const normalize = (s) => (s || "").replace(/^[./]+/, "").trim();
+        const normTarget = normalize(currentTarget);
+
+        for (let i = 0; i < selector.options.length; i++) {
+            const optVal = selector.options[i].value;
+            const normOpt = normalize(optVal);
+
+            if (
+                (normTarget && (normOpt === normTarget || normOpt.endsWith(normTarget) || normTarget.endsWith(normOpt))) ||
+                (currentCaseId && (normOpt.includes(currentCaseId) || optVal.includes(currentCaseId)))
+            ) {
+                selector.selectedIndex = i;
+                return;
+            }
+        }
+    }
+
     async loadRegistry(url) {
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error("Failed to fetch registry");
             const registry = await res.json();
+            this.registry = registry;
             const selector = document.getElementById("case-selector");
             if (selector && Array.isArray(registry)) {
                 selector.innerHTML = "";
@@ -202,6 +399,7 @@ class DeductionEngine {
                     opt.innerText = check.unlocked ? (c.title || c.id) : `🔒 ${c.title || c.id} (Locked)`;
                     selector.appendChild(opt);
                 });
+                this.syncCaseSelector();
             }
         } catch (err) {
             console.warn("Could not load case registry via fetch:", err);
@@ -210,15 +408,19 @@ class DeductionEngine {
 
     async loadCaseFromUrl(url) {
         try {
+            this.currentCaseUrl = url;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status} loading ${url}`);
             const caseData = await res.json();
+            caseData._sourceUrl = url;
             this.loadCase(caseData);
+            this.syncCaseSelector(url, caseData);
             this.showToast(`Loaded case: ${caseData.meta?.title || caseData.id}`);
         } catch (err) {
             console.error("Failed to load case from URL:", err);
             if (window.BUNDLED_DEFAULT_CASE) {
                 this.loadCase(window.BUNDLED_DEFAULT_CASE);
+                this.syncCaseSelector();
             } else {
                 this.showToast("Error loading case file.");
             }
@@ -289,7 +491,7 @@ class DeductionEngine {
         return text;
     }
 
-    renderClueContent(clue) {
+    renderClueContent(clue, timeKey = null, clueIdx = 0) {
         if (!clue) return "";
 
         // 1. Bedside Clock / Telemetry Widget
@@ -320,8 +522,8 @@ class DeductionEngine {
                         <div class="phone-nav-arrow">${n.arrow || "↱"}</div>
                         <div style="flex: 1;">
                             <div style="font-size: 9px; color: var(--text-tertiary); text-transform: uppercase;">${this.parseText(n.subtitle || "Next Turn")}</div>
-                            <div style="font-size: 12px; font-weight: 700; color: #fff;">${this.parseText(n.instruction || n.nextTurn || "")}</div>
-                            ${n.destination ? `<div style="font-size: 10px; color: #86efac; margin-top: 2px;">${this.parseText(n.destination)}</div>` : ""}
+                            <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">${this.parseText(n.instruction || n.nextTurn || "")}</div>
+                            ${n.destination ? `<div style="font-size: 10px; color: var(--success); margin-top: 2px;">${this.parseText(n.destination)}</div>` : ""}
                         </div>
                     </div>
                 `;
@@ -370,8 +572,8 @@ class DeductionEngine {
                         <div class="phone-nav-arrow">${n.arrow || "↱"}</div>
                         <div style="flex: 1;">
                             <div style="font-size: 9px; color: var(--text-tertiary); text-transform: uppercase;">${n.subtitle || "Next Turn"}</div>
-                            <div style="font-size: 12px; font-weight: 700; color: #fff;">${this.parseText(n.instruction || n.nextTurn || "")}</div>
-                            <div style="font-size: 10px; color: #86efac; margin-top: 2px;">${this.parseText(n.destination || "")}</div>
+                            <div style="font-size: 12px; font-weight: 700; color: var(--text-primary);">${this.parseText(n.instruction || n.nextTurn || "")}</div>
+                            <div style="font-size: 10px; color: var(--success); margin-top: 2px;">${this.parseText(n.destination || "")}</div>
                         </div>
                     </div>
                 </div>
@@ -466,7 +668,29 @@ class DeductionEngine {
             `;
         }
 
-        // 8. Plain Text / Description fallback
+        // 8. Roster / Data Table
+        if (clue.table || clue.roster) {
+            const t = clue.table || clue.roster;
+            const rowCount = (t.rows || []).length;
+            const captionText = t.caption ? this.parseText(t.caption) : "Official Registry Document";
+            const safeTimeKey = (timeKey || "scene").replace(/[^a-zA-Z0-9_-]/g, "_");
+
+            return `
+                <div class="clue-table-trigger-card" onclick="window.gameEngine.openTableModal('${safeTimeKey}', ${clueIdx ?? 0})">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-weight: 700; font-size: 11px; color: var(--accent); letter-spacing: 0.5px;">📋 ${this.parseText(clue.title || "OFFICIAL ROSTER")}</span>
+                        <span style="font-size: 10px; color: var(--accent); font-weight: 700;">[CLICK TO EXPAND ↗]</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 8px;">${captionText}</div>
+                    <div style="text-align: center; padding: 7px; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 4px; font-size: 11px; color: var(--text-primary); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span>🔍 Open Document Window</span>
+                        <span style="color: var(--text-tertiary);">(${rowCount} entries)</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 9. Plain Text / Description fallback
         const descText = clue.text || clue.desc || "";
         return this.parseText(descText);
     }
@@ -478,6 +702,7 @@ class DeductionEngine {
         }
 
         this.currentCase = caseData;
+        this.syncCaseSelector(this.currentCaseUrl, caseData);
         this.collectedWords = new Set();
         this.unlockedLore = new Set();
         this.selectedWord = null;
@@ -485,6 +710,7 @@ class DeductionEngine {
         this.savedTimelineKey = null;
         this.closeSlotPicker();
         this.closeLoreModal();
+        this.closeTableModal();
 
         // Ensure keywordTags map exists
         if (!this.currentCase.keywordTags || typeof this.currentCase.keywordTags !== "object") {
@@ -552,10 +778,12 @@ class DeductionEngine {
             if (timelineBar) timelineBar.innerHTML = "";
             const trayGrid = document.getElementById("tray-grid");
             if (trayGrid) trayGrid.innerHTML = "";
-            const loreList = document.getElementById("lore-dossier-list");
-            if (loreList) loreList.innerHTML = "";
+            const loreList = document.getElementById("lore-list");
+            if (loreList) loreList.innerHTML = `<div style="color: var(--text-tertiary); font-size: 11px; padding: 10px; line-height: 1.5;">Case is restricted. Complete prerequisites to access dossiers.</div>`;
             const kwCount = document.getElementById("kw-count");
             if (kwCount) kwCount.innerText = "LOCKED";
+            const loreCount = document.getElementById("lore-count");
+            if (loreCount) loreCount.innerText = "LOCKED";
             return;
         }
         const docketTitleEl = document.getElementById("docket-title-text");
@@ -728,16 +956,24 @@ class DeductionEngine {
         if (!data || !container) return;
 
         let cluesHtml = "";
-        (data.clues || []).forEach(clue => {
-            const contentHtml = this.renderClueContent(clue);
-            const quoteHtml = clue.quote ? `<div class="clue-quote">“${this.parseText(clue.quote.replace(/^[“"]|[”"]$/g, ""))}”</div>` : "";
+        (data.clues || []).forEach((clue, clueIdx) => {
+            const contentHtml = this.renderClueContent(clue, timeKey, clueIdx);
+            let dialogueHtml = "";
+            if (clue.spoken || clue.quote) {
+                const text = clue.spoken || clue.quote;
+                dialogueHtml += `<div class="clue-quote">“${this.parseText(text.replace(/^[“"]|[”"]$/g, ""))}”</div>`;
+            }
+            if (clue.thought || clue.innerVoice || clue.inner) {
+                const text = clue.thought || clue.innerVoice || clue.inner;
+                dialogueHtml += `<div class="clue-thought">💭 «${this.parseText(text.replace(/^[«“"]|[»”"]$/g, ""))}»</div>`;
+            }
 
             cluesHtml += `
                 <div class="clue-card">
                     <div class="clue-badge">${clue.type || "Clue"}</div>
                     <div class="clue-title">${clue.title || ""}</div>
                     <div class="clue-desc">${contentHtml}</div>
-                    ${quoteHtml}
+                    ${dialogueHtml}
                 </div>
             `;
         });
@@ -783,10 +1019,9 @@ class DeductionEngine {
             this.checkLoreUnlocks(word);
             this.updateKeywordCounter();
             this.refreshKeywordHighlights();
+            this.renderTray();
+            this.saveProgress();
         }
-        this.selectedWord = word;
-        this.renderTray();
-        this.saveProgress();
     }
 
     refreshKeywordHighlights() {
@@ -928,32 +1163,16 @@ class DeductionEngine {
     createTrayWordElement(word) {
         const btn = document.createElement("div");
         btn.className = "tray-word";
-        if (this.selectedWord === word) btn.classList.add("selected");
         btn.innerText = word;
         btn.setAttribute("draggable", "true");
         btn.setAttribute("data-word", word);
 
-        btn.onclick = () => this.selectTrayWord(word);
-
         btn.addEventListener("dragstart", (e) => {
             this.draggedSourceSlotId = null;
             e.dataTransfer.setData("text/plain", word);
-            this.selectedWord = word;
-            const allTrayWords = document.querySelectorAll(".tray-word");
-            allTrayWords.forEach(w => w.classList.remove("selected"));
-            btn.classList.add("selected");
         });
 
         return btn;
-    }
-
-    selectTrayWord(word) {
-        if (this.selectedWord === word) {
-            this.selectedWord = null;
-        } else {
-            this.selectedWord = word;
-        }
-        this.renderTray();
     }
 
     checkLoreUnlocks(newWord) {
@@ -972,13 +1191,22 @@ class DeductionEngine {
     renderLoreList() {
         const container = document.getElementById("lore-list");
         const countEl = document.getElementById("lore-count");
-        if (!container || !this.currentCase?.lore) return;
+        if (!container) return;
 
-        const loreKeys = Object.keys(this.currentCase.lore);
-        if (countEl) countEl.innerText = `${this.unlockedLore.size}/${loreKeys.length}`;
+        const loreObj = this.currentCase?.lore || {};
+        const loreKeys = Object.keys(loreObj);
+
+        if (countEl) {
+            countEl.innerText = loreKeys.length > 0 ? `${this.unlockedLore.size}/${loreKeys.length}` : "0/0";
+        }
         container.innerHTML = "";
 
-        for (let [key, lore] of Object.entries(this.currentCase.lore)) {
+        if (loreKeys.length === 0) {
+            container.innerHTML = `<div style="color: var(--text-tertiary); font-size: 11px; padding: 10px; line-height: 1.5;">No encrypted dossiers in this case file.</div>`;
+            return;
+        }
+
+        for (let [key, lore] of Object.entries(loreObj)) {
             const loreId = lore.id || key;
             const isUnlocked = this.unlockedLore.has(loreId);
             if (isUnlocked) {
@@ -1134,16 +1362,112 @@ class DeductionEngine {
             modal.classList.remove("hidden");
         }
 
+        window.sfx?.playOpen();
         this.bringToFront(modal);
         this.refreshKeywordHighlights();
     }
 
     closeLoreModal(loreId) {
+        window.sfx?.playClose();
         if (loreId) {
             const modal = document.getElementById(`lore-modal-${loreId}`);
             if (modal) modal.remove();
         } else {
             document.querySelectorAll(".lore-viewer-modal").forEach(m => m.remove());
+        }
+    }
+
+    openTableModal(timeKey, clueIdx) {
+        let clue = null;
+        if (this.currentCase?.timeline) {
+            for (let k in this.currentCase.timeline) {
+                if (k === timeKey || k.replace(/[^a-zA-Z0-9_-]/g, "_") === timeKey) {
+                    clue = this.currentCase.timeline[k]?.clues?.[clueIdx];
+                    break;
+                }
+            }
+        }
+        if (!clue || (!clue.table && !clue.roster)) return;
+
+        const t = clue.table || clue.roster;
+        const modalId = `table-modal-${timeKey}-${clueIdx}`;
+
+        let modal = document.getElementById(modalId);
+        if (!modal) {
+            const container = document.getElementById("lore-windows-container") || document.body;
+            const modalDiv = document.createElement("div");
+            modalDiv.id = modalId;
+            modalDiv.className = "lore-viewer-modal table-viewer-modal";
+
+            const defaultTop = Math.max(40, Math.floor(window.innerHeight / 2 - 240));
+            const defaultLeft = Math.max(20, Math.floor(window.innerWidth / 2 - 390));
+            modalDiv.style.top = `${defaultTop}px`;
+            modalDiv.style.left = `${defaultLeft}px`;
+
+            let headersHtml = "";
+            (t.headers || []).forEach(h => {
+                headersHtml += `<th style="padding: 10px 14px; border-bottom: 2px solid var(--accent); text-align: left; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">${this.parseText(h)}</th>`;
+            });
+
+            let rowsHtml = "";
+            (t.rows || []).forEach((row, rIdx) => {
+                let cellsHtml = "";
+                const rowBg = rIdx % 2 === 0 ? "var(--bg-secondary)" : "transparent";
+                (row || []).forEach(cell => {
+                    cellsHtml += `<td style="padding: 10px 14px; border-bottom: 1px dashed var(--border-color); font-size: 12px; vertical-align: middle; color: var(--text-primary);">${this.parseText(cell)}</td>`;
+                });
+                rowsHtml += `<tr style="background: ${rowBg};">${cellsHtml}</tr>`;
+            });
+
+            const captionHtml = t.caption ? `<div style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 12px; font-style: italic; border-left: 2px solid var(--accent); padding-left: 8px;">${this.parseText(t.caption)}</div>` : "";
+            const footerHtml = t.footer ? `<div style="font-size: 11px; color: var(--text-secondary); margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 10px; line-height: 1.5;">${this.parseText(t.footer)}</div>` : "";
+
+            modalDiv.innerHTML = `
+                <div class="lore-viewer-paper">
+                    <div class="lore-viewer-header">
+                        <div style="font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">📋 ${t.badge || clue.title || "OFFICIAL DOCUMENT"}</div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button onclick="window.gameEngine.closeTableModal('${modalId}')" style="background: transparent; border: none; color: var(--text-primary); font-size: 16px; cursor: pointer; line-height: 1; padding: 2px 6px;">✕</button>
+                        </div>
+                    </div>
+                    <div class="lore-viewer-body" style="padding: 16px; display: flex; flex-direction: column; overflow: hidden;">
+                        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">${clue.title || "Official Roster"}</h3>
+                        ${captionHtml}
+                        <div style="overflow-x: auto; overflow-y: auto; max-height: 55vh; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px;">
+                            <table style="width: 100%; border-collapse: collapse; min-width: 620px;">
+                                ${headersHtml ? `<thead style="position: sticky; top: 0; background: var(--bg-secondary); z-index: 1;"><tr>${headersHtml}</tr></thead>` : ""}
+                                <tbody>${rowsHtml}</tbody>
+                            </table>
+                        </div>
+                        ${footerHtml}
+                    </div>
+                </div>
+            `;
+            container.appendChild(modalDiv);
+            modal = modalDiv;
+            this.openTableCount++;
+
+            const header = modal.querySelector(".lore-viewer-header");
+            this.makeWindowDraggable(modal, header);
+
+            const bodyEl = modal.querySelector(".lore-viewer-body");
+            this.setupDraggableKeywords(bodyEl);
+        } else {
+            modal.classList.remove("hidden");
+        }
+
+        window.sfx?.playOpen();
+        this.bringToFront(modal);
+        this.refreshKeywordHighlights();
+    }
+
+    closeTableModal(modalId) {
+        window.sfx?.playClose();
+        if (modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.remove();
+        } else {
+            document.querySelectorAll(".table-viewer-modal").forEach(m => m.remove());
         }
     }
 
@@ -1439,6 +1763,7 @@ class DeductionEngine {
         this.activeSlot.classList.add("filled");
         this.activeSlot.classList.remove("wrong", "correct");
         this.docketSlots[slotId] = word;
+        window.sfx?.playSnap();
         this.updateProgress();
         this.saveProgress();
         this.closeSlotPicker();
@@ -1450,6 +1775,7 @@ class DeductionEngine {
         this.activeSlot.innerText = "[ ? ]";
         this.activeSlot.classList.remove("filled", "wrong", "correct");
         delete this.docketSlots[slotId];
+        window.sfx?.playPop();
         this.updateProgress();
         this.saveProgress();
         this.closeSlotPicker();
@@ -1469,6 +1795,7 @@ class DeductionEngine {
         if (this.docketModal) {
             this.docketModal.classList.remove("hidden");
             this.bringToFront(this.docketModal);
+            window.sfx?.playOpen();
         }
     }
 
@@ -1477,6 +1804,7 @@ class DeductionEngine {
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (this.docketModal) {
             this.docketModal.classList.add("hidden");
+            window.sfx?.playClose();
         }
     }
 
@@ -1496,19 +1824,7 @@ class DeductionEngine {
 
     handleSlotClick(el) {
         if (this.justTouchDragged) return;
-        const slotId = el.getAttribute("data-id");
-        if (this.selectedWord) {
-            el.innerText = this.selectedWord;
-            el.classList.add("filled");
-            el.classList.remove("wrong", "correct");
-            this.docketSlots[slotId] = this.selectedWord;
-            this.selectedWord = null;
-            this.renderTray();
-            this.updateProgress();
-            this.saveProgress();
-        } else {
-            this.openSlotPicker(el);
-        }
+        this.openSlotPicker(el);
     }
 
     handleNumInput(el) {
@@ -1539,6 +1855,7 @@ class DeductionEngine {
             input.value = "";
             input.classList.remove("filled", "wrong", "correct");
         });
+        window.sfx?.playPop();
         this.updateProgress();
         this.saveProgress();
     }
@@ -1582,13 +1899,16 @@ class DeductionEngine {
             const caseId = this.currentCase?.id || "chapter_01_morning_routine";
             localStorage.setItem(`case_solved_${caseId}`, "true");
 
+            window.sfx?.playSuccess();
             this.showToast("✓ Status: Correct");
             this.openVictoryModal();
         } else if (incorrectCount < 3) {
             // 2. Almost there (< 3 incorrect)
+            window.sfx?.playError();
             this.showToast("⚠️ Status: Almost there");
         } else {
             // 3. Incorrect (>= 3 incorrect)
+            window.sfx?.playError();
             this.showToast("❌ Status: Incorrect");
         }
     }
@@ -1744,6 +2064,7 @@ class DeductionEngine {
                 }
 
                 this.draggedSourceSlotId = null;
+                window.sfx?.playSnap();
                 this.updateProgress();
                 this.saveProgress();
             });
@@ -1760,44 +2081,41 @@ class DeductionEngine {
         let touchThresholdPassed = false;
 
         document.addEventListener("touchstart", (e) => {
-            if (e.touches.length !== 1) return;
             const touch = e.touches[0];
-            const target = touch.target.closest(".kw, .tray-word, .slot, .num-slot");
+            const target = e.target.closest(".kw, .tray-word, .slot, .num-slot");
             if (!target) return;
 
             let word = "";
-            touchSourceSlotId = null;
+            let sourceSlotId = null;
 
-            if (target.classList.contains("num-slot")) {
-                word = target.value.trim();
-                touchSourceSlotId = target.getAttribute("data-id");
-            } else if (target.classList.contains("slot")) {
+            if (target.classList.contains("slot")) {
                 word = target.innerText.trim();
+                sourceSlotId = target.getAttribute("data-id");
                 if (word === "[ ? ]") word = "";
-                touchSourceSlotId = target.getAttribute("data-id");
-            } else if (target.classList.contains("kw")) {
+            } else if (target.classList.contains("num-slot")) {
+                word = target.value.trim();
+                sourceSlotId = target.getAttribute("data-id");
+            } else {
                 word = target.getAttribute("data-word") || target.innerText.trim();
-                this.collectWord(target, word);
-            } else if (target.classList.contains("tray-word")) {
-                word = target.innerText.trim();
             }
 
             if (!word) return;
 
-            touchDraggedWord = word;
             startX = touch.clientX;
             startY = touch.clientY;
-            touchThresholdPassed = false;
+            touchDraggedWord = word;
+            touchSourceSlotId = sourceSlotId;
             isTouchDragging = true;
+            touchThresholdPassed = false;
         }, { passive: true });
 
         document.addEventListener("touchmove", (e) => {
-            if (!isTouchDragging || !touchDraggedWord || e.touches.length !== 1) return;
+            if (!isTouchDragging || !touchDraggedWord) return;
             const touch = e.touches[0];
+
             const dx = touch.clientX - startX;
             const dy = touch.clientY - startY;
-
-            if (!touchThresholdPassed && (Math.abs(dx) > 10 || Math.abs(dy) > 10)) {
+            if (!touchThresholdPassed && Math.sqrt(dx * dx + dy * dy) > 8) {
                 touchThresholdPassed = true;
                 if (ghost) {
                     ghost.innerText = touchDraggedWord;
@@ -1809,30 +2127,35 @@ class DeductionEngine {
                 ghost.style.left = `${touch.clientX}px`;
                 ghost.style.top = `${touch.clientY}px`;
 
-                ghost.style.display = "none";
-                const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                ghost.style.display = "block";
+                const elBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                const slot = elBelow ? elBelow.closest(".slot, .num-slot") : null;
 
-                const targetSlot = elemBelow ? elemBelow.closest(".slot, .num-slot") : null;
-                if (currentHoveredSlot && currentHoveredSlot !== targetSlot) {
+                if (currentHoveredSlot && currentHoveredSlot !== slot) {
                     currentHoveredSlot.classList.remove("drag-over");
                 }
-                if (targetSlot) {
-                    targetSlot.classList.add("drag-over");
-                    currentHoveredSlot = targetSlot;
+
+                if (slot) {
+                    slot.classList.add("drag-over");
+                    currentHoveredSlot = slot;
                 } else {
                     currentHoveredSlot = null;
                 }
+
+                if (e.cancelable) e.preventDefault();
             }
-        }, { passive: true });
+        }, { passive: false });
 
         document.addEventListener("touchend", () => {
-            if (isTouchDragging && touchThresholdPassed && touchDraggedWord) {
+            if (!isTouchDragging) return;
+
+            if (ghost) ghost.style.display = "none";
+            if (currentHoveredSlot) currentHoveredSlot.classList.remove("drag-over");
+
+            if (touchThresholdPassed) {
                 this.justTouchDragged = true;
-                setTimeout(() => { this.justTouchDragged = false; }, 300);
-                if (ghost) ghost.style.display = "none";
-                if (currentHoveredSlot) {
-                    currentHoveredSlot.classList.remove("drag-over");
+                setTimeout(() => { this.justTouchDragged = false; }, 100);
+
+                if (currentHoveredSlot && touchDraggedWord) {
                     const targetSlotId = currentHoveredSlot.getAttribute("data-id");
                     const isTargetNum = currentHoveredSlot.classList.contains("num-slot");
 
@@ -1891,6 +2214,7 @@ class DeductionEngine {
                             }
                         }
                     }
+                    window.sfx?.playSnap();
                     this.updateProgress();
                     this.saveProgress();
                 }
@@ -1945,8 +2269,12 @@ class DeductionEngine {
             if (Array.isArray(data.collectedWords)) {
                 data.collectedWords.forEach(w => this.collectedWords.add(w));
             }
-            if (Array.isArray(data.unlockedLore)) {
-                data.unlockedLore.forEach(l => this.unlockedLore.add(l));
+            if (Array.isArray(data.unlockedLore) && this.currentCase?.lore) {
+                data.unlockedLore.forEach(l => {
+                    if (this.currentCase.lore[l] || Object.values(this.currentCase.lore).some(item => item.id === l)) {
+                        this.unlockedLore.add(l);
+                    }
+                });
             }
             if (data.docketSlots && typeof data.docketSlots === "object") {
                 this.docketSlots = data.docketSlots;
