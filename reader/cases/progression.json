@@ -28,7 +28,7 @@
     {
       "target": "content/8e0179d6fe5e5.nwd",
       "targetType": "chapter",
-      "targetTitle": "Chapter 1.2: The Charred Body",
+      "targetTitle": "Chapter 1.2: The Man on the News",
       "requires": {
         "type": "case",
         "id": "chapter_01_award_ceremony",

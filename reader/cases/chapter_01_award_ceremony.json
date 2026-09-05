@@ -6,10 +6,10 @@
     "docketTitle": "📋 MVD FORM // CEREMONIAL CONFERRAL EVALUATION",
     "author": "Beaver Bloyde",
     "version": "1.0",
-    "successMessage": "☭ DEDUCTION VERIFIED! Case 2: Award Ceremony Confirmed. Chapter 1.2: The Charred Body Unlocked!",
+    "successMessage": "☭ DEDUCTION VERIFIED! Case 2: Award Ceremony Confirmed. Chapter 1.2: The Man on the News Unlocked!",
     "unlocks": {
       "chapter": "content/8e0179d6fe5e5.nwd",
-      "title": "Chapter 1.2: The Charred Body",
+      "title": "Chapter 1.2: The Man on the News",
       "description": "Proceed to the Novel Reader to continue reading the story."
     }
   },

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 00:29:14">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="14" autoCount="343" editTime="87050">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 00:30:14">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="14" autoCount="344" editTime="87110">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -9,7 +9,7 @@
     <language>en_GB</language>
     <spellChecking auto="yes">en_US</spellChecking>
     <lastHandle>
-      <entry key="editor">27601e10419ce</entry>
+      <entry key="editor">8e0179d6fe5e5</entry>
       <entry key="viewer">27601e10419ce</entry>
       <entry key="novel">e3cd568273a1d</entry>
       <entry key="outline">None</entry>
