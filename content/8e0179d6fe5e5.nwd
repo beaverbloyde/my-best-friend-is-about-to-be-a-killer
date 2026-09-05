@@ -1,8 +1,8 @@
 %%~name: Chapter 1.2: The Man on the News
 %%~path: e3cd568273a1d/8e0179d6fe5e5
 %%~kind: NOVEL/DOCUMENT
-%%~hash: 454342517ebfe8c8d1b3bc138ad9e3a261b160a8
-%%~date: 2026-09-05 13:29:09/2026-09-06 00:14:44
+%%~hash: f563cee37f4839eefcac8ed03ea4873a8a8fdd29
+%%~date: 2026-09-05 13:29:09/2026-09-06 00:17:42
 ## Chapter 1.2: The Man on the News
 
 Luka pieced together what he had seen in the vision, committing as many details to memory as he could before letting the projection gently dissolve. As his eyes began darting around the lobby again, Nadezhda leaned forward from behind the desk.
@@ -43,9 +43,9 @@ Luka’s eyes lit up with a sudden, fragile spark of hope. It wasn’t the immed
 
 Nadezhda typed the name into the balanced-ternary terminal[footnote:fd1vc]. After a brief chime, she synchronized the query with an e-paper[footnote:frn5j] she had on hand, sliding it across the polished counter toward him. Within half a second, the microscopic pigments shifted and settled, blooming into a crisp, high-definition portrait against the matte beige paper.
 
-%Footnote.fd1vc: A computer terminal operating on balanced ternary logic {-1, 0, +1} (False, Indeterminate, True) descended from the historical Soviet *Setun* architecture, optimized for macro-logistics, neural modeling, and state administration.
+%Footnote.fd1vc: A computer terminal operating on balanced ternary logic {-1, 0, +1} (False, Indeterminate, True) descended from the historical Soviet _Setun_ architecture, optimized for macro-logistics, neural modeling, and machine learning.
 
-%Footnote.frn5j: A flexible, durable electro-cellulose sheet displaying crisp text and images via bistable magnetic micro-pigments with zero glare, consuming power only during page refreshes.
+%Footnote.frn5j: A flexible, durable electro-cellulose sheet displaying crisp text and images via magnetic micro-pigments with zero glare, consuming power only during page refreshes.
 
 “Is this Aleksey Volkov?” she asked.
 

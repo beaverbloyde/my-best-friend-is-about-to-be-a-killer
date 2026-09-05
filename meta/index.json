@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-06 00:00:14"
+    "timestamp": "2026-09-06 00:29:14"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -13,11 +13,17 @@
     "27601e10419ce": {
       "T0001": {
         "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
+      },
+      "document": {
+        "footnotes": ["fll77", "fzt7s", "fbl9j"]
       }
     },
     "8e0179d6fe5e5": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.2: The Man on the News", "line": 1, "tag": "", "counts": [5342, 969, 28]}
+        "meta": {"level": "H2", "title": "Chapter 1.2: The Man on the News", "line": 1, "tag": "", "counts": [6850, 1146, 34]}
+      },
+      "document": {
+        "footnotes": ["frn5j", "fd1vc"]
       }
     },
     "9768d4a80e03f": {

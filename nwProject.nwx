@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 00:00:14">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="10" autoCount="324" editTime="85310">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 00:29:14">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="14" autoCount="343" editTime="87050">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -9,7 +9,7 @@
     <language>en_GB</language>
     <spellChecking auto="yes">en_US</spellChecking>
     <lastHandle>
-      <entry key="editor">8e0179d6fe5e5</entry>
+      <entry key="editor">27601e10419ce</entry>
       <entry key="viewer">27601e10419ce</entry>
       <entry key="novel">e3cd568273a1d</entry>
       <entry key="outline">None</entry>
@@ -28,7 +28,7 @@
       <entry key="i917a91" count="0" color="purple" shape="BLOCK_4">Main</entry>
     </importance>
   </settings>
-  <content items="9" novelWords="2124" notesWords="0" novelChars="12181" notesChars="0">
+  <content items="9" novelWords="2301" notesWords="0" novelChars="13689" notesChars="0">
     <item handle="e3cd568273a1d" parent="None" root="e3cd568273a1d" order="0" type="ROOT" class="NOVEL">
       <meta expanded="yes" />
       <name status="s03ddec" import="i96c4db">Novel</name>
@@ -42,11 +42,11 @@
       <name status="s03ddec" import="i96c4db" active="yes">Preface</name>
     </item>
     <item handle="27601e10419ce" parent="e3cd568273a1d" root="e3cd568273a1d" order="2" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="6306" wordCount="1069" paraCount="34" cursorPos="5972" />
+      <meta expanded="no" heading="H2" charCount="6306" wordCount="1069" paraCount="34" cursorPos="1708" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.1: Crime in the Future</name>
     </item>
     <item handle="8e0179d6fe5e5" parent="e3cd568273a1d" root="e3cd568273a1d" order="3" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="5342" wordCount="969" paraCount="28" cursorPos="5403" />
+      <meta expanded="no" heading="H2" charCount="6850" wordCount="1146" paraCount="34" cursorPos="7387" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.2: The Man on the News</name>
     </item>
     <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
