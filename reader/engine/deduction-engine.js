@@ -16,6 +16,18 @@ const CATEGORY_COLORS = {
     noun: { hex: "#94a3b8", text: "#e2e8f0", bg: "rgba(148, 163, 184, 0.16)", border: "rgba(148, 163, 184, 0.8)", icon: "📦", label: "Noun" }
 };
 
+const GOSPLAN_CATEGORY_COLORS = {
+    name: { hex: "#0284c7", text: "#075985", bg: "rgba(2, 132, 199, 0.14)", border: "#0369a1", icon: "👤", label: "Name" },
+    location: { hex: "#059669", text: "#065f46", bg: "rgba(5, 150, 105, 0.14)", border: "#047857", icon: "📍", label: "Location" },
+    verb: { hex: "#d97706", text: "#92400e", bg: "rgba(217, 119, 6, 0.14)", border: "#b45309", icon: "⚡", label: "Verb" },
+    medical: { hex: "#9333ea", text: "#6b21a8", bg: "rgba(147, 51, 234, 0.14)", border: "#7e22ce", icon: "💊", label: "Medical" },
+    temporal: { hex: "#e11d48", text: "#9f1239", bg: "rgba(225, 29, 72, 0.14)", border: "#be123c", icon: "🌀", label: "Temporal" },
+    calendar: { hex: "#ea580c", text: "#9a3412", bg: "rgba(234, 88, 12, 0.14)", border: "#c2410c", icon: "📅", label: "Calendar" },
+    rank: { hex: "#d97706", text: "#92400e", bg: "rgba(217, 119, 6, 0.14)", border: "#b45309", icon: "🎖️", label: "Rank" },
+    insignia: { hex: "#ca8a04", text: "#854d0e", bg: "rgba(202, 138, 4, 0.14)", border: "#a16207", icon: "⭐", label: "Insignia" },
+    noun: { hex: "#475569", text: "#1e293b", bg: "rgba(71, 85, 105, 0.14)", border: "#334155", icon: "📦", label: "Noun" }
+};
+
 class DeductionEngine {
     constructor(options = {}) {
         this.options = Object.assign({
@@ -258,6 +270,15 @@ class DeductionEngine {
         localStorage.setItem('game-line-height', settings.lineHeight);
         localStorage.setItem('game-font-family', settings.fontFamily);
         localStorage.setItem('game-scanlines', !!settings.scanlines);
+
+        // Re-apply category colors to all elements when theme changes
+        this.refreshKeywordHighlights();
+        this.renderTray();
+        document.querySelectorAll(".slot").forEach(slot => {
+            const slotId = slot.getAttribute("data-id");
+            const word = this.docketSlots[slotId];
+            this.updateSlotAppearance(slot, word);
+        });
     }
 
     openSettings() {
@@ -470,7 +491,9 @@ class DeductionEngine {
 
     getCategoryConfig(catKey) {
         const canonical = this.getCanonicalCategories(catKey)[0] || "noun";
-        const defaultConf = CATEGORY_COLORS[canonical] || CATEGORY_COLORS.noun;
+        const isGosplan = typeof document !== "undefined" && document.body && document.body.classList.contains("theme-gosplan");
+        const defaultPalette = isGosplan ? GOSPLAN_CATEGORY_COLORS : CATEGORY_COLORS;
+        const defaultConf = defaultPalette[canonical] || defaultPalette.noun;
 
         const custom = this.currentCase?.categories?.[catKey] ||
                        this.currentCase?.categories?.[canonical] ||
@@ -483,9 +506,9 @@ class DeductionEngine {
             const hex = custom;
             return {
                 hex,
-                text: hex,
-                bg: this.hexToRgba(hex, 0.16),
-                border: this.hexToRgba(hex, 0.8),
+                text: isGosplan ? "#0a0705" : hex,
+                bg: this.hexToRgba(hex, isGosplan ? 0.14 : 0.16),
+                border: isGosplan ? hex : this.hexToRgba(hex, 0.8),
                 icon: defaultConf.icon,
                 label: defaultConf.label
             };
@@ -493,9 +516,9 @@ class DeductionEngine {
             const hex = custom.hex || custom.color || defaultConf.hex;
             return {
                 hex,
-                text: custom.text || hex,
-                bg: custom.bg || this.hexToRgba(hex, 0.16),
-                border: custom.border || this.hexToRgba(hex, 0.8),
+                text: custom.text || (isGosplan ? "#0a0705" : hex),
+                bg: custom.bg || this.hexToRgba(hex, isGosplan ? 0.14 : 0.16),
+                border: custom.border || (isGosplan ? hex : this.hexToRgba(hex, 0.8)),
                 icon: custom.icon || defaultConf.icon,
                 label: custom.label || defaultConf.label
             };
@@ -552,6 +575,8 @@ class DeductionEngine {
     applyCategoryStyleToElement(element, canonicalTags, options = {}) {
         if (!element) return;
         const { isSlotEmpty = false, isCollected = false, isFilled = false } = options;
+        const isGosplan = typeof document !== "undefined" && document.body && document.body.classList.contains("theme-gosplan");
+        const multiTextColor = isGosplan ? "#0a0705" : "#ffffff";
 
         element.classList.remove(
             "cat-theme-name", "cat-theme-location", "cat-theme-verb",
@@ -605,17 +630,17 @@ class DeductionEngine {
                 element.style.borderBottom = "2.5px solid transparent";
                 element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
                 element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
-                element.style.color = "#ffffff";
+                element.style.color = multiTextColor;
             } else if (isFilled) {
                 element.style.border = "1.5px solid transparent";
                 element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
                 element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
-                element.style.color = "#ffffff";
+                element.style.color = multiTextColor;
             } else {
                 element.style.border = "1.5px solid transparent";
                 element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
                 element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
-                element.style.color = "#ffffff";
+                element.style.color = multiTextColor;
             }
         }
     }

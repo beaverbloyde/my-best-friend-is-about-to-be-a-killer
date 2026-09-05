@@ -116,6 +116,64 @@ body.theme-gosplan {
     --accent-glow: rgba(139, 24, 24, 0.18);
     --danger: #8b1818;
     --success: #15803d;
+
+    /* Gosplan Deep Semantic Category Colors (High Contrast on Light Paper) */
+    --cat-name: #0284c7;
+    --cat-name-bg: rgba(2, 132, 199, 0.14);
+    --cat-name-border: #0369a1;
+    --cat-name-text: #075985;
+
+    --cat-location: #059669;
+    --cat-location-bg: rgba(5, 150, 105, 0.14);
+    --cat-location-border: #047857;
+    --cat-location-text: #065f46;
+
+    --cat-verb: #d97706;
+    --cat-verb-bg: rgba(217, 119, 6, 0.14);
+    --cat-verb-border: #b45309;
+    --cat-verb-text: #92400e;
+
+    --cat-medical: #9333ea;
+    --cat-medical-bg: rgba(147, 51, 234, 0.14);
+    --cat-medical-border: #7e22ce;
+    --cat-medical-text: #6b21a8;
+
+    --cat-temporal: #e11d48;
+    --cat-temporal-bg: rgba(225, 29, 72, 0.14);
+    --cat-temporal-border: #be123c;
+    --cat-temporal-text: #9f1239;
+
+    --cat-calendar: #ea580c;
+    --cat-calendar-bg: rgba(234, 88, 12, 0.14);
+    --cat-calendar-border: #c2410c;
+    --cat-calendar-text: #9a3412;
+
+    --cat-rank: #d97706;
+    --cat-rank-bg: rgba(217, 119, 6, 0.14);
+    --cat-rank-border: #b45309;
+    --cat-rank-text: #92400e;
+
+    --cat-insignia: #ca8a04;
+    --cat-insignia-bg: rgba(202, 138, 4, 0.14);
+    --cat-insignia-border: #a16207;
+    --cat-insignia-text: #854d0e;
+
+    --cat-noun: #475569;
+    --cat-noun-bg: rgba(71, 85, 105, 0.14);
+    --cat-noun-border: #334155;
+    --cat-noun-text: #1e293b;
+}
+
+body.theme-gosplan .kw {
+    font-weight: 700;
+}
+
+body.theme-gosplan .tray-word {
+    font-weight: 700;
+}
+
+body.theme-gosplan .slot {
+    font-weight: 700;
 }
 
 /* Theme 5: Monochrome CRT / Microfiche */
