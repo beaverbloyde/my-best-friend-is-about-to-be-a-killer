@@ -361,12 +361,36 @@
                     </select>
                 </div>
 
-                <!-- CRT Scanlines Toggle -->
+                <!-- CRT Scanlines Section -->
                 <div class="game-settings-section">
                     <label class="game-toggle-container">
                         <span>CRT SCANLINES & PHOSPHOR FLICKER</span>
                         <input type="checkbox" id="game-scanlines-toggle">
                     </label>
+                    <div id="game-scanlines-controls" style="margin-top: 4px; display: none; flex-direction: column; gap: 8px;">
+                        <div>
+                            <div class="game-slider-header">
+                                <label for="game-scanlines-intensity-slider">SCANLINE INTENSITY</label>
+                                <span id="game-scanlines-intensity-val" class="game-slider-val">65%</span>
+                            </div>
+                            <input type="range" id="game-scanlines-intensity-slider" min="10" max="100" step="5" value="65" class="game-range-input">
+                        </div>
+
+                        <div>
+                            <div class="game-slider-header">
+                                <label for="game-scanlines-speed-slider">MOTION SPEED</label>
+                                <span id="game-scanlines-speed-val" class="game-slider-val">Normal (7s)</span>
+                            </div>
+                            <input type="range" id="game-scanlines-speed-slider" min="0" max="4" step="1" value="2" class="game-range-input">
+                            <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-tertiary); margin-top: 2px;">
+                                <span>Static</span>
+                                <span>Slow</span>
+                                <span>Normal</span>
+                                <span>Fast</span>
+                                <span>Rapid</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tactile Mechanical Sound Effects (SFX) -->

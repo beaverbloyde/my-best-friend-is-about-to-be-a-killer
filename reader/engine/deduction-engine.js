@@ -28,6 +28,14 @@ const GOSPLAN_CATEGORY_COLORS = {
     noun: { hex: "#475569", text: "#1e293b", bg: "rgba(71, 85, 105, 0.14)", border: "#334155", icon: "📦", label: "Noun" }
 };
 
+const SCANLINE_SPEED_PRESETS = [
+    { label: "Static", duration: "0s", isStatic: true },
+    { label: "Slow (14s)", duration: "14s", isStatic: false },
+    { label: "Normal (7s)", duration: "7s", isStatic: false },
+    { label: "Fast (3.5s)", duration: "3.5s", isStatic: false },
+    { label: "Rapid (1.8s)", duration: "1.8s", isStatic: false }
+];
+
 class DeductionEngine {
     constructor(options = {}) {
         this.options = Object.assign({
@@ -144,13 +152,17 @@ class DeductionEngine {
         const savedLineHeight = parseFloat(localStorage.getItem('game-line-height') || '1.5');
         const savedFontFamily = localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace";
         const savedScanlines = localStorage.getItem('game-scanlines') === 'true';
+        const savedScanlinesIntensity = parseInt(localStorage.getItem('game-scanlines-intensity') || '65', 10);
+        const savedScanlinesSpeed = parseInt(localStorage.getItem('game-scanlines-speed') || '2', 10);
 
         this.currentDisplaySettings = {
             theme: savedTheme,
             fontSize: isNaN(savedFontSize) ? 13 : savedFontSize,
             lineHeight: isNaN(savedLineHeight) ? 1.5 : savedLineHeight,
             fontFamily: savedFontFamily,
-            scanlines: savedScanlines
+            scanlines: savedScanlines,
+            scanlinesIntensity: isNaN(savedScanlinesIntensity) ? 65 : savedScanlinesIntensity,
+            scanlinesSpeed: isNaN(savedScanlinesSpeed) ? 2 : savedScanlinesSpeed
         };
 
         this.applyDisplaySettings(this.currentDisplaySettings);
@@ -198,6 +210,24 @@ class DeductionEngine {
         if (scanlinesToggle) {
             scanlinesToggle.addEventListener('change', (e) => {
                 this.currentDisplaySettings.scanlines = e.target.checked;
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind CRT Scanlines Intensity Slider
+        const scanIntensitySlider = document.getElementById('game-scanlines-intensity-slider');
+        if (scanIntensitySlider) {
+            scanIntensitySlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.scanlinesIntensity = parseInt(e.target.value, 10);
+                this.applyDisplaySettings(this.currentDisplaySettings);
+            });
+        }
+
+        // Bind CRT Scanlines Speed Slider
+        const scanSpeedSlider = document.getElementById('game-scanlines-speed-slider');
+        if (scanSpeedSlider) {
+            scanSpeedSlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.scanlinesSpeed = parseInt(e.target.value, 10);
                 this.applyDisplaySettings(this.currentDisplaySettings);
             });
         }
@@ -258,10 +288,41 @@ class DeductionEngine {
         const fontSelect = document.getElementById('game-font-family-select');
         if (fontSelect && fontSelect.value !== settings.fontFamily) fontSelect.value = settings.fontFamily;
 
-        // 5. CRT Scanlines
+        // 5. CRT Scanlines & Motion Controls
         document.body.classList.toggle('crt-scanlines', !!settings.scanlines);
         const scanlinesToggle = document.getElementById('game-scanlines-toggle');
         if (scanlinesToggle) scanlinesToggle.checked = !!settings.scanlines;
+
+        const scanlinesControls = document.getElementById('game-scanlines-controls');
+        if (scanlinesControls) {
+            scanlinesControls.style.display = settings.scanlines ? 'flex' : 'none';
+        }
+
+        const intensity = typeof settings.scanlinesIntensity === 'number' ? settings.scanlinesIntensity : 65;
+        const opacityVal = (intensity / 100).toFixed(2);
+        document.documentElement.style.setProperty('--crt-opacity', opacityVal);
+        document.body.style.setProperty('--crt-opacity', opacityVal);
+
+        const intensitySlider = document.getElementById('game-scanlines-intensity-slider');
+        if (intensitySlider && parseInt(intensitySlider.value, 10) !== intensity) {
+            intensitySlider.value = intensity;
+        }
+        const intensityValEl = document.getElementById('game-scanlines-intensity-val');
+        if (intensityValEl) intensityValEl.innerText = `${intensity}%`;
+
+        const speedIdx = typeof settings.scanlinesSpeed === 'number' ? Math.max(0, Math.min(4, settings.scanlinesSpeed)) : 2;
+        const preset = SCANLINE_SPEED_PRESETS[speedIdx] || SCANLINE_SPEED_PRESETS[2];
+
+        document.body.classList.toggle('crt-static', !!preset.isStatic);
+        document.documentElement.style.setProperty('--crt-speed', preset.duration);
+        document.body.style.setProperty('--crt-speed', preset.duration);
+
+        const speedSlider = document.getElementById('game-scanlines-speed-slider');
+        if (speedSlider && parseInt(speedSlider.value, 10) !== speedIdx) {
+            speedSlider.value = speedIdx;
+        }
+        const speedValEl = document.getElementById('game-scanlines-speed-val');
+        if (speedValEl) speedValEl.innerText = preset.label;
 
         // Persist
         localStorage.setItem('reader-theme', settings.theme);
@@ -270,6 +331,8 @@ class DeductionEngine {
         localStorage.setItem('game-line-height', settings.lineHeight);
         localStorage.setItem('game-font-family', settings.fontFamily);
         localStorage.setItem('game-scanlines', !!settings.scanlines);
+        localStorage.setItem('game-scanlines-intensity', intensity);
+        localStorage.setItem('game-scanlines-speed', speedIdx);
 
         // Re-apply category colors to all elements when theme changes
         this.refreshKeywordHighlights();
@@ -297,7 +360,9 @@ class DeductionEngine {
             fontSize: 13,
             lineHeight: 1.5,
             fontFamily: "'IBM Plex Mono', monospace",
-            scanlines: false
+            scanlines: false,
+            scanlinesIntensity: 65,
+            scanlinesSpeed: 2
         };
         this.applyDisplaySettings(this.currentDisplaySettings);
     }

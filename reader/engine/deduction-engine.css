@@ -2296,16 +2296,62 @@ header {
    ============================================================ */
 
 /* CRT Scanlines Overlay */
+body.crt-scanlines::before,
 body.crt-scanlines::after {
     content: " ";
     display: block;
     position: fixed;
     top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
-    z-index: 9999;
-    background-size: 100% 3px, 6px 100%;
     pointer-events: none;
-    opacity: 0.85;
+    z-index: 9999;
+}
+
+/* Layer 1: Fine Scanline Grid + Phosphor RGB Subpixels + Edge CRT Vignette */
+body.crt-scanlines::before {
+    background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.38) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.035), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.035)),
+        radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
+    background-size: 100% 3.5px, 6px 100%, 100% 100%;
+    opacity: var(--crt-opacity, 0.65);
+    animation: crt-phosphor-jitter 0.12s infinite;
+}
+
+/* Layer 2: Moving CRT Electron Gun Refresh Beam / Rolling Scan Bar */
+body.crt-scanlines::after {
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0) 25%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.11) 50%,
+        rgba(0, 0, 0, 0.16) 52%,
+        transparent 100%
+    );
+    background-size: 100% 260px;
+    background-repeat: no-repeat;
+    opacity: calc(var(--crt-opacity, 0.65) * 0.95);
+    animation: crt-beam-roll var(--crt-speed, 7s) linear infinite;
+}
+
+/* When static mode is selected */
+body.crt-scanlines.crt-static::after {
+    display: none !important;
+}
+
+@keyframes crt-beam-roll {
+    0% {
+        background-position: 0 -260px;
+    }
+    100% {
+        background-position: 0 calc(100vh + 260px);
+    }
+}
+
+@keyframes crt-phosphor-jitter {
+    0% { opacity: var(--crt-opacity, 0.65); }
+    50% { opacity: calc(var(--crt-opacity, 0.65) * 0.97); }
+    100% { opacity: var(--crt-opacity, 0.65); }
 }
 
 /* Settings Modal Backdrop & Dialog */
