@@ -156,6 +156,38 @@
       "body": "The **Ministry of Internal Affairs ([MVD])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [USSR].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([ROVD]). In the Far East, the **[Vladivostok] Higher School of the [MVD]** serves as the primary regional academy for officer training, procedural jurisprudence, and forensic education."
     }
   },
+  "categories": {
+    "name": {
+      "hex": "#38bdf8",
+      "icon": "👤",
+      "label": "Name"
+    },
+    "rank": {
+      "hex": "#f59e0b",
+      "icon": "🎖️",
+      "label": "Rank"
+    },
+    "location": {
+      "hex": "#34d399",
+      "icon": "📍",
+      "label": "Location"
+    },
+    "insignia": {
+      "hex": "#eab308",
+      "icon": "⭐",
+      "label": "Insignia"
+    },
+    "calendar": {
+      "hex": "#fb923c",
+      "icon": "📅",
+      "label": "Calendar"
+    },
+    "noun": {
+      "hex": "#94a3b8",
+      "icon": "📦",
+      "label": "Noun"
+    }
+  },
   "keywordTags": {
     "Nadezhda": [
       "name"

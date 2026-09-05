@@ -11,6 +11,8 @@ const CATEGORY_COLORS = {
     medical: { hex: "#c084fc", text: "#e9d5ff", bg: "rgba(192, 132, 252, 0.16)", border: "rgba(192, 132, 252, 0.8)", icon: "💊", label: "Medical" },
     temporal: { hex: "#fb7185", text: "#fecdd3", bg: "rgba(251, 113, 133, 0.16)", border: "rgba(251, 113, 133, 0.8)", icon: "🌀", label: "Temporal" },
     calendar: { hex: "#fb923c", text: "#fed7aa", bg: "rgba(251, 146, 60, 0.16)", border: "rgba(251, 146, 60, 0.8)", icon: "📅", label: "Calendar" },
+    rank: { hex: "#f59e0b", text: "#fde68a", bg: "rgba(245, 158, 11, 0.16)", border: "rgba(245, 158, 11, 0.8)", icon: "🎖️", label: "Rank" },
+    insignia: { hex: "#eab308", text: "#fef08a", bg: "rgba(234, 179, 8, 0.16)", border: "rgba(234, 179, 8, 0.8)", icon: "⭐", label: "Insignia" },
     noun: { hex: "#94a3b8", text: "#e2e8f0", bg: "rgba(148, 163, 184, 0.16)", border: "rgba(148, 163, 184, 0.8)", icon: "📦", label: "Noun" }
 };
 
@@ -529,15 +531,16 @@ class DeductionEngine {
         const canonical = [];
         for (const tag of tags) {
             const t = String(tag).toLowerCase().trim();
-            let cat = "noun";
+            let cat = t;
             if (["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"].includes(t)) cat = "name";
             else if (["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"].includes(t)) cat = "location";
             else if (["verb", "verbs", "action", "actions"].includes(t)) cat = "verb";
             else if (["medical", "medicine", "drug", "pathology", "symptom"].includes(t)) cat = "medical";
             else if (["temporal", "time", "anomaly"].includes(t)) cat = "temporal";
             else if (["calendar", "date", "dates", "day", "month", "year"].includes(t)) cat = "calendar";
+            else if (["rank", "ranks", "officer_rank"].includes(t)) cat = "rank";
+            else if (["insignia", "star", "stars"].includes(t)) cat = "insignia";
             else if (["noun", "nouns", "item", "items", "vehicle", "weapon", "object"].includes(t)) cat = "noun";
-            else cat = "noun";
 
             if (!canonical.includes(cat)) {
                 canonical.push(cat);
