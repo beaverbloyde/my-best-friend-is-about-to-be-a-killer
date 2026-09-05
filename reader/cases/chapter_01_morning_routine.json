@@ -300,6 +300,43 @@
       "body": "The **World Socialist Society** ([WSS]) is the supreme international collective council representing unified socialist nations across Earth. Founded in **2050**, the council was established following consecutive years of globally guaranteed basic necessities, unifying previously fractured geopolitical blocs under shared technological and scientific accords.\n\nFor 68 years, the [WSS] governed an era of post-scarcity prosperity until the catastrophic **[Time Ripple]** triggered worldwide electron displacement and infrastructure failure.\n\nAnnual plenary conferences (including the 68th Jubilee Session in [Vladivostok]) coordinate regional economic recovery and emergency scientific directives with academic institutions like [PIRM]."
     }
   },
+  "categories": {
+    "name": {
+      "hex": "#38bdf8",
+      "icon": "👤",
+      "label": "Name"
+    },
+    "location": {
+      "hex": "#34d399",
+      "icon": "📍",
+      "label": "Location"
+    },
+    "verb": {
+      "hex": "#fbbf24",
+      "icon": "⚡",
+      "label": "Verb"
+    },
+    "medical": {
+      "hex": "#c084fc",
+      "icon": "💊",
+      "label": "Medical"
+    },
+    "temporal": {
+      "hex": "#fb7185",
+      "icon": "🌀",
+      "label": "Temporal"
+    },
+    "calendar": {
+      "hex": "#fb923c",
+      "icon": "📅",
+      "label": "Calendar"
+    },
+    "noun": {
+      "hex": "#94a3b8",
+      "icon": "📦",
+      "label": "Noun"
+    }
+  },
   "keywordTags": {
     "Luka": [
       "name"

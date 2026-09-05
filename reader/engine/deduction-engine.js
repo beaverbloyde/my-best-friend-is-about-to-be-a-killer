@@ -453,6 +453,69 @@ class DeductionEngine {
 
     // --- Category Color & Styling Utilities ---
 
+    hexToRgba(hex, alpha = 0.16) {
+        if (!hex || typeof hex !== "string") return `rgba(148, 163, 184, ${alpha})`;
+        let clean = hex.replace("#", "").trim();
+        if (clean.length === 3) {
+            clean = clean.split("").map(c => c + c).join("");
+        }
+        if (clean.length !== 6) return `rgba(148, 163, 184, ${alpha})`;
+        const r = parseInt(clean.substring(0, 2), 16);
+        const g = parseInt(clean.substring(2, 4), 16);
+        const b = parseInt(clean.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    getCategoryConfig(catKey) {
+        const canonical = this.getCanonicalCategories(catKey)[0] || "noun";
+        const defaultConf = CATEGORY_COLORS[canonical] || CATEGORY_COLORS.noun;
+
+        const custom = this.currentCase?.categories?.[catKey] ||
+                       this.currentCase?.categories?.[canonical] ||
+                       this.currentCase?.categoryColors?.[catKey] ||
+                       this.currentCase?.categoryColors?.[canonical];
+
+        if (!custom) return defaultConf;
+
+        if (typeof custom === "string") {
+            const hex = custom;
+            return {
+                hex,
+                text: hex,
+                bg: this.hexToRgba(hex, 0.16),
+                border: this.hexToRgba(hex, 0.8),
+                icon: defaultConf.icon,
+                label: defaultConf.label
+            };
+        } else if (typeof custom === "object" && custom !== null) {
+            const hex = custom.hex || custom.color || defaultConf.hex;
+            return {
+                hex,
+                text: custom.text || hex,
+                bg: custom.bg || this.hexToRgba(hex, 0.16),
+                border: custom.border || this.hexToRgba(hex, 0.8),
+                icon: custom.icon || defaultConf.icon,
+                label: custom.label || defaultConf.label
+            };
+        }
+
+        return defaultConf;
+    }
+
+    buildSplitGradient(colors, angle = "90deg") {
+        if (!colors || colors.length === 0) return "transparent";
+        if (colors.length === 1) return colors[0];
+        const n = colors.length;
+        const step = 100 / n;
+        const stops = [];
+        for (let i = 0; i < n; i++) {
+            const startPct = (i * step).toFixed(2);
+            const endPct = ((i + 1) * step).toFixed(2);
+            stops.push(`${colors[i]} ${startPct}% ${endPct}%`);
+        }
+        return `linear-gradient(${angle}, ${stops.join(", ")})`;
+    }
+
     getCanonicalCategories(tagOrTags) {
         if (!tagOrTags) return ["noun"];
         let tags = [];
@@ -510,9 +573,8 @@ class DeductionEngine {
         const tags = Array.isArray(canonicalTags) && canonicalTags.length > 0 ? canonicalTags : ["noun"];
 
         if (tags.length === 1) {
-            const cat = tags[0];
-            const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
-            element.classList.add(`cat-theme-${cat}`);
+            const conf = this.getCategoryConfig(tags[0]);
+            element.classList.add(`cat-theme-${tags[0]}`);
 
             if (isSlotEmpty) {
                 element.style.borderBottom = `2px dashed ${conf.hex}`;
@@ -529,27 +591,27 @@ class DeductionEngine {
                 element.style.color = conf.text;
             }
         } else {
-            // Multiple categories: render multi-colored gradient border & background
-            const hexes = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
-            const bgs = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).bg);
+            // Multiple categories: render crisp hard-split color stripes
+            const hexes = tags.map(c => this.getCategoryConfig(c).hex);
+            const bgs = tags.map(c => this.getCategoryConfig(c).bg);
 
             if (isSlotEmpty) {
                 element.style.borderTop = "none";
                 element.style.borderLeft = "none";
                 element.style.borderRight = "none";
-                element.style.borderBottom = "2px solid transparent";
-                element.style.borderImage = `linear-gradient(90deg, ${hexes.join(", ")}) 1`;
-                element.style.background = `linear-gradient(90deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.borderBottom = "2.5px solid transparent";
+                element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
+                element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
                 element.style.color = "#ffffff";
             } else if (isFilled) {
                 element.style.border = "1.5px solid transparent";
-                element.style.borderImage = `linear-gradient(135deg, ${hexes.join(", ")}) 1`;
-                element.style.background = `linear-gradient(135deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
+                element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
                 element.style.color = "#ffffff";
             } else {
                 element.style.border = "1.5px solid transparent";
-                element.style.borderImage = `linear-gradient(135deg, ${hexes.join(", ")}) 1`;
-                element.style.background = `linear-gradient(135deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
+                element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
                 element.style.color = "#ffffff";
             }
         }
@@ -1927,15 +1989,15 @@ class DeductionEngine {
                 badge.style.display = "inline-flex";
                 const tags = this.getCanonicalCategories(slotTag);
                 if (tags.length === 1) {
-                    const conf = CATEGORY_COLORS[tags[0]] || CATEGORY_COLORS.noun;
+                    const conf = this.getCategoryConfig(tags[0]);
                     badge.style.background = conf.hex;
                     badge.style.color = "#000000";
                     badge.innerText = `${conf.icon} ${conf.label.toUpperCase()}`;
                 } else {
-                    const hexes = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
-                    badge.style.background = `linear-gradient(90deg, ${hexes.join(", ")})`;
+                    const hexes = tags.map(c => this.getCategoryConfig(c).hex);
+                    badge.style.background = this.buildSplitGradient(hexes, "90deg");
                     badge.style.color = "#ffffff";
-                    badge.innerText = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).label.toUpperCase()).join(" / ");
+                    badge.innerText = tags.map(c => this.getCategoryConfig(c).label.toUpperCase()).join(" / ");
                 }
             } else {
                 badge.style.display = "none";
@@ -2015,8 +2077,8 @@ class DeductionEngine {
 
             let badgesHtml = "";
             canonicalTags.forEach(cat => {
-                const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
-                badgesHtml += `<span class="cat-pill cat-pill-${cat}">${conf.icon} ${conf.label}</span>`;
+                const conf = this.getCategoryConfig(cat);
+                badgesHtml += `<span class="cat-pill" style="background: ${conf.bg}; border: 1px solid ${conf.border}; color: ${conf.text};">${conf.icon} ${conf.label}</span>`;
             });
 
             const item = document.createElement("button");
@@ -2027,13 +2089,12 @@ class DeductionEngine {
             }
 
             if (canonicalTags.length === 1) {
-                const cat = canonicalTags[0];
-                const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
-                item.style.borderLeft = `3px solid ${conf.hex}`;
+                const conf = this.getCategoryConfig(canonicalTags[0]);
+                item.style.borderLeft = `3.5px solid ${conf.hex}`;
             } else if (canonicalTags.length > 1) {
-                const hexes = canonicalTags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
-                item.style.borderLeft = `3px solid transparent`;
-                item.style.borderImage = `linear-gradient(to bottom, ${hexes.join(", ")}) 1`;
+                const hexes = canonicalTags.map(c => this.getCategoryConfig(c).hex);
+                item.style.borderLeft = `3.5px solid transparent`;
+                item.style.borderImage = `${this.buildSplitGradient(hexes, "to bottom")} 1`;
             }
 
             item.innerHTML = `

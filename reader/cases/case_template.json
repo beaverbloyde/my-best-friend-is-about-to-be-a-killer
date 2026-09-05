@@ -64,6 +64,15 @@
     { "word": "fled", "category": "verb" },
     { "word": "arrived", "category": "verb" }
   ],
+  "categories": {
+    "name": { "hex": "#38bdf8", "icon": "👤", "label": "Name" },
+    "location": { "hex": "#34d399", "icon": "📍", "label": "Location" },
+    "verb": { "hex": "#fbbf24", "icon": "⚡", "label": "Verb" },
+    "medical": { "hex": "#c084fc", "icon": "💊", "label": "Medical" },
+    "temporal": { "hex": "#fb7185", "icon": "🌀", "label": "Temporal" },
+    "calendar": { "hex": "#fb923c", "icon": "📅", "label": "Calendar" },
+    "noun": { "hex": "#94a3b8", "icon": "📦", "label": "Noun" }
+  },
   "keywordTags": {
     "08:15": [
       "calendar",
