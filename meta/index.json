@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-05 18:18:11"
+    "timestamp": "2026-09-06 00:00:14"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -17,7 +17,7 @@
     },
     "8e0179d6fe5e5": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.2: The Charred Body", "line": 1, "tag": "", "counts": [29, 5, 0]}
+        "meta": {"level": "H2", "title": "Chapter 1.2: The Man on the News", "line": 1, "tag": "", "counts": [5342, 969, 28]}
       }
     },
     "9768d4a80e03f": {
