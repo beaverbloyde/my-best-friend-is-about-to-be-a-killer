@@ -4,6 +4,16 @@
  * (Golden Idol / Obra Dinn style case engine)
  */
 
+const CATEGORY_COLORS = {
+    name: { hex: "#38bdf8", text: "#7dd3fc", bg: "rgba(56, 189, 248, 0.16)", border: "rgba(56, 189, 248, 0.8)", icon: "👤", label: "Name" },
+    location: { hex: "#34d399", text: "#6ee7b7", bg: "rgba(52, 211, 153, 0.16)", border: "rgba(52, 211, 153, 0.8)", icon: "📍", label: "Location" },
+    verb: { hex: "#fbbf24", text: "#fde68a", bg: "rgba(251, 191, 36, 0.16)", border: "rgba(251, 191, 36, 0.8)", icon: "⚡", label: "Verb" },
+    medical: { hex: "#c084fc", text: "#e9d5ff", bg: "rgba(192, 132, 252, 0.16)", border: "rgba(192, 132, 252, 0.8)", icon: "💊", label: "Medical" },
+    temporal: { hex: "#fb7185", text: "#fecdd3", bg: "rgba(251, 113, 133, 0.16)", border: "rgba(251, 113, 133, 0.8)", icon: "🌀", label: "Temporal" },
+    calendar: { hex: "#fb923c", text: "#fed7aa", bg: "rgba(251, 146, 60, 0.16)", border: "rgba(251, 146, 60, 0.8)", icon: "📅", label: "Calendar" },
+    noun: { hex: "#94a3b8", text: "#e2e8f0", bg: "rgba(148, 163, 184, 0.16)", border: "rgba(148, 163, 184, 0.8)", icon: "📦", label: "Noun" }
+};
+
 class DeductionEngine {
     constructor(options = {}) {
         this.options = Object.assign({
@@ -441,6 +451,139 @@ class DeductionEngine {
         reader.readAsText(file);
     }
 
+    // --- Category Color & Styling Utilities ---
+
+    getCanonicalCategories(tagOrTags) {
+        if (!tagOrTags) return ["noun"];
+        let tags = [];
+        if (Array.isArray(tagOrTags)) {
+            tags = tagOrTags;
+        } else if (typeof tagOrTags === "string") {
+            tags = tagOrTags.split(/[,/|]+/).map(t => t.trim()).filter(Boolean);
+        }
+        if (tags.length === 0) return ["noun"];
+
+        const canonical = [];
+        for (const tag of tags) {
+            const t = String(tag).toLowerCase().trim();
+            let cat = "noun";
+            if (["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"].includes(t)) cat = "name";
+            else if (["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"].includes(t)) cat = "location";
+            else if (["verb", "verbs", "action", "actions"].includes(t)) cat = "verb";
+            else if (["medical", "medicine", "drug", "pathology", "symptom"].includes(t)) cat = "medical";
+            else if (["temporal", "time", "anomaly"].includes(t)) cat = "temporal";
+            else if (["calendar", "date", "dates", "day", "month", "year"].includes(t)) cat = "calendar";
+            else if (["noun", "nouns", "item", "items", "vehicle", "weapon", "object"].includes(t)) cat = "noun";
+            else cat = "noun";
+
+            if (!canonical.includes(cat)) {
+                canonical.push(cat);
+            }
+        }
+        return canonical.length > 0 ? canonical : ["noun"];
+    }
+
+    applyCategoryStyleToElement(element, canonicalTags, options = {}) {
+        if (!element) return;
+        const { isSlotEmpty = false, isCollected = false, isFilled = false } = options;
+
+        element.classList.remove(
+            "cat-theme-name", "cat-theme-location", "cat-theme-verb",
+            "cat-theme-medical", "cat-theme-temporal", "cat-theme-calendar", "cat-theme-noun"
+        );
+        element.style.border = "";
+        element.style.borderTop = "";
+        element.style.borderBottom = "";
+        element.style.borderLeft = "";
+        element.style.borderRight = "";
+        element.style.borderImage = "";
+        element.style.background = "";
+        element.style.color = "";
+
+        if (isCollected) {
+            element.classList.add("collected");
+            return;
+        } else {
+            element.classList.remove("collected");
+        }
+
+        const tags = Array.isArray(canonicalTags) && canonicalTags.length > 0 ? canonicalTags : ["noun"];
+
+        if (tags.length === 1) {
+            const cat = tags[0];
+            const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
+            element.classList.add(`cat-theme-${cat}`);
+
+            if (isSlotEmpty) {
+                element.style.borderBottom = `2px dashed ${conf.hex}`;
+                element.style.background = conf.bg;
+                element.style.color = conf.text;
+            } else if (isFilled) {
+                element.style.border = `1px solid ${conf.border}`;
+                element.style.borderBottom = `2px solid ${conf.hex}`;
+                element.style.background = conf.bg;
+                element.style.color = conf.text;
+            } else {
+                element.style.border = `1px solid ${conf.border}`;
+                element.style.background = conf.bg;
+                element.style.color = conf.text;
+            }
+        } else {
+            // Multiple categories: render multi-colored gradient border & background
+            const hexes = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
+            const bgs = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).bg);
+
+            if (isSlotEmpty) {
+                element.style.borderTop = "none";
+                element.style.borderLeft = "none";
+                element.style.borderRight = "none";
+                element.style.borderBottom = "2px solid transparent";
+                element.style.borderImage = `linear-gradient(90deg, ${hexes.join(", ")}) 1`;
+                element.style.background = `linear-gradient(90deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.color = "#ffffff";
+            } else if (isFilled) {
+                element.style.border = "1.5px solid transparent";
+                element.style.borderImage = `linear-gradient(135deg, ${hexes.join(", ")}) 1`;
+                element.style.background = `linear-gradient(135deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.color = "#ffffff";
+            } else {
+                element.style.border = "1.5px solid transparent";
+                element.style.borderImage = `linear-gradient(135deg, ${hexes.join(", ")}) 1`;
+                element.style.background = `linear-gradient(135deg, ${bgs.join(", ")}), var(--bg-tertiary)`;
+                element.style.color = "#ffffff";
+            }
+        }
+    }
+
+    updateSlotAppearance(slotElement, word = null) {
+        if (!slotElement || slotElement.classList.contains("num-slot")) return;
+        const slotId = slotElement.getAttribute("data-id");
+        const val = (word !== null && word !== undefined) ? word : (slotId ? this.docketSlots[slotId] : "");
+        const slotTag = slotElement.getAttribute("data-tag");
+
+        if (val && val !== "[ ? ]") {
+            slotElement.innerText = val;
+            slotElement.classList.add("filled");
+            slotElement.classList.remove("wrong", "correct");
+            const tagsDict = this.currentCase?.keywordTags || {};
+            const rawTags = tagsDict[val] || ["noun"];
+            const canonicalTags = this.getCanonicalCategories(rawTags);
+            this.applyCategoryStyleToElement(slotElement, canonicalTags, { isFilled: true, isSlot: true });
+        } else {
+            slotElement.innerText = "[ ? ]";
+            slotElement.classList.remove("filled", "wrong", "correct");
+            if (slotTag) {
+                const canonicalTags = this.getCanonicalCategories(slotTag);
+                this.applyCategoryStyleToElement(slotElement, canonicalTags, { isSlotEmpty: true, isSlot: true });
+            } else {
+                this.applyCategoryStyleToElement(slotElement, ["noun"], { isSlotEmpty: false, isSlot: true });
+                slotElement.style.borderBottom = "2px dashed var(--accent)";
+                slotElement.style.background = "var(--bg-tertiary)";
+                slotElement.style.color = "var(--text-primary)";
+            }
+        }
+    }
+
     // --- Content & Markdown / Syntax Parsers ---
 
     parseText(str) {
@@ -471,9 +614,10 @@ class DeductionEngine {
             return `<input type="text" class="num-slot" data-id="${id}" maxlength="${len}" placeholder="${ph}" style="width: ${width};">`;
         });
 
-        // Parse word slots: [slot:slot_id] or [slot:slot_id:constraint_tag]
-        text = text.replace(/\[slot:([a-zA-Z0-9_-]+)(?::([a-zA-Z0-9_-]+))?\]/g, (match, id, tag) => {
-            const tagAttr = tag ? ` data-tag="${tag}"` : "";
+        // Parse word slots: [slot:slot_id] or [slot:slot_id:constraint_tag(s)]
+        text = text.replace(/\[slot:([a-zA-Z0-9_-]+)(?::([^\]]+))?\]/g, (match, id, tag) => {
+            const cleanTag = tag ? tag.trim() : "";
+            const tagAttr = cleanTag ? ` data-tag="${cleanTag}"` : "";
             return `<span class="slot" data-id="${id}"${tagAttr}>[ ? ]</span>`;
         });
 
@@ -1058,13 +1202,13 @@ class DeductionEngine {
     }
 
     refreshKeywordHighlights() {
+        const tagsDict = this.currentCase?.keywordTags || {};
         document.querySelectorAll(".kw").forEach(el => {
             const text = el.getAttribute("data-word") || el.innerText.trim();
-            if (this.collectedWords.has(text)) {
-                el.classList.add("collected");
-            } else {
-                el.classList.remove("collected");
-            }
+            const isCollected = this.collectedWords.has(text);
+            const rawTags = tagsDict[text] || ["noun"];
+            const canonicalTags = this.getCanonicalCategories(rawTags);
+            this.applyCategoryStyleToElement(el, canonicalTags, { isCollected });
         });
     }
 
@@ -1199,6 +1343,11 @@ class DeductionEngine {
         btn.innerText = word;
         btn.setAttribute("draggable", "true");
         btn.setAttribute("data-word", word);
+
+        const tagsDict = this.currentCase?.keywordTags || {};
+        const rawTags = tagsDict[word] || ["noun"];
+        const canonicalTags = this.getCanonicalCategories(rawTags);
+        this.applyCategoryStyleToElement(btn, canonicalTags, { isCollected: false });
 
         btn.addEventListener("dragstart", (e) => {
             this.draggedSourceSlotId = null;
@@ -1716,7 +1865,9 @@ class DeductionEngine {
 
     matchesSlotTag(word, slotTag) {
         if (!slotTag || slotTag === "all") return true;
-        const normTag = slotTag.toLowerCase().trim();
+        const allowedTags = String(slotTag).split(/[,/|]+/).map(t => t.toLowerCase().trim()).filter(Boolean);
+        if (allowedTags.length === 0) return true;
+
         const tagsDict = this.currentCase?.keywordTags || {};
         let wordTags = tagsDict[word];
 
@@ -1728,12 +1879,9 @@ class DeductionEngine {
 
         const normWordTags = wordTags.map(t => String(t).toLowerCase().trim());
 
-        // Direct match
-        if (normWordTags.includes(normTag)) return true;
-
         // Semantic / Category Alias groups
         const aliasGroups = [
-            ["name", "names", "person", "people", "suspect", "victim", "witness", "officer"],
+            ["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"],
             ["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"],
             ["verb", "verbs", "action", "actions"],
             ["medical", "medicine", "drug", "pathology", "symptom"],
@@ -1742,15 +1890,17 @@ class DeductionEngine {
             ["noun", "nouns", "item", "items", "vehicle", "weapon", "object"]
         ];
 
-        for (const group of aliasGroups) {
-            if (group.includes(normTag)) {
-                if (normWordTags.some(t => group.includes(t))) {
-                    return true;
+        return allowedTags.some(allowedTag => {
+            if (normWordTags.includes(allowedTag)) return true;
+            for (const group of aliasGroups) {
+                if (group.includes(allowedTag)) {
+                    if (normWordTags.some(t => group.includes(t))) {
+                        return true;
+                    }
                 }
             }
-        }
-
-        return false;
+            return false;
+        });
     }
 
     openSlotPicker(slot) {
@@ -1775,7 +1925,18 @@ class DeductionEngine {
         if (badge) {
             if (slotTag) {
                 badge.style.display = "inline-flex";
-                badge.innerText = slotTag.toUpperCase();
+                const tags = this.getCanonicalCategories(slotTag);
+                if (tags.length === 1) {
+                    const conf = CATEGORY_COLORS[tags[0]] || CATEGORY_COLORS.noun;
+                    badge.style.background = conf.hex;
+                    badge.style.color = "#000000";
+                    badge.innerText = `${conf.icon} ${conf.label.toUpperCase()}`;
+                } else {
+                    const hexes = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
+                    badge.style.background = `linear-gradient(90deg, ${hexes.join(", ")})`;
+                    badge.style.color = "#ffffff";
+                    badge.innerText = tags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).label.toUpperCase()).join(" / ");
+                }
             } else {
                 badge.style.display = "none";
             }
@@ -1849,14 +2010,14 @@ class DeductionEngine {
         const tagsDict = this.currentCase?.keywordTags || {};
 
         words.forEach((word) => {
-            const tags = tagsDict[word] || ["noun"];
-            let icon = "📦";
-            if (tags.includes("name")) icon = "👤";
-            else if (tags.includes("location")) icon = "📍";
-            else if (tags.includes("verb")) icon = "⚡";
-            else if (tags.includes("medical")) icon = "💊";
-            else if (tags.includes("temporal")) icon = "🌀";
-            else if (tags.includes("calendar")) icon = "📅";
+            const rawTags = tagsDict[word] || ["noun"];
+            const canonicalTags = this.getCanonicalCategories(rawTags);
+
+            let badgesHtml = "";
+            canonicalTags.forEach(cat => {
+                const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
+                badgesHtml += `<span class="cat-pill cat-pill-${cat}">${conf.icon} ${conf.label}</span>`;
+            });
 
             const item = document.createElement("button");
             item.type = "button";
@@ -1865,12 +2026,24 @@ class DeductionEngine {
                 item.classList.add("active-choice");
             }
 
+            if (canonicalTags.length === 1) {
+                const cat = canonicalTags[0];
+                const conf = CATEGORY_COLORS[cat] || CATEGORY_COLORS.noun;
+                item.style.borderLeft = `3px solid ${conf.hex}`;
+            } else if (canonicalTags.length > 1) {
+                const hexes = canonicalTags.map(c => (CATEGORY_COLORS[c] || CATEGORY_COLORS.noun).hex);
+                item.style.borderLeft = `3px solid transparent`;
+                item.style.borderImage = `linear-gradient(to bottom, ${hexes.join(", ")}) 1`;
+            }
+
             item.innerHTML = `
                 <div class="slot-picker-item-left">
-                    <span class="slot-picker-cat-badge">${icon}</span>
-                    <span>${this.escapeHtml(word)}</span>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
+                        ${badgesHtml}
+                    </div>
+                    <span style="font-weight: 600;">${this.escapeHtml(word)}</span>
                 </div>
-                ${word === currentSlotWord ? '<span style="font-size: 11px;">✓</span>' : ""}
+                ${word === currentSlotWord ? '<span style="font-size: 11px; font-weight: 700; color: var(--accent);">✓</span>' : ""}
             `;
 
             item.addEventListener("click", () => {
@@ -1886,10 +2059,8 @@ class DeductionEngine {
     selectKeywordForSlot(word) {
         if (!this.activeSlot) return;
         const slotId = this.activeSlot.getAttribute("data-id");
-        this.activeSlot.innerText = word;
-        this.activeSlot.classList.add("filled");
-        this.activeSlot.classList.remove("wrong", "correct");
         this.docketSlots[slotId] = word;
+        this.updateSlotAppearance(this.activeSlot, word);
         window.sfx?.playSnap();
         this.updateProgress();
         this.saveProgress();
@@ -1899,9 +2070,8 @@ class DeductionEngine {
     clearActiveSlot() {
         if (!this.activeSlot) return;
         const slotId = this.activeSlot.getAttribute("data-id");
-        this.activeSlot.innerText = "[ ? ]";
-        this.activeSlot.classList.remove("filled", "wrong", "correct");
         delete this.docketSlots[slotId];
+        this.updateSlotAppearance(this.activeSlot, null);
         window.sfx?.playPop();
         this.updateProgress();
         this.saveProgress();
@@ -1968,6 +2138,9 @@ class DeductionEngine {
         const slots = document.querySelectorAll(".slot");
         slots.forEach(slot => {
             slot.onclick = () => this.handleSlotClick(slot);
+            const slotId = slot.getAttribute("data-id");
+            const word = this.docketSlots[slotId];
+            this.updateSlotAppearance(slot, word);
         });
 
         const numSlots = document.querySelectorAll(".num-slot");
@@ -2004,8 +2177,7 @@ class DeductionEngine {
         this.closeSlotPicker();
         this.docketSlots = {};
         document.querySelectorAll(".slot").forEach(slot => {
-            slot.innerText = "[ ? ]";
-            slot.classList.remove("filled", "wrong", "correct");
+            this.updateSlotAppearance(slot, null);
         });
         document.querySelectorAll(".num-slot").forEach(input => {
             input.value = "";
@@ -2185,10 +2357,8 @@ class DeductionEngine {
                         this.docketSlots[targetSlotId] = slot.value;
                     }
                 } else {
-                    slot.innerText = incomingWord;
-                    slot.classList.add("filled");
-                    slot.classList.remove("wrong", "correct");
                     this.docketSlots[targetSlotId] = incomingWord;
+                    this.updateSlotAppearance(slot, incomingWord);
                 }
 
                 if (sourceEl && sourceSlotId !== targetSlotId) {
@@ -2207,14 +2377,16 @@ class DeductionEngine {
                                 delete this.docketSlots[sourceSlotId];
                             }
                         } else {
-                            sourceEl.innerText = existingTargetWord;
-                            sourceEl.classList.add("filled");
-                            sourceEl.classList.remove("wrong", "correct");
                             this.docketSlots[sourceSlotId] = existingTargetWord;
+                            this.updateSlotAppearance(sourceEl, existingTargetWord);
                         }
                     } else {
-                        if (sourceEl.classList.contains("num-slot")) sourceEl.value = ""; else sourceEl.innerText = "[ ? ]";
-                        sourceEl.classList.remove("filled", "wrong", "correct");
+                        if (sourceEl.classList.contains("num-slot")) {
+                            sourceEl.value = "";
+                            sourceEl.classList.remove("filled", "wrong", "correct");
+                        } else {
+                            this.updateSlotAppearance(sourceEl, null);
+                        }
                         delete this.docketSlots[sourceSlotId];
                     }
                 }
@@ -2333,10 +2505,8 @@ class DeductionEngine {
                             this.docketSlots[targetSlotId] = currentHoveredSlot.value;
                         }
                     } else {
-                        currentHoveredSlot.innerText = touchDraggedWord;
-                        currentHoveredSlot.classList.add("filled");
-                        currentHoveredSlot.classList.remove("wrong", "correct");
                         this.docketSlots[targetSlotId] = touchDraggedWord;
+                        this.updateSlotAppearance(currentHoveredSlot, touchDraggedWord);
                     }
 
                     if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
@@ -2358,14 +2528,16 @@ class DeductionEngine {
                                         delete this.docketSlots[touchSourceSlotId];
                                     }
                                 } else {
-                                    sourceEl.innerText = existingTargetWord;
-                                    sourceEl.classList.add("filled");
-                                    sourceEl.classList.remove("wrong", "correct");
                                     this.docketSlots[touchSourceSlotId] = existingTargetWord;
+                                    this.updateSlotAppearance(sourceEl, existingTargetWord);
                                 }
                             } else {
-                                if (isSourceNum) sourceEl.value = ""; else sourceEl.innerText = "[ ? ]";
-                                sourceEl.classList.remove("filled", "wrong", "correct");
+                                if (isSourceNum) {
+                                    sourceEl.value = "";
+                                    sourceEl.classList.remove("filled", "wrong", "correct");
+                                } else {
+                                    this.updateSlotAppearance(sourceEl, null);
+                                }
                                 delete this.docketSlots[touchSourceSlotId];
                             }
                         }
@@ -2439,10 +2611,10 @@ class DeductionEngine {
                     if (el) {
                         if (el.classList.contains("num-slot")) {
                             el.value = val;
+                            el.classList.add("filled");
                         } else {
-                            el.innerText = val;
+                            this.updateSlotAppearance(el, val);
                         }
-                        el.classList.add("filled");
                     }
                 }
             }

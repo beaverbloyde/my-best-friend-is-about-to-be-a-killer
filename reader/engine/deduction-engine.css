@@ -16,6 +16,42 @@
     --game-font-size: 13px;
     --game-line-height: 1.5;
     --game-font-family: var(--font-mono);
+
+    /* Semantic Category Colors */
+    --cat-name: #38bdf8;
+    --cat-name-bg: rgba(56, 189, 248, 0.16);
+    --cat-name-border: rgba(56, 189, 248, 0.8);
+    --cat-name-text: #7dd3fc;
+
+    --cat-location: #34d399;
+    --cat-location-bg: rgba(52, 211, 153, 0.16);
+    --cat-location-border: rgba(52, 211, 153, 0.8);
+    --cat-location-text: #6ee7b7;
+
+    --cat-verb: #fbbf24;
+    --cat-verb-bg: rgba(251, 191, 36, 0.16);
+    --cat-verb-border: rgba(251, 191, 36, 0.8);
+    --cat-verb-text: #fde68a;
+
+    --cat-medical: #c084fc;
+    --cat-medical-bg: rgba(192, 132, 252, 0.16);
+    --cat-medical-border: rgba(192, 132, 252, 0.8);
+    --cat-medical-text: #e9d5ff;
+
+    --cat-temporal: #fb7185;
+    --cat-temporal-bg: rgba(251, 113, 133, 0.16);
+    --cat-temporal-border: rgba(251, 113, 133, 0.8);
+    --cat-temporal-text: #fecdd3;
+
+    --cat-calendar: #fb923c;
+    --cat-calendar-bg: rgba(251, 146, 60, 0.16);
+    --cat-calendar-border: rgba(251, 146, 60, 0.8);
+    --cat-calendar-text: #fed7aa;
+
+    --cat-noun: #94a3b8;
+    --cat-noun-bg: rgba(148, 163, 184, 0.16);
+    --cat-noun-border: rgba(148, 163, 184, 0.8);
+    --cat-noun-text: #e2e8f0;
 }
 
 /* Theme 1: Soviet Amber CRT (Default) */
@@ -1582,8 +1618,46 @@ header {
 .slot.correct, .num-slot.correct {
     border-color: var(--success) !important;
     color: var(--success) !important;
-    background: var(--bg-secondary) !important;
 }
+
+/* Category Pill Badges (Slot Picker & Tooltips) */
+.cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+.cat-pill-name { background: var(--cat-name-bg); border: 1px solid var(--cat-name-border); color: var(--cat-name-text); }
+.cat-pill-location { background: var(--cat-location-bg); border: 1px solid var(--cat-location-border); color: var(--cat-location-text); }
+.cat-pill-verb { background: var(--cat-verb-bg); border: 1px solid var(--cat-verb-border); color: var(--cat-verb-text); }
+.cat-pill-medical { background: var(--cat-medical-bg); border: 1px solid var(--cat-medical-border); color: var(--cat-medical-text); }
+.cat-pill-temporal { background: var(--cat-temporal-bg); border: 1px solid var(--cat-temporal-border); color: var(--cat-temporal-text); }
+.cat-pill-calendar { background: var(--cat-calendar-bg); border: 1px solid var(--cat-calendar-border); color: var(--cat-calendar-text); }
+.cat-pill-noun { background: var(--cat-noun-bg); border: 1px solid var(--cat-noun-border); color: var(--cat-noun-text); }
+
+/* Single Category Theme Classes for .kw, .tray-word, and filled .slot */
+.cat-theme-name { border-color: var(--cat-name-border) !important; background: var(--cat-name-bg) !important; color: var(--cat-name-text) !important; }
+.cat-theme-location { border-color: var(--cat-location-border) !important; background: var(--cat-location-bg) !important; color: var(--cat-location-text) !important; }
+.cat-theme-verb { border-color: var(--cat-verb-border) !important; background: var(--cat-verb-bg) !important; color: var(--cat-verb-text) !important; }
+.cat-theme-medical { border-color: var(--cat-medical-border) !important; background: var(--cat-medical-bg) !important; color: var(--cat-medical-text) !important; }
+.cat-theme-temporal { border-color: var(--cat-temporal-border) !important; background: var(--cat-temporal-bg) !important; color: var(--cat-temporal-text) !important; }
+.cat-theme-calendar { border-color: var(--cat-calendar-border) !important; background: var(--cat-calendar-bg) !important; color: var(--cat-calendar-text) !important; }
+.cat-theme-noun { border-color: var(--cat-noun-border) !important; background: var(--cat-noun-bg) !important; color: var(--cat-noun-text) !important; }
+
+/* Empty Slot with Single Category Border */
+.slot.cat-theme-name:not(.filled) { border-bottom: 2px dashed var(--cat-name) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-name-bg) !important; color: var(--cat-name-text) !important; }
+.slot.cat-theme-location:not(.filled) { border-bottom: 2px dashed var(--cat-location) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-location-bg) !important; color: var(--cat-location-text) !important; }
+.slot.cat-theme-verb:not(.filled) { border-bottom: 2px dashed var(--cat-verb) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-verb-bg) !important; color: var(--cat-verb-text) !important; }
+.slot.cat-theme-medical:not(.filled) { border-bottom: 2px dashed var(--cat-medical) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-medical-bg) !important; color: var(--cat-medical-text) !important; }
+.slot.cat-theme-temporal:not(.filled) { border-bottom: 2px dashed var(--cat-temporal) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-temporal-bg) !important; color: var(--cat-temporal-text) !important; }
+.slot.cat-theme-calendar:not(.filled) { border-bottom: 2px dashed var(--cat-calendar) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-calendar-bg) !important; color: var(--cat-calendar-text) !important; }
+.slot.cat-theme-noun:not(.filled) { border-bottom: 2px dashed var(--cat-noun) !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--cat-noun-bg) !important; color: var(--cat-noun-text) !important; }
 
 /* Toast Message */
 #toast {
