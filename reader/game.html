@@ -396,9 +396,6 @@
         }
     </script>
 
-    <!-- Bundled Fallback Case (ensures offline file:// execution) -->
-    <script src="cases/chapter_01_morning_routine.js"></script>
-
     <!-- Tactile Sound Effects Engine -->
     <script src="engine/sfx.js?v=2.2"></script>
 
@@ -412,7 +409,6 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             window.gameEngine = new DeductionEngine({
-                defaultCase: window.BUNDLED_DEFAULT_CASE,
                 registryUrl: "cases/cases_registry.json"
             });
             window.gameEngine.init();

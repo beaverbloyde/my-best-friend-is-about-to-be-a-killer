@@ -276,10 +276,10 @@ class DeductionEngine {
 
         if (caseParam) {
             await this.loadCaseFromUrl(caseParam);
-        } else if (this.options.defaultCase) {
-            this.loadCase(this.options.defaultCase);
-        } else if (window.BUNDLED_DEFAULT_CASE) {
-            this.loadCase(window.BUNDLED_DEFAULT_CASE);
+        } else if (this.registry && this.registry.length > 0 && this.registry[0].file) {
+            await this.loadCaseFromUrl(this.registry[0].file);
+        } else {
+            await this.loadCaseFromUrl("cases/chapter_01_morning_routine.json");
         }
 
         // Auto-show tutorial on first visit if not suppressed
@@ -418,12 +418,7 @@ class DeductionEngine {
             this.showToast(`Loaded case: ${caseData.meta?.title || caseData.id}`);
         } catch (err) {
             console.error("Failed to load case from URL:", err);
-            if (window.BUNDLED_DEFAULT_CASE) {
-                this.loadCase(window.BUNDLED_DEFAULT_CASE);
-                this.syncCaseSelector();
-            } else {
-                this.showToast("Error loading case file.");
-            }
+            this.showToast("Error loading case file: " + (err.message || url));
         }
     }
 
