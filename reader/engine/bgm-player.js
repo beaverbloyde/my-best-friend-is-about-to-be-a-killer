@@ -7,19 +7,19 @@ class BGMPlayer {
     constructor() {
         this.tracks = [
             {
-                id: 'procedural_logos',
-                title: 'LOGOS-3 Mainframe (Soviet Drone)',
-                artist: 'Procedural Analog Synth (Offline)',
-                type: 'procedural',
-                desc: 'Synthesized Polivoks D-minor drone, cassette tape flutter, and vintage CRT hum.'
-            },
-            {
                 id: 'sb_the_long_dark',
                 title: 'The Long Dark (Noir Piano & Synth)',
                 artist: 'Scott Buckley (CC-BY 4.0)',
                 type: 'stream',
                 url: 'audio/sb_the_long_dark.ogg',
                 desc: 'Melancholic ambient piano and slow analog drone for deduction.'
+            },
+            {
+                id: 'procedural_logos',
+                title: 'LOGOS-3 Mainframe (Soviet Drone)',
+                artist: 'Procedural Analog Synth (Offline)',
+                type: 'procedural',
+                desc: 'Synthesized Polivoks D-minor drone, cassette tape flutter, and vintage CRT hum.'
             },
             {
                 id: 'cyberpunk_ambient',
@@ -75,19 +75,22 @@ class BGMPlayer {
         this.audioCtx = null;
         this.synthNodes = null;
 
-        // Restore saved track index
+        // Restore saved track index (default to The Long Dark)
         const savedTrackId = localStorage.getItem('bgm_track_id');
         if (savedTrackId) {
             const idx = this.tracks.findIndex(t => t.id === savedTrackId);
             if (idx !== -1) this.currentTrackIndex = idx;
+        } else {
+            const defaultIdx = this.tracks.findIndex(t => t.id === 'sb_the_long_dark');
+            if (defaultIdx !== -1) this.currentTrackIndex = defaultIdx;
         }
 
         this.initDOM();
         this.initEvents();
 
-        // Check if audio was previously active before navigating
-        const wasPlaying = localStorage.getItem('bgm_is_playing') === 'true';
-        if (wasPlaying) {
+        // Check if audio was active before navigating or first time player (default: autoplay ON)
+        const isPlayingPref = localStorage.getItem('bgm_is_playing');
+        if (isPlayingPref === 'true' || isPlayingPref === null) {
             this.play();
         }
     }
@@ -310,7 +313,8 @@ class BGMPlayer {
 
         // Gesture unlock for browser autoplay policy
         const unlockAutoplay = () => {
-            if (localStorage.getItem('bgm_is_playing') === 'true') {
+            const isPlayingPref = localStorage.getItem('bgm_is_playing');
+            if (isPlayingPref === 'true' || isPlayingPref === null) {
                 if (!this.isPlaying) {
                     this.play();
                 } else {
@@ -325,11 +329,13 @@ class BGMPlayer {
             document.removeEventListener('click', unlockAutoplay);
             document.removeEventListener('keydown', unlockAutoplay);
             document.removeEventListener('touchstart', unlockAutoplay);
+            document.removeEventListener('pointerdown', unlockAutoplay);
         };
 
         document.addEventListener('click', unlockAutoplay);
         document.addEventListener('keydown', unlockAutoplay);
         document.addEventListener('touchstart', unlockAutoplay);
+        document.addEventListener('pointerdown', unlockAutoplay);
 
         // Keyboard Shortcuts (M for play/pause, Shift+M for deck panel)
         window.addEventListener('keydown', (e) => {
@@ -508,10 +514,12 @@ class BGMPlayer {
             return relativeAudioPath;
         }
         const cleanPath = relativeAudioPath.replace(/^\/+/, '').replace(/^reader\//, '');
-        if (window.location.protocol === 'file:') {
-            return 'audio/' + cleanPath.replace(/^audio\//, '');
+        const isSubFolder = window.location.pathname.includes('/reader/') || window.location.pathname.endsWith('/reader') || window.location.pathname.includes('/reader');
+        if (isSubFolder) {
+            return cleanPath.startsWith('audio/') ? cleanPath : 'audio/' + cleanPath;
+        } else {
+            return cleanPath.startsWith('audio/') ? 'reader/' + cleanPath : 'reader/audio/' + cleanPath;
         }
-        return '/reader/' + (cleanPath.startsWith('audio/') ? cleanPath : 'audio/' + cleanPath);
     }
 
     playCurrent(resetTime = false) {
@@ -550,8 +558,7 @@ class BGMPlayer {
                         try { this.audioEl.currentTime = savedPos; } catch(e) {}
                     }
                 }).catch(err => {
-                    console.warn('Audio stream autoplay pending interaction:', err);
-                    this.startProceduralSynth();
+                    console.warn('Audio stream autoplay waiting for first user gesture:', err);
                 });
             }
         }
@@ -732,7 +739,8 @@ window.addEventListener('pageshow', () => {
     if (window.bgmPlayer) {
         window.bgmPlayer.initDOM();
         window.bgmPlayer.updateUI();
-        if (localStorage.getItem('bgm_is_playing') === 'true' && !window.bgmPlayer.isPlaying) {
+        const isPlayingPref = localStorage.getItem('bgm_is_playing');
+        if ((isPlayingPref === 'true' || isPlayingPref === null) && !window.bgmPlayer.isPlaying) {
             window.bgmPlayer.play();
         }
     }
