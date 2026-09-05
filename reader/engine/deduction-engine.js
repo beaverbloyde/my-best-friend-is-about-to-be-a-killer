@@ -795,6 +795,7 @@ class DeductionEngine {
         if (docketBody && caseData.docket?.template) {
             docketBody.innerHTML = this.parseDocketTemplate(caseData.docket.template);
             this.bindDocketSlotEvents();
+            this.setupDocketScrollIndicators();
         }
 
         if (autoRestore) {
@@ -1404,6 +1405,7 @@ class DeductionEngine {
         if (!isExpanded) {
             this.restoreDocketSize();
         }
+        this.setupDocketScrollIndicators();
         window.sfx?.playClick();
     }
 
@@ -1911,6 +1913,31 @@ class DeductionEngine {
 
     // --- Docket Modal & Slots ---
 
+    setupDocketScrollIndicators() {
+        const container = document.getElementById("docket-body-container");
+        const body = document.getElementById("docket-body-content");
+        if (!container || !body) return;
+
+        const updateIndicators = () => {
+            const scrollTop = body.scrollTop;
+            const maxScrollTop = body.scrollHeight - body.clientHeight;
+            const hasTop = scrollTop > 8;
+            const hasBottom = maxScrollTop > 8 && scrollTop < maxScrollTop - 8;
+
+            container.classList.toggle("has-overflow-top", hasTop);
+            container.classList.toggle("has-overflow-bottom", hasBottom);
+        };
+
+        if (!this._docketScrollBound) {
+            this._docketScrollBound = true;
+            body.addEventListener("scroll", updateIndicators, { passive: true });
+            window.addEventListener("resize", updateIndicators);
+        }
+
+        setTimeout(updateIndicators, 50);
+        setTimeout(updateIndicators, 250);
+    }
+
     openDocket() {
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (this.docketModal) {
@@ -1919,6 +1946,7 @@ class DeductionEngine {
                 this.restoreDocketSize();
             }
             this.bringToFront(this.docketModal);
+            this.setupDocketScrollIndicators();
             window.sfx?.playOpen();
         }
     }
