@@ -3,13 +3,13 @@ window.BUNDLED_DEFAULT_CASE = {
   "meta": {
     "title": "CASE 1: MORNING ROUTINE",
     "subtitle": "",
-    "docketTitle": "\ud83d\udccb MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
+    "docketTitle": "📋 MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
     "author": "Beaver Bloyde",
     "version": "1.0",
-    "successMessage": "\u262d DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1: The ROVD Unlocked!",
+    "successMessage": "☭ DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1.1: Crime in the Future Unlocked!",
     "unlocks": {
       "chapter": "content/27601e10419ce.nwd",
-      "title": "Chapter 1: The ROVD (The Weight of Unfallen Snow)",
+      "title": "Chapter 1.1: Crime in the Future",
       "description": "Proceed to the Novel Reader to continue reading the story."
     }
   },
@@ -20,10 +20,10 @@ window.BUNDLED_DEFAULT_CASE = {
       "location": "Bedroom",
       "clues": [
         {
-          "type": "Observation",
+          "type": "Subject",
           "title": "A distressed young man",
           "text": "A distressed young man just woke up from a recurring nightmare.",
-          "quote": "Sigh... the [vision]... again."
+          "thought": "Sigh... the [vision]... again."
         },
         {
           "type": "Observation",
@@ -36,7 +36,7 @@ window.BUNDLED_DEFAULT_CASE = {
           "title": "Alarm Clock & Calendar",
           "clock": {
             "title": "BEDSIDE TELEMETRY",
-            "temperature": "24\u00b0C",
+            "temperature": "24°C",
             "time": "07:02",
             "date": "[Thursday]"
           }
@@ -53,13 +53,13 @@ window.BUNDLED_DEFAULT_CASE = {
           "type": "Subject",
           "title": "A terrified young man",
           "text": "A terrified young man with horror in his eyes standing over a dark pool.",
-          "quote": "NO NO NO! Why did it have to come to this!?"
+          "thought": "NO NO NO! Why did it have to come to this!?"
         },
         {
           "type": "Evidence",
           "title": "Name plate",
           "badge": {
-            "avatar": "\ud83d\udc64",
+            "avatar": "👤",
             "dept": "FEBRAS Hardware Division",
             "name": "[Aleksey] [Volkov]",
             "role": "Hardware Engineer"
@@ -115,7 +115,7 @@ window.BUNDLED_DEFAULT_CASE = {
           "type": "Observation",
           "title": "A conflicted young man",
           "text": "A reluctant young man holding a pill bottle, questioning his diagnosis.",
-          "quote": "These pills are useless. I don't want to admit it but... what if it's true?"
+          "thought": "These pills are useless. I don't want to admit it but... what if it's true?"
         }
       ]
     },
@@ -128,7 +128,7 @@ window.BUNDLED_DEFAULT_CASE = {
           "type": "Terminal",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET 5G // ROAMING",
+            "network": "☭ SOV-NET 5G // ROAMING",
             "battery": "88%",
             "time": "07:25",
             "date": "14th [April]",
@@ -152,17 +152,17 @@ window.BUNDLED_DEFAULT_CASE = {
           "type": "Audio Log",
           "title": "Phone Call Log",
           "audio": {
-            "label": "\u23fa COMM-REC // OUTGOING VOICEMAIL",
+            "label": "⏺ COMM-REC // OUTGOING VOICEMAIL",
             "time": "00:32 / 00:45",
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
-                "text": "This is Professor [Stanislav] [Krotov], Director of Relativistic Field Topology at [PIRM]. I\u2019m currently not available, please leave your message.",
+                "text": "This is Professor [Stanislav] [Krotov], Director of Relativistic Field Topology at [PIRM]. I’m currently not available, please leave your message.",
                 "type": "system"
               },
               {
                 "speaker": "Young Man",
-                "text": "Professor, I need to call in sick today. My\u2026 um\u2026 head got a bit dizzy. Probably from the [Ripple Sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
+                "text": "Professor, I need to call in sick today. My… um… head got a bit dizzy. Probably from the [Ripple Sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
                 "type": "user"
               }
             ]
@@ -176,16 +176,16 @@ window.BUNDLED_DEFAULT_CASE = {
       "location": "Bedroom",
       "clues": [
         {
-          "type": "Observation",
+          "type": "Subject",
           "title": "A dressed-up young man",
           "text": "A dressed-up young man checking himself in the mirror, wearing a thick wool coat and scarf.",
-          "quote": "This should be good..."
+          "thought": "This should be good..."
         },
         {
           "type": "ID Card",
           "title": "Name plate",
           "badge": {
-            "avatar": "\ud83d\udc64",
+            "avatar": "👤",
             "dept": "FEBRAS PIRM Institute",
             "name": "[Luka] [Huo]",
             "role": "Theoretical Physics Department"
@@ -195,12 +195,12 @@ window.BUNDLED_DEFAULT_CASE = {
           "type": "Smart Device",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET 5G // ROAMING",
+            "network": "☭ SOV-NET 5G // ROAMING",
             "battery": "86%",
             "time": "07:50",
             "date": "14th [April]",
             "nav": {
-              "arrow": "\u21b1",
+              "arrow": "↱",
               "subtitle": "GLONASS ACTIVE GUIDANCE (350m)",
               "instruction": "Turn right at the next crossroad",
               "destination": "Destination: 1.6 km from [ROVD]"
@@ -243,8 +243,8 @@ window.BUNDLED_DEFAULT_CASE = {
             "date": "[Sunday] 10 [April] (Jubilee Plenary)",
             "venue": "[Vladivostok] Central Plenary Hall",
             "agenda": [
-              "**What's Next After Time Ripple?** \u2014 Dr. [Krotov]",
-              "**Spacetime Paradigm** \u2014 Jr. Researcher [Luka] [Huo]",
+              "**What's Next After Time Ripple?** — Dr. [Krotov]",
+              "**Spacetime Paradigm** — Jr. Researcher [Luka] [Huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
           }
@@ -434,37 +434,37 @@ window.BUNDLED_DEFAULT_CASE = {
   "customCategories": [
     {
       "id": "names",
-      "label": "\ud83d\udc64 Names & People",
+      "label": "👤 Names & People",
       "tag": "name"
     },
     {
       "id": "locations",
-      "label": "\ud83d\udccd Locations & Facilities",
+      "label": "📍 Locations & Facilities",
       "tag": "location"
     },
     {
       "id": "verbs",
-      "label": "\u26a1 Actions & Verbs",
+      "label": "⚡ Actions & Verbs",
       "tag": "verb"
     },
     {
       "id": "medical",
-      "label": "\ud83d\udc8a Medical & Pathology",
+      "label": "💊 Medical & Pathology",
       "tag": "medical"
     },
     {
       "id": "temporal",
-      "label": "\ud83c\udf00 Temporal & Anomalies",
+      "label": "🌀 Temporal & Anomalies",
       "tag": "temporal"
     },
     {
       "id": "calendar",
-      "label": "\ud83d\udcc5 Calendar & Dates",
+      "label": "📅 Calendar & Dates",
       "tag": "calendar"
     },
     {
       "id": "nouns",
-      "label": "\ud83d\udce6 General Items",
+      "label": "📦 General Items",
       "tag": "noun"
     }
   ],
