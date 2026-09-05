@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-05 00:53:43">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="4" autoCount="136" editTime="40725">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-05 13:23:35">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="6" autoCount="227" editTime="47989">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -28,7 +28,7 @@
       <entry key="i917a91" count="0" color="purple" shape="BLOCK_4">Main</entry>
     </importance>
   </settings>
-  <content items="6" novelWords="1622" notesWords="0" novelChars="9913" notesChars="0">
+  <content items="7" novelWords="1091" notesWords="0" novelChars="6419" notesChars="0">
     <item handle="e3cd568273a1d" parent="None" root="e3cd568273a1d" order="0" type="ROOT" class="NOVEL">
       <meta expanded="yes" />
       <name status="s03ddec" import="i96c4db">Novel</name>
@@ -38,8 +38,8 @@
       <name status="s03ddec" import="i96c4db" active="yes">Title Page</name>
     </item>
     <item handle="27601e10419ce" parent="e3cd568273a1d" root="e3cd568273a1d" order="1" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="9800" wordCount="1600" paraCount="45" cursorPos="0" />
-      <name status="s03ddec" import="i96c4db" active="yes">Chapter 1: The ROVD</name>
+      <meta expanded="no" heading="H2" charCount="6306" wordCount="1069" paraCount="34" cursorPos="5972" />
+      <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.1: Crime in the Future</name>
     </item>
     <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
       <meta expanded="no" />

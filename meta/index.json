@@ -1,43 +1,18 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-05 10:20:00"
+    "timestamp": "2026-09-05 13:23:35"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
     "9f1ea3b46fcb3": {
       "T0001": {
-        "meta": {
-          "level": "H1",
-          "title": "My Best Friend is (about to be) a Killer",
-          "line": 7,
-          "tag": "",
-          "counts": [
-            72,
-            14,
-            2
-          ]
-        }
+        "meta": {"level": "H1", "title": "My Best Friend is (about to be) a Killer", "line": 7, "tag": "", "counts": [72, 14, 2]}
       }
     },
     "27601e10419ce": {
       "T0001": {
-        "meta": {
-          "level": "H2",
-          "title": "Chapter 1: The ROVD",
-          "line": 1,
-          "tag": "",
-          "counts": [
-            9800,
-            1600,
-            45
-          ]
-        }
-      },
-      "document": {
-        "footnotes": [
-          "ftpl1"
-        ]
+        "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
       }
     }
   }
