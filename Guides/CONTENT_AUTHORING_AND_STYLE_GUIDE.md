@@ -55,16 +55,24 @@ To make key nouns, locations, or clues collectible for the Detective Deduction G
 
 ## 🎭 Character Voices & Dialogue Guidelines
 
-Maintain natural, grounded dialogue with distinct character identities:
+The dialogue in the novel is **grounded, conversational, and natural**—avoiding stiff melodrama or exaggerated accents. Spoken lines reflect modern conversational pacing framed within a Soviet retro-futuristic backdrop.
 
-| Character | Voice & Cadence | Behavioral Quirks |
-| :--- | :--- | :--- |
-| **Luka Huo** | Calm, observant, introspective, dryly humorous. Expatriate researcher from China working in the Soviet Far East. | Analytic, grounded, slightly guarded, careful with procedures. |
-| **Igor Solovyov** | Charismatic, playful, enigmatic, unpredictable, intellectually agile. | Speaks casually with understated sharpness; hides secrets under a relaxed grin. |
-| **Uncle Senya (Semyon)** | Veteran *Starshina* (Senior Sergeant). Gravelly, paternal, pragmatic, Siberian-hardened. | Stomps snow off boots, scratches his chin through his ushanka, knows everyone in the district. |
-| **Nadezhda** | Crisp, efficient, sharp desk officer at the ROVD counter. | Swift keyboard clatter, balanced-ternary terminal queries, no-nonsense professionalism. |
+### Core Characters & Dialogue Styles
+
+| Character | Role & Persona | Spoken Voice & Dialogue Cadence | Key Behavioral Quirks & Dynamics |
+| :--- | :--- | :--- | :--- |
+| **Luka Huo** | Protagonist & POV. Theoretical physicist fellow at PIRM (half-Chinese, half-Russian). | **Rational, polite, hesitant when unsure, dryly self-aware.** Pauses when what he is saying sounds absurd (*"…I’m here to report a crime. That is—well, how should I put this…"*). Speaks with quiet sincerity rather than bravado. | Observant, slightly guarded, hates looking foolish or wasting people's time. Internal monologue is dry and practical (*"Oh great, now she’s just going to keep dragging me around like her partner-in-crime"*). Reluctantly goes along with Nadya's schemes because his curiosity gets the better of him. |
+| **Nadezhda (Nadya) Morozova** | Junior Militsiya intake desk officer at Pogranichny ROVD. | **Energetic, candid, witty, expressive, slightly dramatic.** Shifts rapidly from standard official intake to warm, conspiratorial camaraderie (*"Aha! You almost had me!"*, *"Ugh, this is killing me, comrade. Out of all the times it could have happened, it just has to be on my shift…"*, *"Please… I’ll bring you back whatever you want from town. Snacks, pastries, fidget toys, whatever you like!"*). | Ambitious and restless behind the desk; hates missing out on the action. Scheming and opportunistic in a playful way (talks Senya into covering her shift so she can sneak out to the crime scene). Openly teases back (*"Ugh, Uncle, I’ve told you a hundred times that I like women, haven’t I?"*). |
+| **Uncle Senya (Semyon)** | Veteran *Starshina* (Senior Sergeant), station administrative anchor. | **Earthy, relaxed, grandfatherly, fond of teasing.** Gravelly conversational rhythm (*"So… What can I do for you, lass?"*, *"Woah, woah, hold on right there! Don’t fill an old man's head with gory images before breakfast! It’ll ruin my morning tea."*, *"Don't let Tarasov bite your heads off!"*). | Veteran who has seen everything and prefers a quiet cup of tea over unnecessary drama. Sees right through Nadya’s scheming, but indulges her anyway because he enjoys supporting eager youth (and getting free oolong tea). |
+| **Aleksey (Alex) Volkov** | Luka's best friend. Brilliant hardware engineer at PIRM. | **Outgoing, effortless, charismatic, warm.** Casual and relaxed (*"Hey bro, wanna go out for a drink tonight?"*). | Sharp and effortlessly handsome—the quintessential popular-guy profile. Despite looking like someone who should be insufferable, he is genuinely kind, brilliant, and fiercely loyal to Luka. The mystery revolves around Luka's vision of him committing/involved in a future killing. |
 
 ---
+
+### Golden Rules for Prose & Dialogue Editing
+
+1. **Dialogue Stays Casual & Grounded**: When refining prose, **do not overwrite or formalize character dialogue**. Preserve short sentence structures, natural hesitation marks, trailing ellipses, and everyday conversational banter.
+2. **Rich Prose, Lean Speech**: Keep atmospheric worldbuilding, weather, sensory cues, and internal thoughts rich and evocative in the narrative paragraphs, while keeping spoken dialogue swift and punchy.
+3. **Dialogue Tag Restraint**: Let the spoken words carry the emotion. Avoid stacking heavy adverbs onto speech tags (prefer simple `said`, `asked`, `replied`, or action beats).
 
 ## ❄️ Worldbuilding & Setting Standards (Pogranichny 2118)
 

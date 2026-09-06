@@ -1,6 +1,6 @@
 # Project Documentation & Technical Guides
 
-Welcome to the technical documentation repository for **My Best Friend is (about to be) A Killer** (*Project Chronos* / *36th SOT Reader & Deduction Game*).
+Welcome to the technical documentation repository for **My Best Friend is (about to be) A Killer**.
 
 This directory contains the single source of truth for the project architecture, frontend novel reader, interactive detective deduction game, novelWriter data conventions, and developer guidelines for building, testing, and deploying.
 
