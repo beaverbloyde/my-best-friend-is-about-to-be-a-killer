@@ -36,6 +36,18 @@
         "url": "game.html?case=cases/chapter_01_award_ceremony.json",
         "teaser": "Solve Case 2: The Conferral Ceremony to unlock Chapter 1.2."
       }
+    },
+    {
+      "target": "chapter_01_the_man_on_the_news",
+      "targetType": "case",
+      "targetTitle": "Case 3: The Man on the News",
+      "requires": {
+        "type": "chapter",
+        "id": "content/8e0179d6fe5e5.nwd",
+        "title": "Chapter 1.2: The Man on the News",
+        "url": "index.html?file=content/8e0179d6fe5e5.nwd",
+        "teaser": "Read Chapter 1.2 in the Novel Reader to unlock this suspect reconstruction investigation."
+      }
     }
   ]
 }

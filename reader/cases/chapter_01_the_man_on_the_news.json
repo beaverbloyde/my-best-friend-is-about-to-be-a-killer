@@ -1,0 +1,242 @@
+{
+  "id": "chapter_01_the_man_on_the_news",
+  "meta": {
+    "title": "CASE 3: THE MAN ON THE NEWS",
+    "subtitle": "Pogranichny ROVD Reception Desk // Memory Synthesis",
+    "docketTitle": "📋 CITIZEN INQUIRY // SUSPECT DOSSIER RECONSTRUCTION",
+    "author": "Beaver Bloyde",
+    "version": "1.0",
+    "successMessage": "☭ DEDUCTION VERIFIED! Suspect Dossier Reconstructed. Case 3: The Man on the News Complete!",
+    "unlocks": {
+      "chapter": "content/8e0179d6fe5e5.nwd",
+      "title": "Chapter 1.2: The Man on the News",
+      "description": "Proceed to the Novel Reader to continue reading the story."
+    }
+  },
+  "timeline": {
+    "Memory 1": {
+      "time": "Recent Memory",
+      "title": "Regional Press & Newsfeeds",
+      "location": "Luka's Memory // Far Eastern Broadcasts",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "Broadcast Excerpt",
+          "title": "Primorsky Krai Daily",
+          "text": "“...aid from [China] arrived at [Khabarovsk] this morning via freight [train] from [Pogranichny], though some [shipment] was delayed due to an ongoing investigation...”"
+        },
+        {
+          "type": "Economic Column",
+          "title": "Global Economy Weekly",
+          "text": "“...instances of [embezzlement], [fraud], and [mismanagement] skyrocketed globally post-Ripple. It is truly concerning...”"
+        },
+        {
+          "type": "Radio Commentary",
+          "title": "Primorsky Krai Local News Anchor",
+          "text": "“...[talk] about an [obsession]! His [sports car] collection is already a [red flag]! He has to [pay] for what he'd done!...”"
+        }
+      ]
+    },
+    "Memory 2": {
+      "time": "Recent Memory",
+      "title": "State Reports & Public Feeds",
+      "location": "Luka's Memory // Public Bulletins",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "State Address",
+          "title": "USSR Today (National Edition)",
+          "text": "“...The [chairwoman] said in her speech [yesterday]: \\\"The [state funds] will be [diverted] to the most affected area first...\\\"”"
+        },
+        {
+          "type": "Public Feed",
+          "title": "Regional Anti-Corruption Network",
+          "text": "“...On [Monday], automated anti-corruption system flagged [Regional Freight Directorate] ledger. The reason cited: Highly suspicious [repair] of personal transportation...”"
+        },
+        {
+          "type": "Tabloid Column",
+          "title": "Far Eastern Whispers",
+          "text": "“...The [director] of the [Ministry of Communications] [refused] to [give] [comment] about his controversial [opinion] he [posted] online...”"
+        }
+      ]
+    },
+    "Memory 3": {
+      "time": "Recent Memory",
+      "title": "Archives & Police Dispatches",
+      "location": "Luka's Memory // Police Bulletins",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "Biographical Archive",
+          "title": "State Online Encyclopedia",
+          "text": "“...Graduated from [Khabarovsk] [Institute of Planned Economics], Igor specializes in [logistics] and [communications]...”"
+        },
+        {
+          "type": "Police Bulletin",
+          "title": "Khabarovsk ROVD Official Dispatch",
+          "text": "“...The [colonel] of the [ROVD] said, \\\"The clues suggest that he had [fled] around evening to midnight on [Wednesday]. We have already contacted the [border] patrols...\\\"”"
+        }
+      ]
+    }
+  },
+  "keywordTags": {
+    "China": [
+      "location"
+    ],
+    "Khabarovsk": [
+      "location"
+    ],
+    "Pogranichny": [
+      "location"
+    ],
+    "border": [
+      "location"
+    ],
+    "train": [
+      "noun"
+    ],
+    "shipment": [
+      "noun"
+    ],
+    "embezzlement": [
+      "noun"
+    ],
+    "fraud": [
+      "noun"
+    ],
+    "mismanagement": [
+      "noun"
+    ],
+    "sports car": [
+      "noun"
+    ],
+    "obsession": [
+      "noun"
+    ],
+    "red flag": [
+      "noun"
+    ],
+    "state funds": [
+      "noun"
+    ],
+    "repair": [
+      "noun"
+    ],
+    "Regional Freight Directorate": [
+      "noun",
+      "location"
+    ],
+    "Ministry of Communications": [
+      "noun",
+      "location"
+    ],
+    "Institute of Planned Economics": [
+      "noun",
+      "location"
+    ],
+    "ROVD": [
+      "location",
+      "noun"
+    ],
+    "director": [
+      "noun",
+      "rank"
+    ],
+    "chairwoman": [
+      "noun",
+      "rank"
+    ],
+    "colonel": [
+      "rank",
+      "noun"
+    ],
+    "logistics": [
+      "noun"
+    ],
+    "communications": [
+      "noun"
+    ],
+    "comment": [
+      "noun"
+    ],
+    "opinion": [
+      "noun"
+    ],
+    "yesterday": [
+      "calendar",
+      "temporal"
+    ],
+    "Monday": [
+      "calendar"
+    ],
+    "Wednesday": [
+      "calendar"
+    ],
+    "talk": [
+      "verb"
+    ],
+    "pay": [
+      "verb"
+    ],
+    "diverted": [
+      "verb"
+    ],
+    "refused": [
+      "verb"
+    ],
+    "give": [
+      "verb"
+    ],
+    "posted": [
+      "verb"
+    ],
+    "fled": [
+      "verb"
+    ]
+  },
+  "customCategories": [
+    {
+      "id": "locations",
+      "label": "📍 Locations & Cities",
+      "tag": "location"
+    },
+    {
+      "id": "nouns",
+      "label": "📦 Nouns & Institutions",
+      "tag": "noun"
+    },
+    {
+      "id": "verbs",
+      "label": "⚡ Actions & Verbs",
+      "tag": "verb"
+    },
+    {
+      "id": "calendar",
+      "label": "📅 Dates & Times",
+      "tag": "calendar"
+    },
+    {
+      "id": "ranks",
+      "label": "🎖️ Titles & Ranks",
+      "tag": "rank"
+    }
+  ],
+  "docket": {
+    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] of [slot:p1_city:location] [slot:p1_org:noun,location].\n\nFew days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
+  },
+  "solution": {
+    "p1_title": "director",
+    "p1_field": "logistics",
+    "p1_city": "Khabarovsk",
+    "p1_org": "Regional Freight Directorate",
+    "p2_crime": "embezzlement",
+    "p2_funds": "state funds",
+    "p2_action": "pay",
+    "p2_service": "repair",
+    "p2_vehicle": "sports car",
+    "p3_time": "yesterday",
+    "p3_motion": "fled",
+    "p3_vehicle": "sports car",
+    "p3_dest": "border"
+  }
+}

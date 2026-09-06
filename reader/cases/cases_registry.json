@@ -10,6 +10,11 @@
     "file": "cases/chapter_01_award_ceremony.json"
   },
   {
+    "id": "chapter_01_the_man_on_the_news",
+    "title": "Case 3: The Man on the News",
+    "file": "cases/chapter_01_the_man_on_the_news.json"
+  },
+  {
     "id": "case_template",
     "title": "Case Template / Example Case",
     "file": "cases/case_template.json"
