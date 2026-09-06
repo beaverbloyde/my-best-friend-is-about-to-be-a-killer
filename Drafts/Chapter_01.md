@@ -126,13 +126,13 @@ A stocky, broad-shouldered militia officer in his late fifties stomped into the 
 
 "Uncle Senya!" Nadya called out, immediately perking up. "You're back from the mountain road already?"
 
-Senior Sergeant Semyon Korobov pushed back his fur ushanka, revealing a round, ruddy face and a thick grey mustache. "Just came down with the second tow-van. The road is clear up to the 12th kilometer, but Major Tarasov is still up there pacing the snowbanks like a wolf."
+Starshina Semyon Korobov pushed back his fur ushanka, revealing a round, ruddy face and a thick grey mustache. "Just came down with the second tow-van. The road is clear up to the 12th kilometer, but Major Tarasov is still up there pacing the snowbanks like a wolf."
 
 Nadya leaned over the counter, her eyes wide with undisguised excitement. "Is it really his car? Igor Romashin’s?"
 
 "The very same," Uncle Senya said, walking behind the desk and heading straight for the electric kettle. "A custom *Russo-Balt Vector*. Burnt right down to the frame. The engine block is melted into the chassis, and the fellow inside... well, looks like a piece of charcoal from a steam boiler. Not a pretty sight."
 
-Nadya practically bounced on her heels. "Uncle Senya... dear, wonderful Semyon Ivanovich... please tell me you'll cover the desk for two hours."
+Nadya practically bounced on her heels. "Uncle Senya... dear, wonderful Semyon Timofeyevich... please tell me you'll cover the desk for two hours."
 
 Korobov paused, a glass mug of hot water in his hand, squinting at her suspiciously. "Morozova, you have four hours left on your shift."
 
