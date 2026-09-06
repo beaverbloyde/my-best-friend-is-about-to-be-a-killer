@@ -6,10 +6,10 @@
     "docketTitle": "📋 CITIZEN INQUIRY // SUSPECT DOSSIER RECONSTRUCTION",
     "author": "Beaver Bloyde",
     "version": "1.0",
-    "successMessage": "☭ DEDUCTION VERIFIED! Suspect Dossier Reconstructed. Case 3: The Man on the News Complete!",
+    "successMessage": "☭ DEDUCTION VERIFIED! Suspect Dossier Reconstructed. Chapter 1.3 Unlocked!",
     "unlocks": {
-      "chapter": "content/8e0179d6fe5e5.nwd",
-      "title": "Chapter 1.2: The Man on the News",
+      "chapter": "content/chapter_01_3.nwd",
+      "title": "Chapter 1.3",
       "description": "Proceed to the Novel Reader to continue reading the story."
     }
   },
@@ -234,7 +234,7 @@
     "p2_action": "pay",
     "p2_service": "repair",
     "p2_vehicle": "sports car",
-    "p3_time": "yesterday",
+    "p3_time": "Wednesday/yesterday",
     "p3_motion": "fled",
     "p3_vehicle": "sports car",
     "p3_dest": "border"
