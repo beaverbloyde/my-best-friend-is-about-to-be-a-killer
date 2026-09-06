@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 21:56:43">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="21" autoCount="512" editTime="117722">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 22:00:43">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="21" autoCount="513" editTime="117962">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -10,7 +10,7 @@
     <spellChecking auto="yes">en_US</spellChecking>
     <lastHandle>
       <entry key="editor">1bd7b006c55ac</entry>
-      <entry key="viewer">9d0d0bb96c432</entry>
+      <entry key="viewer">1bd7b006c55ac</entry>
       <entry key="novel">e3cd568273a1d</entry>
       <entry key="outline">None</entry>
     </lastHandle>
@@ -50,7 +50,7 @@
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.2: The Man on the News</name>
     </item>
     <item handle="1bd7b006c55ac" parent="e3cd568273a1d" root="e3cd568273a1d" order="4" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="8637" wordCount="1512" paraCount="50" cursorPos="5081" />
+      <meta expanded="no" heading="H2" charCount="8637" wordCount="1512" paraCount="50" cursorPos="5097" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.3: The Charred Body</name>
     </item>
     <item handle="9d0d0bb96c432" parent="e3cd568273a1d" root="e3cd568273a1d" order="5" type="FILE" class="NOVEL" layout="DOCUMENT">

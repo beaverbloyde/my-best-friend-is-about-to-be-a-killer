@@ -1326,6 +1326,13 @@
             .replace(/~~(.*?)~~/g, '<del>$1</del>')
             .replace(/==(.*?)==/g, '<mark>$1</mark>');
 
+        // Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [ˈvalʲɪnkʲɪ])
+        res = res.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, (match, word, ipa) => {
+            const cleanWord = word.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
         // Parse collectible [Keywords] (avoiding system tags like [br], [vspace], [field:], [footnote:], [img:], [b], [/b], [i], [/i])
         res = res.replace(/\[\[([^\]]+)\]\]/g, '<span class="reader-kw" data-word="$1" tabindex="0" role="button" title="Click to collect keyword for case investigations">$1</span>');
         res = res.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b)([^\]]+)\]/g, '<span class="reader-kw" data-word="$1" tabindex="0" role="button" title="Click to collect keyword for case investigations">$1</span>');
@@ -1732,6 +1739,46 @@
             }, 150);
         }
     }
+
+    // 11. Russian Term Pronunciation Player (Web Speech API)
+    function speakRussian(text) {
+        if (!('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_]/g, '').trim();
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 0.85; // Slightly slower, clear pacing for vocabulary learning
+            utterance.pitch = 1.0;
+
+            // Select Russian voice if available in browser
+            const voices = window.speechSynthesis.getVoices();
+            const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru')));
+            if (ruVoice) {
+                utterance.voice = ruVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        } catch (err) {
+            console.warn('Speech synthesis error:', err);
+        }
+    }
+
+    // Global Pronunciation Button Listener (Works in tooltips, footnote list, anywhere)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pronounce-btn');
+        if (btn) {
+            e.stopPropagation();
+            const word = btn.getAttribute('data-speak') || btn.innerText;
+            btn.classList.add('speaking');
+            speakRussian(word);
+            setTimeout(() => {
+                btn.classList.remove('speaking');
+            }, 1200);
+        }
+    });
 
 
 
