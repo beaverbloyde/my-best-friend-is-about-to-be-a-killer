@@ -245,7 +245,7 @@
         speechEnabled: localStorage.getItem('reader-speech-enabled') !== 'false',
         highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
         epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
-        epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration')) || 0.45,
+        epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration')) || 0.50,
         zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
         spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
         spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size')) || 3
@@ -1246,7 +1246,7 @@
             window.sfx.playPaperRustle();
         }
 
-        const durationSec = typeof settings.epaperDuration === 'number' ? settings.epaperDuration : 0.45;
+        const durationSec = typeof settings.epaperDuration === 'number' ? settings.epaperDuration : 0.50;
         const totalDurationMs = Math.max(500, Math.round(durationSec * 1600));
 
         epaperTimeout = setTimeout(() => {

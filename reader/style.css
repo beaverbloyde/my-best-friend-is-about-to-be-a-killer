@@ -2276,36 +2276,32 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
 
 /* Electro-Cellulose Magnetic Micro-Pigment Blooming & Assembly Wave */
 #document-body.epaper-assembling > * {
-    animation: pigmentBloom var(--epaper-bloom-duration, 0.45s) cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: pigmentBloom var(--epaper-bloom-duration, 0.5s) cubic-bezier(0.16, 1, 0.3, 1) both;
+    will-change: filter, opacity;
 }
 
-#document-body.epaper-assembling > *:nth-child(1) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.00); }
-#document-body.epaper-assembling > *:nth-child(2) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.06); }
-#document-body.epaper-assembling > *:nth-child(3) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.12); }
-#document-body.epaper-assembling > *:nth-child(4) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.18); }
-#document-body.epaper-assembling > *:nth-child(5) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.24); }
-#document-body.epaper-assembling > *:nth-child(6) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.30); }
-#document-body.epaper-assembling > *:nth-child(7) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.36); }
-#document-body.epaper-assembling > *:nth-child(8) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.40); }
-#document-body.epaper-assembling > *:nth-child(n+9) { animation-delay: calc(var(--epaper-bloom-duration, 0.45s) * 0.44); }
+#document-body.epaper-assembling > *:nth-child(1) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.00); }
+#document-body.epaper-assembling > *:nth-child(2) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.06); }
+#document-body.epaper-assembling > *:nth-child(3) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.12); }
+#document-body.epaper-assembling > *:nth-child(4) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.18); }
+#document-body.epaper-assembling > *:nth-child(5) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.24); }
+#document-body.epaper-assembling > *:nth-child(6) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.30); }
+#document-body.epaper-assembling > *:nth-child(7) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.36); }
+#document-body.epaper-assembling > *:nth-child(8) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.40); }
+#document-body.epaper-assembling > *:nth-child(n+9) { animation-delay: calc(var(--epaper-bloom-duration, 0.5s) * 0.44); }
 
 @keyframes pigmentBloom {
     0% {
         opacity: 0;
-        filter: blur(2px);
-        letter-spacing: 0.5px;
-        transform: translateY(4px);
+        filter: blur(2.5px);
     }
     50% {
-        opacity: 0.75;
-        filter: blur(0.5px);
-        letter-spacing: 0.1px;
+        opacity: 0.8;
+        filter: blur(0.6px);
     }
     100% {
         opacity: 1;
         filter: blur(0px);
-        letter-spacing: normal;
-        transform: translateY(0);
     }
 }
 
