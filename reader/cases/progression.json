@@ -50,9 +50,9 @@
       }
     },
     {
-      "target": "content/chapter_01_3.nwd",
+      "target": "content/1bd7b006c55ac.nwd",
       "targetType": "chapter",
-      "targetTitle": "Chapter 1.3",
+      "targetTitle": "Chapter 1.3: The Charred Body",
       "requires": {
         "type": "case",
         "id": "chapter_01_the_man_on_the_news",

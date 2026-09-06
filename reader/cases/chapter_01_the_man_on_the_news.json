@@ -8,16 +8,16 @@
     "version": "1.0",
     "successMessage": "☭ DEDUCTION VERIFIED! Suspect Dossier Reconstructed. Chapter 1.3 Unlocked!",
     "unlocks": {
-      "chapter": "content/chapter_01_3.nwd",
-      "title": "Chapter 1.3",
+      "chapter": "content/1bd7b006c55ac.nwd",
+      "title": "Chapter 1.3: The Charred Body",
       "description": "Proceed to the Novel Reader to continue reading the story."
     }
   },
   "timeline": {
-    "Memory 1": {
+    "Memory": {
       "time": "Recent Memory",
-      "title": "Regional Press & Newsfeeds",
-      "location": "Luka's Memory // Far Eastern Broadcasts",
+      "title": "Recent Memory",
+      "location": "Luka's Memory // Fragmented Recollections",
       "isVision": true,
       "clues": [
         {
@@ -34,15 +34,7 @@
           "type": "Radio Commentary",
           "title": "Primorsky Krai Local News Anchor",
           "text": "“...[talk] about an [obsession]! His [sports car] collection is already a [red flag]! He has to [pay] for what he'd done!...”"
-        }
-      ]
-    },
-    "Memory 2": {
-      "time": "Recent Memory",
-      "title": "State Reports & Public Feeds",
-      "location": "Luka's Memory // Public Bulletins",
-      "isVision": true,
-      "clues": [
+        },
         {
           "type": "State Address",
           "title": "USSR Today (National Edition)",
@@ -57,15 +49,7 @@
           "type": "Tabloid Column",
           "title": "Far Eastern Whispers",
           "text": "“...The [director] of the [Ministry of Communications] [refused] to [give] [comment] about his controversial [opinion] he [posted] online...”"
-        }
-      ]
-    },
-    "Memory 3": {
-      "time": "Recent Memory",
-      "title": "Archives & Police Dispatches",
-      "location": "Luka's Memory // Police Bulletins",
-      "isVision": true,
-      "clues": [
+        },
         {
           "type": "Biographical Archive",
           "title": "State Online Encyclopedia",
@@ -222,7 +206,7 @@
     }
   ],
   "docket": {
-    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] of [slot:p1_city:location] [slot:p1_org:noun,location].\n\nFew days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
+    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] of [slot:p1_org:noun,location] in [slot:p1_city:location].\n\nFew days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
   },
   "solution": {
     "p1_title": "director",

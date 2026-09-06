@@ -8,3 +8,4 @@ content/9f1ea3b46fcb3.nwd  NOVEL      DOCUMENT  Title Page
 content/9768d4a80e03f.nwd  NOVEL      DOCUMENT  Preface
 content/27601e10419ce.nwd  NOVEL      DOCUMENT  Chapter 1.1: Crime in the Future
 content/8e0179d6fe5e5.nwd  NOVEL      DOCUMENT  Chapter 1.2: The Man on the News
+content/1bd7b006c55ac.nwd  NOVEL      DOCUMENT  Chapter 1.3: The Charred Body
