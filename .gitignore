@@ -1,7 +1,17 @@
-# OS files
+# OS & Editor Metadata
 .DS_Store
 Thumbs.db
-
-# Logs & temp
 *.log
 *.lock
+nwProject.lock
+.vscode/
+.idea/
+
+# Internal AI Development Guides, Drafts & Spoilers (Not for Deployment)
+Guides/
+Ideas/
+Drafts/
+Summaries/
+reader/agent_instructions.md
+reader/cases/case_schema.md
+reader/cases/case_template.json
