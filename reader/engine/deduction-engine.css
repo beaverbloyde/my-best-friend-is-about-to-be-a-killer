@@ -2392,7 +2392,7 @@ body.display-profile-plasma::before {
     opacity: var(--display-intensity, 0.65);
 }
 
-/* 3. Bistable Electro-Cellulose Slate */
+/* 3. Bistable Electro-Cellulose Slate (High-Density E-Paper Matrix) */
 body.display-profile-epaper::before {
     content: " ";
     display: block;
@@ -2400,10 +2400,23 @@ body.display-profile-epaper::before {
     top: 0; left: 0; bottom: 0; right: 0;
     pointer-events: none;
     z-index: 9999;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)' opacity='0.15'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
-    opacity: var(--display-intensity, 0.70);
-    mix-blend-mode: overlay;
+    background:
+        /* Layer 1: High-density micro-capsule pigment grid */
+        radial-gradient(circle at 1.5px 1.5px, rgba(255, 255, 255, 0.08) 1px, transparent 1.2px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 2.5px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 2.5px),
+        /* Layer 2: Microscopic paper fiber & pigment specks */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='epaperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23epaperNoise)'/%3E%3C/svg%3E"),
+        /* Layer 3: Ambient matte paper perimeter vignette */
+        radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.5) 100%);
+    background-size: 2.5px 2.5px, 100% 2.5px, 2.5px 100%, 200px 200px, 100% 100%;
+    opacity: var(--display-intensity, 0.75);
+}
+
+/* E-Paper flat ink contrast (eliminate glowing phosphor halos for sharp physical print look) */
+body.display-profile-epaper,
+body.display-profile-epaper * {
+    text-shadow: none !important;
 }
 
 /* 4. MVD Archival Microfiche & Photoplotter */
