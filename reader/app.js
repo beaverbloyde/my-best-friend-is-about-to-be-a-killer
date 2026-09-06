@@ -245,6 +245,7 @@
         speechEnabled: localStorage.getItem('reader-speech-enabled') !== 'false',
         highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
         epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
+        epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration')) || 0.45,
         zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
         spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
         spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size')) || 3
@@ -368,9 +369,17 @@
             });
         }
 
-        // E-Paper Transition checkbox state
+        // E-Paper Transition checkbox state and duration
         const epaperToggle = document.getElementById('epaper-transition-toggle');
         if (epaperToggle) epaperToggle.checked = settings.epaperTransition;
+
+        const epaperDurationSlider = document.getElementById('epaper-duration-slider');
+        const epaperDurationVal = document.getElementById('epaper-duration-val');
+        const epaperDurationContainer = document.getElementById('epaper-duration-container');
+        if (epaperDurationSlider) epaperDurationSlider.value = settings.epaperDuration;
+        if (epaperDurationVal) epaperDurationVal.innerText = `${Number(settings.epaperDuration).toFixed(2)}s`;
+        if (epaperDurationContainer) epaperDurationContainer.style.display = settings.epaperTransition ? 'block' : 'none';
+        document.documentElement.style.setProperty('--epaper-bloom-duration', `${settings.epaperDuration}s`);
 
         // Update Theme selector buttons active state
         document.querySelectorAll('.theme-btn').forEach(btn => {
@@ -390,6 +399,7 @@
         localStorage.setItem('reader-speech-enabled', settings.speechEnabled);
         localStorage.setItem('reader-highlight-mode', settings.highlightMode);
         localStorage.setItem('reader-epaper-transition', settings.epaperTransition);
+        localStorage.setItem('reader-epaper-duration', settings.epaperDuration);
         localStorage.setItem('reader-zen-enabled', settings.zenEnabled);
         localStorage.setItem('reader-spotlight-enabled', settings.spotlightEnabled);
         localStorage.setItem('reader-spotlight-size', settings.spotlightSize);
@@ -559,10 +569,39 @@
 
         // Electro-Cellulose E-Paper Transition
         const epaperToggle = document.getElementById('epaper-transition-toggle');
+        const epaperDurationContainer = document.getElementById('epaper-duration-container');
+        const epaperDurationSlider = document.getElementById('epaper-duration-slider');
+        const epaperDurationVal = document.getElementById('epaper-duration-val');
+
         if (epaperToggle) {
             epaperToggle.addEventListener('change', (e) => {
                 settings.epaperTransition = e.target.checked;
+                if (epaperDurationContainer) {
+                    epaperDurationContainer.style.display = settings.epaperTransition ? 'block' : 'none';
+                }
                 saveSettings();
+                if (settings.epaperTransition) {
+                    triggerEpaperRefresh();
+                }
+            });
+        }
+
+        if (epaperDurationSlider) {
+            let previewDebounceTimer = null;
+            epaperDurationSlider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                settings.epaperDuration = val;
+                if (epaperDurationVal) {
+                    epaperDurationVal.innerText = `${val.toFixed(2)}s`;
+                }
+                document.documentElement.style.setProperty('--epaper-bloom-duration', `${val}s`);
+                saveSettings();
+
+                // Live preview with light debounce
+                clearTimeout(previewDebounceTimer);
+                previewDebounceTimer = setTimeout(() => {
+                    triggerEpaperRefresh();
+                }, 150);
             });
         }
 
@@ -1189,9 +1228,15 @@
         }
     }
 
+    let epaperTimeout = null;
     function triggerEpaperRefresh() {
         const bodyContainer = document.getElementById('document-body');
         if (!bodyContainer) return;
+
+        if (epaperTimeout) {
+            clearTimeout(epaperTimeout);
+            epaperTimeout = null;
+        }
 
         bodyContainer.classList.remove('epaper-assembling');
         void bodyContainer.offsetWidth; // force reflow
@@ -1201,9 +1246,13 @@
             window.sfx.playPaperRustle();
         }
 
-        setTimeout(() => {
+        const durationSec = typeof settings.epaperDuration === 'number' ? settings.epaperDuration : 0.45;
+        const totalDurationMs = Math.max(500, Math.round(durationSec * 1600));
+
+        epaperTimeout = setTimeout(() => {
             bodyContainer.classList.remove('epaper-assembling');
-        }, 750);
+            epaperTimeout = null;
+        }, totalDurationMs);
     }
 
     // Core Headless Parser
