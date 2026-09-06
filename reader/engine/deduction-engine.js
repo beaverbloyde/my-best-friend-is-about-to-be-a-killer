@@ -151,18 +151,18 @@ class DeductionEngine {
         const savedFontSize = parseInt(localStorage.getItem('game-font-size') || '13', 10);
         const savedLineHeight = parseFloat(localStorage.getItem('game-line-height') || '1.5');
         const savedFontFamily = localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace";
-        const savedScanlines = localStorage.getItem('game-scanlines') === 'true';
-        const savedScanlinesIntensity = parseInt(localStorage.getItem('game-scanlines-intensity') || '65', 10);
-        const savedScanlinesSpeed = parseInt(localStorage.getItem('game-scanlines-speed') || '2', 10);
+        const savedProfile = localStorage.getItem('game-display-profile') || (localStorage.getItem('game-scanlines') === 'true' ? 'crt' : 'clean');
+        const savedIntensity = parseInt(localStorage.getItem('game-display-intensity') || localStorage.getItem('game-scanlines-intensity') || '65', 10);
+        const savedSpeed = parseInt(localStorage.getItem('game-display-speed') || localStorage.getItem('game-scanlines-speed') || '2', 10);
 
         this.currentDisplaySettings = {
             theme: savedTheme,
             fontSize: isNaN(savedFontSize) ? 13 : savedFontSize,
             lineHeight: isNaN(savedLineHeight) ? 1.5 : savedLineHeight,
             fontFamily: savedFontFamily,
-            scanlines: savedScanlines,
-            scanlinesIntensity: isNaN(savedScanlinesIntensity) ? 65 : savedScanlinesIntensity,
-            scanlinesSpeed: isNaN(savedScanlinesSpeed) ? 2 : savedScanlinesSpeed
+            displayProfile: savedProfile,
+            displayIntensity: isNaN(savedIntensity) ? 65 : savedIntensity,
+            displaySpeed: isNaN(savedSpeed) ? 2 : savedSpeed
         };
 
         this.applyDisplaySettings(this.currentDisplaySettings);
@@ -173,6 +173,17 @@ class DeductionEngine {
                 const theme = btn.dataset.theme;
                 if (theme) {
                     this.currentDisplaySettings.theme = theme;
+                    this.applyDisplaySettings(this.currentDisplaySettings);
+                }
+            });
+        });
+
+        // Bind Display Profile Cards click
+        document.querySelectorAll('.game-profile-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const profile = btn.dataset.profile;
+                if (profile) {
+                    this.currentDisplaySettings.displayProfile = profile;
                     this.applyDisplaySettings(this.currentDisplaySettings);
                 }
             });
@@ -205,29 +216,20 @@ class DeductionEngine {
             });
         }
 
-        // Bind CRT Scanlines Toggle
-        const scanlinesToggle = document.getElementById('game-scanlines-toggle');
-        if (scanlinesToggle) {
-            scanlinesToggle.addEventListener('change', (e) => {
-                this.currentDisplaySettings.scanlines = e.target.checked;
+        // Bind Display Profile Intensity Slider
+        const displayIntensitySlider = document.getElementById('game-display-intensity-slider');
+        if (displayIntensitySlider) {
+            displayIntensitySlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.displayIntensity = parseInt(e.target.value, 10);
                 this.applyDisplaySettings(this.currentDisplaySettings);
             });
         }
 
-        // Bind CRT Scanlines Intensity Slider
-        const scanIntensitySlider = document.getElementById('game-scanlines-intensity-slider');
-        if (scanIntensitySlider) {
-            scanIntensitySlider.addEventListener('input', (e) => {
-                this.currentDisplaySettings.scanlinesIntensity = parseInt(e.target.value, 10);
-                this.applyDisplaySettings(this.currentDisplaySettings);
-            });
-        }
-
-        // Bind CRT Scanlines Speed Slider
-        const scanSpeedSlider = document.getElementById('game-scanlines-speed-slider');
-        if (scanSpeedSlider) {
-            scanSpeedSlider.addEventListener('input', (e) => {
-                this.currentDisplaySettings.scanlinesSpeed = parseInt(e.target.value, 10);
+        // Bind Display Profile Motion Speed Slider
+        const displaySpeedSlider = document.getElementById('game-display-speed-slider');
+        if (displaySpeedSlider) {
+            displaySpeedSlider.addEventListener('input', (e) => {
+                this.currentDisplaySettings.displaySpeed = parseInt(e.target.value, 10);
                 this.applyDisplaySettings(this.currentDisplaySettings);
             });
         }
@@ -256,17 +258,15 @@ class DeductionEngine {
     }
 
     applyDisplaySettings(settings) {
-        if (!settings) return;
-
-        // 1. Theme class on body
-        document.body.classList.remove('theme-soviet-amber', 'theme-soviet-emerald', 'theme-arctic', 'theme-gosplan', 'theme-monochrome');
+        // 1. Color Theme
+        THEMES.forEach(t => document.body.classList.remove(`theme-${t}`));
         document.body.classList.add(`theme-${settings.theme}`);
 
-        document.querySelectorAll('.game-theme-card').forEach(card => {
-            card.classList.toggle('active', card.dataset.theme === settings.theme);
+        document.querySelectorAll('.game-theme-card').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === settings.theme);
         });
 
-        // 2. Font Size
+        // 2. Workspace Text Size
         document.documentElement.style.setProperty('--game-font-size', `${settings.fontSize}px`);
         document.body.style.setProperty('--game-font-size', `${settings.fontSize}px`);
         const sizeValEl = document.getElementById('game-font-size-val');
@@ -274,7 +274,7 @@ class DeductionEngine {
         const sizeSlider = document.getElementById('game-font-size-slider');
         if (sizeSlider && parseInt(sizeSlider.value, 10) !== settings.fontSize) sizeSlider.value = settings.fontSize;
 
-        // 3. Line Height
+        // 3. Line Spacing
         document.documentElement.style.setProperty('--game-line-height', settings.lineHeight);
         document.body.style.setProperty('--game-line-height', settings.lineHeight);
         const lhValEl = document.getElementById('game-line-height-val');
@@ -288,40 +288,72 @@ class DeductionEngine {
         const fontSelect = document.getElementById('game-font-family-select');
         if (fontSelect && fontSelect.value !== settings.fontFamily) fontSelect.value = settings.fontFamily;
 
-        // 5. CRT Scanlines & Motion Controls
-        document.body.classList.toggle('crt-scanlines', !!settings.scanlines);
-        const scanlinesToggle = document.getElementById('game-scanlines-toggle');
-        if (scanlinesToggle) scanlinesToggle.checked = !!settings.scanlines;
+        // 5. Display Glass & Hardware Profile
+        document.body.classList.remove(
+            'display-profile-mesh',
+            'display-profile-plasma',
+            'display-profile-epaper',
+            'display-profile-microfiche',
+            'display-profile-frost',
+            'display-profile-crt',
+            'crt-scanlines',
+            'crt-static'
+        );
 
-        const scanlinesControls = document.getElementById('game-scanlines-controls');
-        if (scanlinesControls) {
-            scanlinesControls.style.display = settings.scanlines ? 'flex' : 'none';
+        const profile = settings.displayProfile || 'clean';
+        if (profile !== 'clean') {
+            document.body.classList.add(`display-profile-${profile}`);
+            if (profile === 'crt') {
+                document.body.classList.add('crt-scanlines');
+            }
         }
 
-        const intensity = typeof settings.scanlinesIntensity === 'number' ? settings.scanlinesIntensity : 65;
+        const intensity = typeof settings.displayIntensity === 'number' ? settings.displayIntensity : 65;
         const opacityVal = (intensity / 100).toFixed(2);
+        document.documentElement.style.setProperty('--display-intensity', opacityVal);
         document.documentElement.style.setProperty('--crt-opacity', opacityVal);
+        document.body.style.setProperty('--display-intensity', opacityVal);
         document.body.style.setProperty('--crt-opacity', opacityVal);
 
-        const intensitySlider = document.getElementById('game-scanlines-intensity-slider');
+        const speedIdx = typeof settings.displaySpeed === 'number' ? Math.max(0, Math.min(4, settings.displaySpeed)) : 2;
+        const preset = SCANLINE_SPEED_PRESETS[speedIdx] || SCANLINE_SPEED_PRESETS[2];
+
+        if (preset.isStatic) {
+            document.body.classList.add('crt-static');
+        } else {
+            document.documentElement.style.setProperty('--display-speed', preset.duration);
+            document.documentElement.style.setProperty('--crt-speed', preset.duration);
+            document.body.style.setProperty('--display-speed', preset.duration);
+            document.body.style.setProperty('--crt-speed', preset.duration);
+        }
+
+        // Update UI controls in modal
+        document.querySelectorAll('.game-profile-card').forEach(card => {
+            card.classList.toggle('active', card.dataset.profile === profile);
+        });
+
+        const profileControls = document.getElementById('game-profile-controls');
+        if (profileControls) {
+            profileControls.style.display = profile === 'clean' ? 'none' : 'flex';
+        }
+
+        const speedRow = document.getElementById('game-display-speed-row');
+        if (speedRow) {
+            speedRow.style.display = profile === 'crt' ? 'block' : 'none';
+        }
+
+        const intensitySlider = document.getElementById('game-display-intensity-slider');
         if (intensitySlider && parseInt(intensitySlider.value, 10) !== intensity) {
             intensitySlider.value = intensity;
         }
-        const intensityValEl = document.getElementById('game-scanlines-intensity-val');
+        const intensityValEl = document.getElementById('game-display-intensity-val');
         if (intensityValEl) intensityValEl.innerText = `${intensity}%`;
 
-        const speedIdx = typeof settings.scanlinesSpeed === 'number' ? Math.max(0, Math.min(4, settings.scanlinesSpeed)) : 2;
-        const preset = SCANLINE_SPEED_PRESETS[speedIdx] || SCANLINE_SPEED_PRESETS[2];
-
-        document.body.classList.toggle('crt-static', !!preset.isStatic);
-        document.documentElement.style.setProperty('--crt-speed', preset.duration);
-        document.body.style.setProperty('--crt-speed', preset.duration);
-
-        const speedSlider = document.getElementById('game-scanlines-speed-slider');
+        const speedSlider = document.getElementById('game-display-speed-slider');
         if (speedSlider && parseInt(speedSlider.value, 10) !== speedIdx) {
             speedSlider.value = speedIdx;
         }
-        const speedValEl = document.getElementById('game-scanlines-speed-val');
+        const speedValEl = document.getElementById('game-display-speed-val');
         if (speedValEl) speedValEl.innerText = preset.label;
 
         // Persist
@@ -330,9 +362,10 @@ class DeductionEngine {
         localStorage.setItem('game-font-size', settings.fontSize);
         localStorage.setItem('game-line-height', settings.lineHeight);
         localStorage.setItem('game-font-family', settings.fontFamily);
-        localStorage.setItem('game-scanlines', !!settings.scanlines);
-        localStorage.setItem('game-scanlines-intensity', intensity);
-        localStorage.setItem('game-scanlines-speed', speedIdx);
+        localStorage.setItem('game-display-profile', profile);
+        localStorage.setItem('game-display-intensity', intensity);
+        localStorage.setItem('game-display-speed', speedIdx);
+        localStorage.setItem('game-scanlines', profile === 'crt');
 
         // Re-apply category colors to all elements when theme changes
         this.refreshKeywordHighlights();
@@ -360,9 +393,9 @@ class DeductionEngine {
             fontSize: 13,
             lineHeight: 1.5,
             fontFamily: "'IBM Plex Mono', monospace",
-            scanlines: false,
-            scanlinesIntensity: 65,
-            scanlinesSpeed: 2
+            displayProfile: 'clean',
+            displayIntensity: 65,
+            displaySpeed: 2
         };
         this.applyDisplaySettings(this.currentDisplaySettings);
     }

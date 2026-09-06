@@ -361,27 +361,56 @@
                     </select>
                 </div>
 
-                <!-- CRT Scanlines Section -->
+                <!-- Display Glass & Hardware Profile Section -->
                 <div class="game-settings-section">
-                    <label class="game-toggle-container">
-                        <span>CRT SCANLINES & PHOSPHOR FLICKER</span>
-                        <input type="checkbox" id="game-scanlines-toggle">
-                    </label>
-                    <div id="game-scanlines-controls" style="margin-top: 4px; display: none; flex-direction: column; gap: 8px;">
+                    <div class="game-settings-label">DISPLAY GLASS & HARDWARE PROFILE</div>
+                    <div class="game-display-profile-grid">
+                        <button type="button" class="game-profile-card active" data-profile="clean" title="Modern flat industrial glass">
+                            <span class="game-profile-icon">🔲</span>
+                            <span class="game-profile-name">Clean Glass</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="mesh" title="TEMPEST RF wire shielding & anti-glare mesh">
+                            <span class="game-profile-icon">🛡️</span>
+                            <span class="game-profile-name">Tactical Mesh</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="plasma" title="Sub-pixel electroluminescent gas-plasma panel">
+                            <span class="game-profile-icon">⚡</span>
+                            <span class="game-profile-name">Plasma Grid</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="epaper" title="Bistable electro-cellulose paper slate">
+                            <span class="game-profile-icon">📄</span>
+                            <span class="game-profile-name">E-Paper Slate</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="microfiche" title="MVD archival microfilm with corner photoplotter registration marks">
+                            <span class="game-profile-icon">🗂️</span>
+                            <span class="game-profile-name">Microfiche</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="frost" title="Sub-zero perimeter frost condensation from Siberian cold">
+                            <span class="game-profile-icon">❄️</span>
+                            <span class="game-profile-name">Arctic Frost</span>
+                        </button>
+                        <button type="button" class="game-profile-card" data-profile="crt" title="Classic rolling electron beam & CRT scanlines">
+                            <span class="game-profile-icon">📺</span>
+                            <span class="game-profile-name">CRT Beam</span>
+                        </button>
+                    </div>
+
+                    <!-- Profile Adjustment Controls -->
+                    <div id="game-profile-controls" style="margin-top: 8px; display: none; flex-direction: column; gap: 8px;">
                         <div>
                             <div class="game-slider-header">
-                                <label for="game-scanlines-intensity-slider">SCANLINE INTENSITY</label>
-                                <span id="game-scanlines-intensity-val" class="game-slider-val">65%</span>
+                                <label for="game-display-intensity-slider">EFFECT INTENSITY</label>
+                                <span id="game-display-intensity-val" class="game-slider-val">65%</span>
                             </div>
-                            <input type="range" id="game-scanlines-intensity-slider" min="10" max="100" step="5" value="65" class="game-range-input">
+                            <input type="range" id="game-display-intensity-slider" min="15" max="100" step="5" value="65" class="game-range-input">
                         </div>
 
-                        <div>
+                        <div id="game-display-speed-row" style="display: none;">
                             <div class="game-slider-header">
-                                <label for="game-scanlines-speed-slider">MOTION SPEED</label>
-                                <span id="game-scanlines-speed-val" class="game-slider-val">Normal (7s)</span>
+                                <label for="game-display-speed-slider">MOTION SPEED</label>
+                                <span id="game-display-speed-val" class="game-slider-val">Normal (7s)</span>
                             </div>
-                            <input type="range" id="game-scanlines-speed-slider" min="0" max="4" step="1" value="2" class="game-range-input">
+                            <input type="range" id="game-display-speed-slider" min="0" max="4" step="1" value="2" class="game-range-input">
                             <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-tertiary); margin-top: 2px;">
                                 <span>Static</span>
                                 <span>Slow</span>

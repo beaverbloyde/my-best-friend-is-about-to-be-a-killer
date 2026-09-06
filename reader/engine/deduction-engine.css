@@ -2357,11 +2357,105 @@ header {
 }
 
 /* ============================================================
-   GAME TERMINAL DISPLAY & THEME SETTINGS
+   LOGOS-3 DISPLAY GLASS & HARDWARE PROFILE OVERLAYS
    ============================================================ */
 
-/* CRT Scanlines Overlay */
+/* 1. Tactical Polarized Mesh (TEMPEST RF Wire Shield) */
+body.display-profile-mesh::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.35) 0, rgba(0, 0, 0, 0.35) 1px, transparent 1px, transparent 3.5px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.35) 0, rgba(0, 0, 0, 0.35) 1px, transparent 1px, transparent 3.5px),
+        radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.45) 100%);
+    background-size: 4px 4px, 4px 4px, 100% 100%;
+    opacity: var(--display-intensity, 0.65);
+}
+
+/* 2. Electroluminescent Gas-Plasma Grid */
+body.display-profile-plasma::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        radial-gradient(circle at 1.5px 1.5px, transparent 1px, rgba(0, 0, 0, 0.65) 1.5px),
+        linear-gradient(rgba(0, 0, 0, 0.2) 50%, transparent 50%),
+        radial-gradient(circle at 50% 50%, transparent 70%, rgba(0, 0, 0, 0.35) 100%);
+    background-size: 3px 3px, 100% 3px, 100% 100%;
+    opacity: var(--display-intensity, 0.65);
+}
+
+/* 3. Bistable Electro-Cellulose Slate */
+body.display-profile-epaper::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)' opacity='0.15'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    opacity: var(--display-intensity, 0.70);
+    mix-blend-mode: overlay;
+}
+
+/* 4. MVD Archival Microfiche & Photoplotter */
+body.display-profile-microfiche::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ficheNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ficheNoise)' opacity='0.16'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    opacity: var(--display-intensity, 0.65);
+}
+body.display-profile-microfiche::after {
+    content: "+";
+    display: block;
+    position: fixed;
+    top: 14px; left: 14px;
+    font-family: var(--font-mono, monospace);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: calc(var(--display-intensity, 0.65) * 0.75);
+    pointer-events: none;
+    z-index: 9999;
+    text-shadow:
+        calc(100vw - 42px) 0 0 var(--accent),
+        0 calc(100vh - 42px) 0 var(--accent),
+        calc(100vw - 42px) calc(100vh - 42px) 0 var(--accent);
+}
+
+/* 5. Arctic Perimeter Frost & Thermal Trace */
+body.display-profile-frost::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        radial-gradient(ellipse at center, transparent 65%, rgba(186, 230, 253, 0.08) 85%, rgba(224, 242, 254, 0.22) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='frostNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23frostNoise)' opacity='0.09'/%3E%3C/svg%3E");
+    background-size: 100% 100%, 250px 250px;
+    opacity: var(--display-intensity, 0.75);
+    box-shadow: inset 0 0 50px rgba(186, 230, 253, 0.18);
+}
+
+/* 6. CRT Electron Scanlines & Phosphor Beam */
+body.display-profile-crt::before,
 body.crt-scanlines::before,
+body.display-profile-crt::after,
 body.crt-scanlines::after {
     content: " ";
     display: block;
@@ -2371,18 +2465,18 @@ body.crt-scanlines::after {
     z-index: 9999;
 }
 
-/* Layer 1: Fine Scanline Grid + Phosphor RGB Subpixels + Edge CRT Vignette */
+body.display-profile-crt::before,
 body.crt-scanlines::before {
     background:
         linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.38) 50%),
         linear-gradient(90deg, rgba(255, 0, 0, 0.035), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.035)),
         radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
     background-size: 100% 3.5px, 6px 100%, 100% 100%;
-    opacity: var(--crt-opacity, 0.65);
+    opacity: var(--display-intensity, var(--crt-opacity, 0.65));
     animation: crt-phosphor-jitter 0.12s infinite;
 }
 
-/* Layer 2: Moving CRT Electron Gun Refresh Beam / Rolling Scan Bar */
+body.display-profile-crt::after,
 body.crt-scanlines::after {
     background: linear-gradient(
         180deg,
@@ -2395,11 +2489,11 @@ body.crt-scanlines::after {
     );
     background-size: 100% 260px;
     background-repeat: no-repeat;
-    opacity: calc(var(--crt-opacity, 0.65) * 0.95);
-    animation: crt-beam-roll var(--crt-speed, 7s) linear infinite;
+    opacity: calc(var(--display-intensity, var(--crt-opacity, 0.65)) * 0.95);
+    animation: crt-beam-roll var(--display-speed, var(--crt-speed, 7s)) linear infinite;
 }
 
-/* When static mode is selected */
+body.display-profile-crt.crt-static::after,
 body.crt-scanlines.crt-static::after {
     display: none !important;
 }
@@ -2414,9 +2508,9 @@ body.crt-scanlines.crt-static::after {
 }
 
 @keyframes crt-phosphor-jitter {
-    0% { opacity: var(--crt-opacity, 0.65); }
-    50% { opacity: calc(var(--crt-opacity, 0.65) * 0.97); }
-    100% { opacity: var(--crt-opacity, 0.65); }
+    0% { opacity: var(--display-intensity, var(--crt-opacity, 0.65)); }
+    50% { opacity: calc(var(--display-intensity, var(--crt-opacity, 0.65)) * 0.97); }
+    100% { opacity: var(--display-intensity, var(--crt-opacity, 0.65)); }
 }
 
 /* Settings Modal Backdrop & Dialog */
@@ -2605,5 +2699,57 @@ body.crt-scanlines.crt-static::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Display Profile Grid & Cards */
+.game-display-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.game-profile-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 3px;
+    min-height: 48px;
+}
+
+.game-profile-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+}
+
+.game-profile-card.active {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+    box-shadow: 0 0 8px var(--accent-glow);
+    color: var(--accent);
+}
+
+.game-profile-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.game-profile-name {
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
