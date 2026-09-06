@@ -1740,12 +1740,33 @@
         }
     }
 
-    // 11. Russian Term Pronunciation Player (Web Speech API)
-    function speakRussian(text) {
+    // 11. Russian Term Pronunciation Player (Pre-rendered Audio + Web Speech API Fallback)
+    const RUSSIAN_AUDIO_MAP = {
+        'валенки': 'audio/pronunciations/valenki.mp3',
+        'valenki': 'audio/pronunciations/valenki.mp3',
+        'старшина': 'audio/pronunciations/starshina.mp3',
+        'starshina': 'audio/pronunciations/starshina.mp3',
+        'ушанка': 'audio/pronunciations/ushanka.mp3',
+        'ushanka': 'audio/pronunciations/ushanka.mp3',
+        'милиция': 'audio/pronunciations/militsiya.mp3',
+        'militsiya': 'audio/pronunciations/militsiya.mp3',
+        'теплосеть': 'audio/pronunciations/teploset.mp3',
+        'teploset': 'audio/pronunciations/teploset.mp3',
+        'батарея': 'audio/pronunciations/batarei.mp3',
+        'батареи': 'audio/pronunciations/batarei.mp3',
+        'batareya': 'audio/pronunciations/batarei.mp3',
+        'batarei': 'audio/pronunciations/batarei.mp3',
+        'сетунь': 'audio/pronunciations/setun.mp3',
+        'setun': 'audio/pronunciations/setun.mp3'
+    };
+
+    let currentPronounceAudio = null;
+
+    function fallbackSpeech(text) {
         if (!('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
-            const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_]/g, '').trim();
+            const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
             if (!cleanText) return;
 
             const utterance = new SpeechSynthesisUtterance(cleanText);
@@ -1753,7 +1774,6 @@
             utterance.rate = 0.85; // Slightly slower, clear pacing for vocabulary learning
             utterance.pitch = 1.0;
 
-            // Select Russian voice if available in browser
             const voices = window.speechSynthesis.getVoices();
             const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru')));
             if (ruVoice) {
@@ -1764,6 +1784,39 @@
         } catch (err) {
             console.warn('Speech synthesis error:', err);
         }
+    }
+
+    function speakRussian(text) {
+        const cleanKey = String(text)
+            .toLowerCase()
+            .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
+            .trim();
+        if (!cleanKey) return;
+
+        // 1. Check direct pre-rendered audio file for instant, reliable zero-latency playback
+        const audioSrc = RUSSIAN_AUDIO_MAP[cleanKey];
+        if (audioSrc) {
+            try {
+                if (currentPronounceAudio) {
+                    currentPronounceAudio.pause();
+                    currentPronounceAudio.currentTime = 0;
+                }
+                currentPronounceAudio = new Audio(audioSrc);
+                const playPromise = currentPronounceAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.warn('Audio playback error, falling back to Web Speech:', err);
+                        fallbackSpeech(text);
+                    });
+                }
+                return;
+            } catch (err) {
+                console.warn('Audio element error:', err);
+            }
+        }
+
+        // 2. Fallback to Web Speech Synthesis API
+        fallbackSpeech(text);
     }
 
     // Global Pronunciation Button Listener (Works in tooltips, footnote list, anywhere)
