@@ -2607,4 +2607,200 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
     animation: unlockPulse 1.8s ease-out;
 }
 
+/* ============================================================
+   19. LOGOS-3 DISPLAY GLASS & HARDWARE PROFILE OVERLAYS (READER)
+   ============================================================ */
+
+/* 1. Tactical Polarized Mesh (TEMPEST RF Wire Shield) */
+body.display-profile-mesh::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.35) 0, rgba(0, 0, 0, 0.35) 1px, transparent 1px, transparent 3.5px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.35) 0, rgba(0, 0, 0, 0.35) 1px, transparent 1px, transparent 3.5px),
+        radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.45) 100%);
+    background-size: 4px 4px, 4px 4px, 100% 100%;
+    opacity: var(--display-intensity, 0.65);
+}
+
+/* 2. Electroluminescent Gas-Plasma Grid */
+body.display-profile-plasma::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        radial-gradient(circle at 1.5px 1.5px, transparent 1px, rgba(0, 0, 0, 0.65) 1.5px),
+        linear-gradient(rgba(0, 0, 0, 0.2) 50%, transparent 50%),
+        radial-gradient(circle at 50% 50%, transparent 70%, rgba(0, 0, 0, 0.35) 100%);
+    background-size: 3px 3px, 100% 3px, 100% 100%;
+    opacity: var(--display-intensity, 0.65);
+}
+
+/* 3. Bistable Electro-Cellulose Slate (High-Density E-Paper Matrix) */
+body.display-profile-epaper::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        radial-gradient(circle at 1.5px 1.5px, rgba(255, 255, 255, 0.08) 1px, transparent 1.2px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 2.5px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.28) 0, rgba(0, 0, 0, 0.28) 1px, transparent 1px, transparent 2.5px),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='epaperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23epaperNoise)'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.5) 100%);
+    background-size: 2.5px 2.5px, 100% 2.5px, 2.5px 100%, 200px 200px, 100% 100%;
+    opacity: var(--display-intensity, 0.75);
+}
+
+body.display-profile-epaper,
+body.display-profile-epaper * {
+    text-shadow: none !important;
+}
+
+/* 4. MVD Archival Microfiche */
+body.display-profile-microfiche::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ficheNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ficheNoise)' opacity='0.16'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    opacity: var(--display-intensity, 0.65);
+}
+
+/* 5. Arctic Perimeter Frost & Thermal Trace */
+body.display-profile-frost::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        radial-gradient(ellipse at center, transparent 65%, rgba(186, 230, 253, 0.08) 85%, rgba(224, 242, 254, 0.22) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='frostNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23frostNoise)' opacity='0.09'/%3E%3C/svg%3E");
+    background-size: 100% 100%, 250px 250px;
+    opacity: var(--display-intensity, 0.75);
+    box-shadow: inset 0 0 50px rgba(186, 230, 253, 0.18);
+}
+
+/* 6. CRT Electron Scanlines & Phosphor Beam */
+body.display-profile-crt::before,
+body.display-profile-crt::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+body.display-profile-crt::before {
+    background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.38) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.035), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.035)),
+        radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
+    background-size: 100% 3.5px, 6px 100%, 100% 100%;
+    opacity: var(--display-intensity, 0.65);
+    animation: crt-phosphor-jitter 0.12s infinite;
+}
+
+body.display-profile-crt::after {
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0) 25%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.11) 50%,
+        rgba(0, 0, 0, 0.16) 52%,
+        transparent 100%
+    );
+    background-size: 100% 260px;
+    background-repeat: no-repeat;
+    opacity: calc(var(--display-intensity, 0.65) * 0.95);
+    animation: crt-beam-roll var(--display-speed, 7s) linear infinite;
+}
+
+body.display-profile-crt.crt-static::after {
+    display: none !important;
+}
+
+@keyframes crt-beam-roll {
+    0% {
+        background-position: 0 -260px;
+    }
+    100% {
+        background-position: 0 calc(100vh + 260px);
+    }
+}
+
+@keyframes crt-phosphor-jitter {
+    0% { opacity: var(--display-intensity, 0.65); }
+    50% { opacity: calc(var(--display-intensity, 0.65) * 0.97); }
+    100% { opacity: var(--display-intensity, 0.65); }
+}
+
+/* Reader Profile Cards Grid in Settings Drawer */
+.reader-display-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.reader-profile-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: var(--border-radius-sm);
+    min-height: 48px;
+}
+
+.reader-profile-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-primary);
+}
+
+.reader-profile-card.active {
+    border-color: var(--accent);
+    background: var(--bg-primary);
+    box-shadow: 0 0 8px var(--accent-glow, rgba(229, 169, 60, 0.3));
+    color: var(--accent);
+}
+
+.reader-profile-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.reader-profile-name {
+    font-size: 10px;
+    font-family: var(--font-mono, monospace);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
 

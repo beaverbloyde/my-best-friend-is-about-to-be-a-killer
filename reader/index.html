@@ -299,6 +299,67 @@
                 </div>
             </section>
 
+            <!-- Display Glass & Hardware Profile -->
+            <section class="settings-section">
+                <h4>Display Hardware Profile</h4>
+                <p class="section-desc">Applies tactical terminal glass overlays and authentic hardware visual characteristics.</p>
+                <div class="reader-display-profile-grid">
+                    <button type="button" class="reader-profile-card active" data-profile="clean">
+                        <span class="reader-profile-icon">🔲</span>
+                        <span class="reader-profile-name">Clean Glass</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="mesh">
+                        <span class="reader-profile-icon">🛡️</span>
+                        <span class="reader-profile-name">Tactical Mesh</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="plasma">
+                        <span class="reader-profile-icon">⚡</span>
+                        <span class="reader-profile-name">Plasma Grid</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="epaper">
+                        <span class="reader-profile-icon">📄</span>
+                        <span class="reader-profile-name">E-Paper Slate</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="microfiche">
+                        <span class="reader-profile-icon">🗂️</span>
+                        <span class="reader-profile-name">Microfiche</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="frost">
+                        <span class="reader-profile-icon">❄️</span>
+                        <span class="reader-profile-name">Arctic Frost</span>
+                    </button>
+                    <button type="button" class="reader-profile-card" data-profile="crt">
+                        <span class="reader-profile-icon">📺</span>
+                        <span class="reader-profile-name">CRT Beam</span>
+                    </button>
+                </div>
+
+                <div id="reader-profile-controls" style="margin-top: 10px; display: none; flex-direction: column; gap: 10px;">
+                    <div class="setting-item">
+                        <div class="slider-header">
+                            <label for="reader-display-intensity-slider">Effect Intensity</label>
+                            <span id="reader-display-intensity-val">65%</span>
+                        </div>
+                        <input type="range" id="reader-display-intensity-slider" min="15" max="100" step="5" value="65">
+                    </div>
+
+                    <div class="setting-item" id="reader-display-speed-row" style="display: none;">
+                        <div class="slider-header">
+                            <label for="reader-display-speed-slider">Motion Speed</label>
+                            <span id="reader-display-speed-val">Normal (7s)</span>
+                        </div>
+                        <input type="range" id="reader-display-speed-slider" min="0" max="4" step="1" value="2">
+                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); margin-top: 3px;">
+                            <span>Static</span>
+                            <span>Slow</span>
+                            <span>Normal</span>
+                            <span>Fast</span>
+                            <span>Rapid</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Character Dialogue Styling -->
                 <div class="setting-row">
                     <h4>Character Dialogue Styling</h4>

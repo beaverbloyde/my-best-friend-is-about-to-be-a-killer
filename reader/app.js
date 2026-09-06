@@ -246,6 +246,9 @@
         highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
         epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
         epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration')) || 0.50,
+        displayProfile: localStorage.getItem('reader-display-profile') || localStorage.getItem('game-display-profile') || 'clean',
+        displayIntensity: parseInt(localStorage.getItem('reader-display-intensity') || localStorage.getItem('game-display-intensity') || '65', 10),
+        displaySpeed: parseInt(localStorage.getItem('reader-display-speed') || localStorage.getItem('game-display-speed') || '2', 10),
         zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
         spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
         spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size')) || 3
@@ -381,6 +384,64 @@
         if (epaperDurationContainer) epaperDurationContainer.style.display = settings.epaperTransition ? 'block' : 'none';
         document.documentElement.style.setProperty('--epaper-bloom-duration', `${settings.epaperDuration}s`);
 
+        // Display Glass & Hardware Profile
+        document.body.classList.remove(
+            'display-profile-mesh',
+            'display-profile-plasma',
+            'display-profile-epaper',
+            'display-profile-microfiche',
+            'display-profile-frost',
+            'display-profile-crt',
+            'crt-static'
+        );
+
+        const profile = settings.displayProfile || 'clean';
+        if (profile !== 'clean') {
+            document.body.classList.add(`display-profile-${profile}`);
+        }
+
+        const displayIntensity = typeof settings.displayIntensity === 'number' ? settings.displayIntensity : 65;
+        const intensityOpacity = (displayIntensity / 100).toFixed(2);
+        document.documentElement.style.setProperty('--display-intensity', intensityOpacity);
+
+        const speedIdx = typeof settings.displaySpeed === 'number' ? Math.max(0, Math.min(4, settings.displaySpeed)) : 2;
+        const speedMap = [null, '14s', '7s', '3.5s', '1.8s'];
+        const speedLabels = ['Static', 'Slow (14s)', 'Normal (7s)', 'Fast (3.5s)', 'Rapid (1.8s)'];
+
+        if (speedIdx === 0) {
+            document.body.classList.add('crt-static');
+        } else {
+            document.documentElement.style.setProperty('--display-speed', speedMap[speedIdx]);
+        }
+
+        document.querySelectorAll('.reader-profile-card').forEach(card => {
+            card.classList.toggle('active', card.dataset.profile === profile);
+        });
+
+        const profileControls = document.getElementById('reader-profile-controls');
+        if (profileControls) {
+            profileControls.style.display = profile === 'clean' ? 'none' : 'flex';
+        }
+
+        const speedRow = document.getElementById('reader-display-speed-row');
+        if (speedRow) {
+            speedRow.style.display = profile === 'crt' ? 'block' : 'none';
+        }
+
+        const readerIntensitySlider = document.getElementById('reader-display-intensity-slider');
+        const readerIntensityVal = document.getElementById('reader-display-intensity-val');
+        if (readerIntensitySlider && parseInt(readerIntensitySlider.value, 10) !== displayIntensity) {
+            readerIntensitySlider.value = displayIntensity;
+        }
+        if (readerIntensityVal) readerIntensityVal.innerText = `${displayIntensity}%`;
+
+        const readerSpeedSlider = document.getElementById('reader-display-speed-slider');
+        const readerSpeedVal = document.getElementById('reader-display-speed-val');
+        if (readerSpeedSlider && parseInt(readerSpeedSlider.value, 10) !== speedIdx) {
+            readerSpeedSlider.value = speedIdx;
+        }
+        if (readerSpeedVal) readerSpeedVal.innerText = speedLabels[speedIdx];
+
         // Update Theme selector buttons active state
         document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -400,6 +461,10 @@
         localStorage.setItem('reader-highlight-mode', settings.highlightMode);
         localStorage.setItem('reader-epaper-transition', settings.epaperTransition);
         localStorage.setItem('reader-epaper-duration', settings.epaperDuration);
+        localStorage.setItem('reader-display-profile', settings.displayProfile);
+        localStorage.setItem('game-display-profile', settings.displayProfile);
+        localStorage.setItem('reader-display-intensity', settings.displayIntensity);
+        localStorage.setItem('reader-display-speed', settings.displaySpeed);
         localStorage.setItem('reader-zen-enabled', settings.zenEnabled);
         localStorage.setItem('reader-spotlight-enabled', settings.spotlightEnabled);
         localStorage.setItem('reader-spotlight-size', settings.spotlightSize);
@@ -602,6 +667,38 @@
                 previewDebounceTimer = setTimeout(() => {
                     triggerEpaperRefresh();
                 }, 150);
+            });
+        }
+
+        // Display Hardware Profile Cards
+        document.querySelectorAll('.reader-profile-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const profile = btn.dataset.profile;
+                if (profile) {
+                    settings.displayProfile = profile;
+                    applySettings();
+                    saveSettings();
+                }
+            });
+        });
+
+        // Display Profile Intensity Slider
+        const readerIntensitySlider = document.getElementById('reader-display-intensity-slider');
+        if (readerIntensitySlider) {
+            readerIntensitySlider.addEventListener('input', (e) => {
+                settings.displayIntensity = parseInt(e.target.value, 10);
+                applySettings();
+                saveSettings();
+            });
+        }
+
+        // Display Profile Motion Speed Slider
+        const readerSpeedSlider = document.getElementById('reader-display-speed-slider');
+        if (readerSpeedSlider) {
+            readerSpeedSlider.addEventListener('input', (e) => {
+                settings.displaySpeed = parseInt(e.target.value, 10);
+                applySettings();
+                saveSettings();
             });
         }
 
