@@ -227,11 +227,11 @@
                 </div>
             </div>
             <div class="docket-footer">
-                <div style="display: flex; gap: 8px;">
+                <div class="docket-footer-left">
                     <button onclick="window.gameEngine.clearDocket()" class="time-btn" title="Clear only docket slots">Clear Slots</button>
                     <button onclick="window.gameEngine.resetCaseProgress()" class="time-btn" title="Reset all keywords, lore dossiers, and progress for this case">Restart Case ↺</button>
                 </div>
-                <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn" style="background: var(--success); color: var(--bg-primary);">Verify Deduction ↵</button>
+                <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn docket-verify-btn" style="background: var(--success); color: var(--bg-primary);">Verify Deduction ↵</button>
             </div>
             <div class="docket-resize-handle" title="Drag to resize docket"></div>
         </div>
