@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 13:33:22">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="17" autoCount="344" editTime="87521">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-06 21:24:43">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="20" autoCount="494" editTime="115802">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -10,13 +10,13 @@
     <spellChecking auto="yes">en_US</spellChecking>
     <lastHandle>
       <entry key="editor">1bd7b006c55ac</entry>
-      <entry key="viewer">27601e10419ce</entry>
+      <entry key="viewer">9d0d0bb96c432</entry>
       <entry key="novel">e3cd568273a1d</entry>
       <entry key="outline">None</entry>
     </lastHandle>
     <autoReplace />
     <status>
-      <entry key="s03ddec" count="7" color="faded" shape="STAR">New</entry>
+      <entry key="s03ddec" count="8" color="faded" shape="STAR">New</entry>
       <entry key="s543b8b" count="0" color="red" shape="TRIANGLE">Note</entry>
       <entry key="sc8eaea" count="0" color="yellow" shape="CIRCLE_T">Draft</entry>
       <entry key="s8c0471" count="0" color="green" shape="STAR">Finished</entry>
@@ -28,7 +28,7 @@
       <entry key="i917a91" count="0" color="purple" shape="BLOCK_4">Main</entry>
     </importance>
   </settings>
-  <content items="10" novelWords="2307" notesWords="0" novelChars="13721" notesChars="0">
+  <content items="11" novelWords="3657" notesWords="0" novelChars="21290" notesChars="0">
     <item handle="e3cd568273a1d" parent="None" root="e3cd568273a1d" order="0" type="ROOT" class="NOVEL">
       <meta expanded="yes" />
       <name status="s03ddec" import="i96c4db">Novel</name>
@@ -46,12 +46,16 @@
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.1: Crime in the Future</name>
     </item>
     <item handle="8e0179d6fe5e5" parent="e3cd568273a1d" root="e3cd568273a1d" order="3" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="6850" wordCount="1146" paraCount="34" cursorPos="7387" />
+      <meta expanded="no" heading="H2" charCount="6850" wordCount="1146" paraCount="34" cursorPos="244" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.2: The Man on the News</name>
     </item>
     <item handle="1bd7b006c55ac" parent="e3cd568273a1d" root="e3cd568273a1d" order="4" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="32" wordCount="6" paraCount="1" cursorPos="37" />
+      <meta expanded="no" heading="H2" charCount="7564" wordCount="1350" paraCount="47" cursorPos="7666" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.3: The Charred Body</name>
+    </item>
+    <item handle="9d0d0bb96c432" parent="e3cd568273a1d" root="e3cd568273a1d" order="5" type="FILE" class="NOVEL" layout="DOCUMENT">
+      <meta expanded="no" heading="H2" charCount="37" wordCount="6" paraCount="0" cursorPos="46" />
+      <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.4: Prime Suspect</name>
     </item>
     <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
       <meta expanded="no" />
