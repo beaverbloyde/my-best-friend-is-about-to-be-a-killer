@@ -605,13 +605,6 @@
             });
         }
 
-        const epaperPreviewBtn = document.getElementById('epaper-preview-btn');
-        if (epaperPreviewBtn) {
-            epaperPreviewBtn.addEventListener('click', () => {
-                triggerEpaperRefresh();
-            });
-        }
-
         // Tactile SFX Controls
         const sfxToggle = document.getElementById('reader-sfx-toggle');
         const sfxSlider = document.getElementById('reader-sfx-volume-slider');
