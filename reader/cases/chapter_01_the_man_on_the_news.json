@@ -23,7 +23,7 @@
         {
           "type": "Broadcast Excerpt",
           "title": "Primorsky Krai Daily",
-          "text": "“...aid from [China] arrived at [Khabarovsk] this morning via freight [train] from [Pogranichny], though some [shipment] was delayed due to an ongoing investigation...”"
+          "text": "“...aid from [China] arrived at [Khabarovsk] [today] via freight [train] from [Pogranichny], though some [shipment] was delayed due to an ongoing investigation...”"
         },
         {
           "type": "Economic Column",
@@ -38,12 +38,12 @@
         {
           "type": "State Address",
           "title": "USSR Today (National Edition)",
-          "text": "“...The [chairwoman] said in her speech [yesterday]: \\\"The [state funds] will be [diverted] to the most affected area first...\\\"”"
+          "text": "“...The [chairwoman] said in her speech [yesterday]: ‘The [state funds] will be [diverted] to the most affected area first...’...”"
         },
         {
           "type": "Public Feed",
           "title": "Regional Anti-Corruption Network",
-          "text": "“...On [Monday], automated anti-corruption system flagged [Regional Freight Directorate] ledger. The reason cited: Highly suspicious [repair] of personal transportation...”"
+          "text": "“...On Monday, automated anti-corruption system flagged [Regional Freight Directorate] ledger. The reason cited: Highly suspicious [repair] of personal transportation...”"
         },
         {
           "type": "Tabloid Column",
@@ -58,7 +58,7 @@
         {
           "type": "Police Bulletin",
           "title": "Khabarovsk ROVD Official Dispatch",
-          "text": "“...The [colonel] of the [ROVD] said, \\\"The clues suggest that he had [fled] around evening to midnight on [Wednesday]. We have already contacted the [border] patrols...\\\"”"
+          "text": "“...The [colonel] of the [ROVD] said, ‘The clues suggest that he had [fled] around evening to midnight on Wednesday. High-alert [border] inspections will continue through [tomorrow]...’...”"
         }
       ]
     }
@@ -150,11 +150,13 @@
       "calendar",
       "temporal"
     ],
-    "Monday": [
-      "calendar"
+    "today": [
+      "calendar",
+      "temporal"
     ],
-    "Wednesday": [
-      "calendar"
+    "tomorrow": [
+      "calendar",
+      "temporal"
     ],
     "talk": [
       "verb"
@@ -206,7 +208,7 @@
     }
   ],
   "docket": {
-    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] of [slot:p1_org:noun,location] in [slot:p1_city:location].\n\nFew days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
+    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] for the [slot:p1_org:noun,location] in [slot:p1_city:location].\n\nA few days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
   },
   "solution": {
     "p1_title": "director",
@@ -218,10 +220,7 @@
     "p2_action": "pay",
     "p2_service": "repair",
     "p2_vehicle": "sports car",
-    "p3_time": [
-      "Wednesday",
-      "yesterday"
-    ],
+    "p3_time": "yesterday",
     "p3_motion": "fled",
     "p3_vehicle": "sports car",
     "p3_dest": "border"
