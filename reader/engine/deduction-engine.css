@@ -2419,7 +2419,7 @@ body.display-profile-epaper * {
     text-shadow: none !important;
 }
 
-/* 4. MVD Archival Microfiche & Photoplotter */
+/* 4. MVD Archival Microfiche */
 body.display-profile-microfiche::before {
     content: " ";
     display: block;
@@ -2430,23 +2430,6 @@ body.display-profile-microfiche::before {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ficheNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ficheNoise)' opacity='0.16'/%3E%3C/svg%3E");
     background-size: 140px 140px;
     opacity: var(--display-intensity, 0.65);
-}
-body.display-profile-microfiche::after {
-    content: "+";
-    display: block;
-    position: fixed;
-    top: 14px; left: 14px;
-    font-family: var(--font-mono, monospace);
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    opacity: calc(var(--display-intensity, 0.65) * 0.75);
-    pointer-events: none;
-    z-index: 9999;
-    text-shadow:
-        calc(100vw - 42px) 0 0 var(--accent),
-        0 calc(100vh - 42px) 0 var(--accent),
-        calc(100vw - 42px) calc(100vh - 42px) 0 var(--accent);
 }
 
 /* 5. Arctic Perimeter Frost & Thermal Trace */
