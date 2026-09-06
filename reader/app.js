@@ -1740,26 +1740,8 @@
         }
     }
 
-    // 11. Russian Term Pronunciation Player (Pre-rendered Audio + Web Speech API Fallback)
-    const RUSSIAN_AUDIO_MAP = {
-        'валенки': 'audio/pronunciations/valenki.mp3',
-        'valenki': 'audio/pronunciations/valenki.mp3',
-        'старшина': 'audio/pronunciations/starshina.mp3',
-        'starshina': 'audio/pronunciations/starshina.mp3',
-        'ушанка': 'audio/pronunciations/ushanka.mp3',
-        'ushanka': 'audio/pronunciations/ushanka.mp3',
-        'милиция': 'audio/pronunciations/militsiya.mp3',
-        'militsiya': 'audio/pronunciations/militsiya.mp3',
-        'теплосеть': 'audio/pronunciations/teploset.mp3',
-        'teploset': 'audio/pronunciations/teploset.mp3',
-        'батарея': 'audio/pronunciations/batarei.mp3',
-        'батареи': 'audio/pronunciations/batarei.mp3',
-        'batareya': 'audio/pronunciations/batarei.mp3',
-        'batarei': 'audio/pronunciations/batarei.mp3',
-        'сетунь': 'audio/pronunciations/setun.mp3',
-        'setun': 'audio/pronunciations/setun.mp3'
-    };
-
+    // 11. Dynamic Russian Term Pronunciation Player (On-the-fly streaming + in-memory audio caching)
+    const audioPronounceCache = new Map();
     let currentPronounceAudio = null;
 
     function fallbackSpeech(text) {
@@ -1787,36 +1769,46 @@
     }
 
     function speakRussian(text) {
-        const cleanKey = String(text)
-            .toLowerCase()
+        const cleanWord = String(text)
             .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
             .trim();
-        if (!cleanKey) return;
+        if (!cleanWord) return;
 
-        // 1. Check direct pre-rendered audio file for instant, reliable zero-latency playback
-        const audioSrc = RUSSIAN_AUDIO_MAP[cleanKey];
-        if (audioSrc) {
+        if (currentPronounceAudio) {
             try {
-                if (currentPronounceAudio) {
-                    currentPronounceAudio.pause();
-                    currentPronounceAudio.currentTime = 0;
-                }
-                currentPronounceAudio = new Audio(audioSrc);
-                const playPromise = currentPronounceAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(err => {
-                        console.warn('Audio playback error, falling back to Web Speech:', err);
-                        fallbackSpeech(text);
-                    });
-                }
-                return;
-            } catch (err) {
-                console.warn('Audio element error:', err);
-            }
+                currentPronounceAudio.pause();
+                currentPronounceAudio.currentTime = 0;
+            } catch (e) {}
         }
 
-        // 2. Fallback to Web Speech Synthesis API
-        fallbackSpeech(text);
+        const cacheKey = cleanWord.toLowerCase();
+
+        // 1. Check in-memory audio cache
+        if (audioPronounceCache.has(cacheKey)) {
+            const cachedAudio = audioPronounceCache.get(cacheKey);
+            cachedAudio.currentTime = 0;
+            currentPronounceAudio = cachedAudio;
+            cachedAudio.play().catch(err => {
+                console.warn('Cached audio playback error, falling back:', err);
+                fallbackSpeech(cleanWord);
+            });
+            return;
+        }
+
+        // 2. Dynamic high-quality TTS audio streaming (zero manual files needed for future chapters)
+        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ru&q=${encodeURIComponent(cleanWord)}`;
+        const audio = new Audio(ttsUrl);
+        currentPronounceAudio = audio;
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                audioPronounceCache.set(cacheKey, audio);
+            }).catch(err => {
+                console.warn('Dynamic stream error, falling back to Web Speech:', err);
+                fallbackSpeech(cleanWord);
+            });
+        }
     }
 
     // Global Pronunciation Button Listener (Works in tooltips, footnote list, anywhere)
