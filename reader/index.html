@@ -429,18 +429,18 @@
     </div>
 
     <!-- Chapter / Case Unlock Notification Toast -->
-    <div id="unlock-toast" class="toast hidden" style="border-left-color: var(--success); box-shadow: 0 8px 30px rgba(0,0,0,0.8), 0 0 16px rgba(34, 197, 94, 0.25);">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 22px;">🔓</span>
-            <div>
-                <div style="font-size: 10px; font-weight: 700; color: var(--success); letter-spacing: 1px; text-transform: uppercase;">CONTENT UNLOCKED</div>
-                <div id="unlock-toast-title" style="font-weight: 600; color: #fff; font-size: 13px;">Next Chapter Available!</div>
+    <div id="unlock-toast" class="toast unlock-toast hidden" role="status" aria-live="polite">
+        <div class="unlock-toast-content">
+            <span class="unlock-toast-icon" aria-hidden="true">🔓</span>
+            <div class="unlock-toast-body">
+                <div id="unlock-toast-badge" class="unlock-toast-badge">CONTENT UNLOCKED</div>
+                <div id="unlock-toast-title" class="unlock-toast-title">Next Chapter Available!</div>
             </div>
         </div>
-        <a id="unlock-toast-btn" href="#" class="toast-btn" style="text-decoration: none; color: #000; background: var(--success); font-weight: 700; border-color: var(--success); padding: 6px 12px; margin-left: 8px;">
+        <a id="unlock-toast-btn" href="#" class="toast-btn unlock-toast-btn">
             Open ↵
         </a>
-        <button id="unlock-toast-close-btn" class="toast-close" aria-label="Close message">&times;</button>
+        <button id="unlock-toast-close-btn" class="toast-close unlock-toast-close" aria-label="Close message">&times;</button>
     </div>
 
     <!-- Keyboard Shortcuts Modal -->

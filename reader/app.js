@@ -113,8 +113,19 @@
         const toast = document.getElementById('unlock-toast');
         if (!toast) return;
 
+        const badgeEl = document.getElementById('unlock-toast-badge');
         const titleEl = document.getElementById('unlock-toast-title');
         const btnEl = document.getElementById('unlock-toast-btn');
+
+        if (badgeEl) {
+            if (type === 'case') {
+                badgeEl.innerText = 'CASE UNLOCKED';
+            } else if (type === 'chapter') {
+                badgeEl.innerText = 'CHAPTER UNLOCKED';
+            } else {
+                badgeEl.innerText = 'CONTENT UNLOCKED';
+            }
+        }
 
         if (titleEl) {
             titleEl.innerText = title;

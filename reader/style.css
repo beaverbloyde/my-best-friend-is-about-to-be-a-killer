@@ -1805,12 +1805,119 @@ button.char-color-picker-wrapper {
     color: var(--text-primary);
 }
 
+/* Dedicated Unlock Notification Toast */
+.unlock-toast {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    min-width: 320px;
+    max-width: 480px;
+    border-left: 4px solid var(--accent);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6), 0 0 18px var(--accent-glow);
+}
+
+.unlock-toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+}
+
+.unlock-toast-icon {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.unlock-toast-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.unlock-toast-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    line-height: 1.2;
+}
+
+.unlock-toast-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.unlock-toast-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent) !important;
+    color: var(--bg-primary) !important;
+    border: 1px solid var(--accent) !important;
+    padding: 6px 14px;
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--font-inter);
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.unlock-toast-btn:hover {
+    background: var(--text-primary) !important;
+    border-color: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.unlock-toast-btn:active {
+    transform: translateY(0);
+}
+
+.unlock-toast-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: var(--border-radius-sm);
+    transition: color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.unlock-toast-close:hover {
+    color: var(--text-primary);
+}
+
 @media (max-width: 768px) {
     .toast {
         left: 16px;
         right: 16px;
         bottom: 16px;
         justify-content: space-between;
+    }
+    .unlock-toast {
+        min-width: auto;
+        max-width: none;
     }
 }
 
