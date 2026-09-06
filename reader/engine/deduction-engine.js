@@ -148,8 +148,8 @@ class DeductionEngine {
     }
 
     initDisplaySettings() {
-        // Retrieve stored settings or share with novel reader
-        const savedTheme = localStorage.getItem('game-theme') || localStorage.getItem('reader-theme') || 'soviet-amber';
+        // Independent Game Terminal Display Settings
+        const savedTheme = localStorage.getItem('game-theme') || 'soviet-amber';
         const savedFontSize = parseInt(localStorage.getItem('game-font-size') || '13', 10);
         const savedLineHeight = parseFloat(localStorage.getItem('game-line-height') || '1.5');
         const savedFontFamily = localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace";
@@ -358,8 +358,7 @@ class DeductionEngine {
         const speedValEl = document.getElementById('game-display-speed-val');
         if (speedValEl) speedValEl.innerText = preset.label;
 
-        // Persist
-        localStorage.setItem('reader-theme', settings.theme);
+        // Persist game terminal settings
         localStorage.setItem('game-theme', settings.theme);
         localStorage.setItem('game-font-size', settings.fontSize);
         localStorage.setItem('game-line-height', settings.lineHeight);

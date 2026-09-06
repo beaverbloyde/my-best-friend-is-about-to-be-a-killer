@@ -246,9 +246,9 @@
         highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
         epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
         epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration')) || 0.50,
-        displayProfile: localStorage.getItem('reader-display-profile') || localStorage.getItem('game-display-profile') || 'clean',
-        displayIntensity: parseInt(localStorage.getItem('reader-display-intensity') || localStorage.getItem('game-display-intensity') || '65', 10),
-        displaySpeed: parseInt(localStorage.getItem('reader-display-speed') || localStorage.getItem('game-display-speed') || '2', 10),
+        displayProfile: localStorage.getItem('reader-display-profile') || 'clean',
+        displayIntensity: parseInt(localStorage.getItem('reader-display-intensity') || '65', 10),
+        displaySpeed: parseInt(localStorage.getItem('reader-display-speed') || '2', 10),
         zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
         spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
         spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size')) || 3
@@ -462,7 +462,6 @@
         localStorage.setItem('reader-epaper-transition', settings.epaperTransition);
         localStorage.setItem('reader-epaper-duration', settings.epaperDuration);
         localStorage.setItem('reader-display-profile', settings.displayProfile);
-        localStorage.setItem('game-display-profile', settings.displayProfile);
         localStorage.setItem('reader-display-intensity', settings.displayIntensity);
         localStorage.setItem('reader-display-speed', settings.displaySpeed);
         localStorage.setItem('reader-zen-enabled', settings.zenEnabled);
