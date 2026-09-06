@@ -2257,21 +2257,82 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
     font-family: var(--font-mono);
 }
 
-/* 17. Document Body Page Transitions */
+/* 17. Document Body Page Transitions & Electro-Cellulose E-Paper Effect */
 #document-body {
     transition: opacity var(--transition-fast), transform var(--transition-fast);
     opacity: 1;
     transform: translateY(0);
+    position: relative;
 }
 
 #document-body.transition-exit {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
 }
 
 #document-body.transition-enter {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-4px);
+}
+
+/* Electro-Cellulose Magnetic Micro-Pigment Settling Wave */
+#document-body.epaper-refreshing {
+    animation: epaperPigmentBloom 0.28s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes epaperPigmentBloom {
+    0% {
+        opacity: 0.15;
+        filter: contrast(200%) brightness(125%) blur(0.8px);
+        transform: translateY(-2px);
+    }
+    35% {
+        opacity: 0.65;
+        filter: contrast(150%) brightness(85%) blur(0.4px);
+    }
+    70% {
+        opacity: 0.95;
+        filter: contrast(115%) brightness(105%) blur(0px);
+    }
+    100% {
+        opacity: 1;
+        filter: contrast(100%) brightness(100%) blur(0px);
+        transform: translateY(0);
+    }
+}
+
+/* The Subtle Magnetic Sweep Line Overlay */
+.epaper-sweep-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(var(--accent-rgb), 0.08) 48%,
+        rgba(var(--accent-rgb), 0.18) 50%,
+        rgba(var(--accent-rgb), 0.08) 52%,
+        transparent 100%
+    );
+    animation: epaperSweepScan 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes epaperSweepScan {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
 }
 
 /* 18. Case Investigation & Chapter Gating Integration */

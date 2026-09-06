@@ -244,6 +244,7 @@
         maxWidth: parseInt(localStorage.getItem('reader-max-width')) || 750,
         speechEnabled: localStorage.getItem('reader-speech-enabled') !== 'false',
         highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
+        epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
         zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
         spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
         spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size')) || 3
@@ -367,6 +368,10 @@
             });
         }
 
+        // E-Paper Transition checkbox state
+        const epaperToggle = document.getElementById('epaper-transition-toggle');
+        if (epaperToggle) epaperToggle.checked = settings.epaperTransition;
+
         // Update Theme selector buttons active state
         document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -384,6 +389,7 @@
         localStorage.setItem('reader-max-width', settings.maxWidth);
         localStorage.setItem('reader-speech-enabled', settings.speechEnabled);
         localStorage.setItem('reader-highlight-mode', settings.highlightMode);
+        localStorage.setItem('reader-epaper-transition', settings.epaperTransition);
         localStorage.setItem('reader-zen-enabled', settings.zenEnabled);
         localStorage.setItem('reader-spotlight-enabled', settings.spotlightEnabled);
         localStorage.setItem('reader-spotlight-size', settings.spotlightSize);
@@ -550,6 +556,22 @@
             applySettings();
             saveSettings();
         });
+
+        // Electro-Cellulose E-Paper Transition
+        const epaperToggle = document.getElementById('epaper-transition-toggle');
+        if (epaperToggle) {
+            epaperToggle.addEventListener('change', (e) => {
+                settings.epaperTransition = e.target.checked;
+                saveSettings();
+            });
+        }
+
+        const epaperPreviewBtn = document.getElementById('epaper-preview-btn');
+        if (epaperPreviewBtn) {
+            epaperPreviewBtn.addEventListener('click', () => {
+                triggerEpaperRefresh();
+            });
+        }
 
         // Tactile SFX Controls
         const sfxToggle = document.getElementById('reader-sfx-toggle');
@@ -1156,11 +1178,38 @@
             triggerSpotlightUpdate();
         }
 
-        // 10. Fade-in the new content
+        // 10. Reveal the new content with Electro-Cellulose E-Paper Magnetic Refresh
         bodyContainer.classList.remove('transition-exit');
-        bodyContainer.classList.add('transition-enter');
-        bodyContainer.offsetHeight; // trigger reflow
-        bodyContainer.classList.remove('transition-enter');
+        if (settings.epaperTransition) {
+            triggerEpaperRefresh();
+        } else {
+            bodyContainer.classList.add('transition-enter');
+            bodyContainer.offsetHeight; // trigger reflow
+            bodyContainer.classList.remove('transition-enter');
+        }
+    }
+
+    function triggerEpaperRefresh() {
+        const bodyContainer = document.getElementById('document-body');
+        if (!bodyContainer) return;
+
+        bodyContainer.classList.remove('epaper-refreshing');
+        void bodyContainer.offsetWidth; // force reflow
+        bodyContainer.classList.add('epaper-refreshing');
+
+        // Create the magnetic sweep scan line overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'epaper-sweep-overlay';
+        document.body.appendChild(overlay);
+
+        if (window.sfx && typeof window.sfx.playPaperRustle === 'function') {
+            window.sfx.playPaperRustle();
+        }
+
+        setTimeout(() => {
+            bodyContainer.classList.remove('epaper-refreshing');
+            overlay.remove();
+        }, 300);
     }
 
     // Core Headless Parser
