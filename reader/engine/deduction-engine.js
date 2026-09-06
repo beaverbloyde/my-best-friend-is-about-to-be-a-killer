@@ -28,6 +28,8 @@ const GOSPLAN_CATEGORY_COLORS = {
     noun: { hex: "#475569", text: "#1e293b", bg: "rgba(71, 85, 105, 0.14)", border: "#334155", icon: "📦", label: "Noun" }
 };
 
+const THEMES = ['soviet-amber', 'soviet-emerald', 'arctic', 'gosplan', 'monochrome'];
+
 const SCANLINE_SPEED_PRESETS = [
     { label: "Static", duration: "0s", isStatic: true },
     { label: "Slow (14s)", duration: "14s", isStatic: false },
