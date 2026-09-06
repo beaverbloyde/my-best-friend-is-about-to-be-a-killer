@@ -2257,12 +2257,11 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
     font-family: var(--font-mono);
 }
 
-/* 17. Document Body Page Transitions & Electro-Cellulose E-Paper Effect */
+/* 17. Document Body Page Transitions & Electro-Cellulose Pigment Bloom Effect */
 #document-body {
     transition: opacity var(--transition-fast), transform var(--transition-fast);
     opacity: 1;
     transform: translateY(0);
-    position: relative;
 }
 
 #document-body.transition-exit {
@@ -2275,63 +2274,38 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
     transform: translateY(-4px);
 }
 
-/* Electro-Cellulose Magnetic Micro-Pigment Settling Wave */
-#document-body.epaper-refreshing {
-    animation: epaperPigmentBloom 0.28s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+/* Electro-Cellulose Magnetic Micro-Pigment Blooming & Assembly Wave */
+#document-body.epaper-assembling > * {
+    animation: pigmentBloom 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes epaperPigmentBloom {
+#document-body.epaper-assembling > *:nth-child(1) { animation-delay: 0.00s; }
+#document-body.epaper-assembling > *:nth-child(2) { animation-delay: 0.03s; }
+#document-body.epaper-assembling > *:nth-child(3) { animation-delay: 0.06s; }
+#document-body.epaper-assembling > *:nth-child(4) { animation-delay: 0.09s; }
+#document-body.epaper-assembling > *:nth-child(5) { animation-delay: 0.12s; }
+#document-body.epaper-assembling > *:nth-child(6) { animation-delay: 0.15s; }
+#document-body.epaper-assembling > *:nth-child(7) { animation-delay: 0.18s; }
+#document-body.epaper-assembling > *:nth-child(8) { animation-delay: 0.20s; }
+#document-body.epaper-assembling > *:nth-child(n+9) { animation-delay: 0.22s; }
+
+@keyframes pigmentBloom {
     0% {
-        opacity: 0.15;
-        filter: contrast(200%) brightness(125%) blur(0.8px);
-        transform: translateY(-2px);
+        opacity: 0;
+        filter: blur(2px);
+        letter-spacing: 0.5px;
+        transform: translateY(4px);
     }
-    35% {
-        opacity: 0.65;
-        filter: contrast(150%) brightness(85%) blur(0.4px);
-    }
-    70% {
-        opacity: 0.95;
-        filter: contrast(115%) brightness(105%) blur(0px);
+    50% {
+        opacity: 0.75;
+        filter: blur(0.5px);
+        letter-spacing: 0.1px;
     }
     100% {
         opacity: 1;
-        filter: contrast(100%) brightness(100%) blur(0px);
+        filter: blur(0px);
+        letter-spacing: normal;
         transform: translateY(0);
-    }
-}
-
-/* The Subtle Magnetic Sweep Line Overlay */
-.epaper-sweep-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 9999;
-    background: linear-gradient(
-        180deg,
-        transparent 0%,
-        rgba(var(--accent-rgb), 0.08) 48%,
-        rgba(var(--accent-rgb), 0.18) 50%,
-        rgba(var(--accent-rgb), 0.08) 52%,
-        transparent 100%
-    );
-    animation: epaperSweepScan 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes epaperSweepScan {
-    0% {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    30% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(100%);
-        opacity: 0;
     }
 }
 

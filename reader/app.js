@@ -1193,23 +1193,17 @@
         const bodyContainer = document.getElementById('document-body');
         if (!bodyContainer) return;
 
-        bodyContainer.classList.remove('epaper-refreshing');
+        bodyContainer.classList.remove('epaper-assembling');
         void bodyContainer.offsetWidth; // force reflow
-        bodyContainer.classList.add('epaper-refreshing');
-
-        // Create the magnetic sweep scan line overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'epaper-sweep-overlay';
-        document.body.appendChild(overlay);
+        bodyContainer.classList.add('epaper-assembling');
 
         if (window.sfx && typeof window.sfx.playPaperRustle === 'function') {
             window.sfx.playPaperRustle();
         }
 
         setTimeout(() => {
-            bodyContainer.classList.remove('epaper-refreshing');
-            overlay.remove();
-        }, 300);
+            bodyContainer.classList.remove('epaper-assembling');
+        }, 750);
     }
 
     // Core Headless Parser
