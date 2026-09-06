@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-06 21:24:43"
+    "timestamp": "2026-09-06 21:56:43"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -39,7 +39,10 @@
     },
     "1bd7b006c55ac": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.3: The Charred Body", "line": 1, "tag": "", "counts": [7564, 1350, 47]}
+        "meta": {"level": "H2", "title": "Chapter 1.3: The Charred Body", "line": 1, "tag": "", "counts": [8637, 1512, 50]}
+      },
+      "document": {
+        "footnotes": ["fg5hd", "fvtrp", "fd6c9"]
       }
     },
     "9d0d0bb96c432": {
