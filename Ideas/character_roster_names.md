@@ -61,7 +61,9 @@ This document serves as the master naming, role, and relational quick-reference 
 
 ### **Senior Sergeant Semyon Timofeyevich Korobov** | *Старший сержант Семён Тимофеевич Коробов*
 * **Common Nickname:** "Uncle Senya" (*Дядя Сеня*).
-* **Role / Title:** Senior Desk Sergeant. Veteran officer, fatherly shift-cover, perpetual brewer of herbal taiga tea and cracker of cedar nuts.
+* **Role / Title:** Senior Desk Sergeant (*Starshiy Dezhurnyy Serzhant*), Pogranichny District ROVD.
+* **Rank & Career Background:** A 25+ year veteran of the district militsiya. Famously turned down promotions to Warrant Officer (*Praporshchik*) and the quartermaster track decades ago to avoid the nightmare of "material liability" (*materialnaya otvetstvennost'*) and Gosplan inventory audits, as well as refusing mandatory reassignment/schooling in Vladivostok. 
+* **Precinct Dynamic:** The beloved, unflappable "front desk soul" and fatherly anchor of the station. Perpetual brewer of herbal taiga tea and cracker of cedar nuts. While technically outranked by young academy-graduate officers like Junior Lieutenant Nadya Morozova, he is treated with deep respect and fond deference by the entire precinct; he affectionately covers Nadya's counter duties so she can pursue field investigations.
 
 ---
 

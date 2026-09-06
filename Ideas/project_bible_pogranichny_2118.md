@@ -430,7 +430,7 @@
 ## 24. Precinct Ensemble & Yuri's Thematic Story Beat
 
 ### The Recurring Precinct Roster
-* **Senior Sergeant Semyon "Uncle Senya" Korobov:** Veteran desk officer, fatherly shift-cover, perpetually brewing herbal tea and snacking on cedar nuts. Helps Nadya bypass desk duties.
+* **Senior Sergeant Semyon "Uncle Senya" Korobov:** Veteran desk officer (25+ years in service), fatherly shift-cover, perpetual brewer of herbal taiga tea and cracker of cedar nuts. Famously turned down the *Praporshchik* (Warrant Officer) / quartermaster exam decades ago to avoid the headache of material liability (*materialnaya otvetstvennost'*) and stay at the community front desk. While technically outranked by academy-fresh lieutenants like Nadya, he is the revered elder anchor of the precinct who happily covers her counter duties so she can pursue field investigations.
 * **Dr. Kira Romanovna Vlasova:** Chief Forensic Medical Examiner (*Sudmedekspert*). Sharp-tongued, pragmatic, unbothered by "magic", master of analog biology.
 * **Captain Boris "Borya" Lavrov:** Senior Operative of Criminal Search (*Starshiy Oper*). Field-smart detective in a leather flight jacket, Tarasov's pragmatic right hand.
 * **Zhenya Belov:** Mainframe custodian / Ternary Data Terminal archivist. Introverted, requires tea/pastry bribes for extra compute tokens.
