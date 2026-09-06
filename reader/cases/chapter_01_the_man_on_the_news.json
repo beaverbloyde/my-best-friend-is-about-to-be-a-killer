@@ -234,7 +234,10 @@
     "p2_action": "pay",
     "p2_service": "repair",
     "p2_vehicle": "sports car",
-    "p3_time": "Wednesday/yesterday",
+    "p3_time": [
+      "Wednesday",
+      "yesterday"
+    ],
     "p3_motion": "fled",
     "p3_vehicle": "sports car",
     "p3_dest": "border"
