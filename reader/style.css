@@ -47,7 +47,7 @@
     --accent-secondary-glow: rgba(230, 92, 0, 0.15);
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
     --glow-strength: 6px;
-    --speech-default: #ffc44d;
+    --speech-default: #67e8f9;
 }
 
 /* Theme: Emerald Phosphor (PIRM Mainframe) */
@@ -66,7 +66,7 @@
     --accent-secondary-glow: rgba(0, 204, 136, 0.15);
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
     --glow-strength: 6px;
-    --speech-default: #66ff99;
+    --speech-default: #ffd166;
 }
 
 /* Theme: Arctic Taiga / Pogranichny Frost */
@@ -104,7 +104,7 @@
     --accent-secondary-glow: rgba(110, 16, 16, 0.1);
     --shadow: 0 8px 30px rgba(10, 7, 5, 0.1);
     --glow-strength: 0px;
-    --speech-default: #0a0705;
+    --speech-default: #b91c1c;
 }
 
 /* Theme: Monochrome CRT / Microfiche */
@@ -123,7 +123,7 @@
     --accent-secondary-glow: rgba(200, 200, 200, 0.15);
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.85);
     --glow-strength: 4px;
-    --speech-default: #f5f5f5;
+    --speech-default: #38bdf8;
 }
 
 /* 3. Base Elements & Typography */
