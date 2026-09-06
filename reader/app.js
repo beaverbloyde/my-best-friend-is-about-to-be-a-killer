@@ -1740,8 +1740,29 @@
         }
     }
 
-    // 11. Dynamic Russian Term Pronunciation Player (On-the-fly streaming + in-memory audio caching)
-    const audioPronounceCache = new Map();
+    // 11. Russian Term Pronunciation Player (Hybrid: Auto-Indexed Audio Files + Dynamic Transliteration + Web Speech Fallback)
+    const CYRILLIC_TO_LATIN = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+        'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+        'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+        'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+        'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    };
+
+    function cyrillicToSlug(text) {
+        return String(text || '').toLowerCase().split('').map(c => {
+            if (CYRILLIC_TO_LATIN[c] !== undefined) return CYRILLIC_TO_LATIN[c];
+            if (/[a-z0-9\-_]/.test(c)) return c;
+            return '';
+        }).join('');
+    }
+
+    let pronunciationIndex = {};
+    fetch('audio/pronunciations/index.json')
+        .then(r => r.ok ? r.json() : {})
+        .then(data => { pronunciationIndex = data || {}; })
+        .catch(() => {});
+
     let currentPronounceAudio = null;
 
     function fallbackSpeech(text) {
@@ -1781,31 +1802,17 @@
             } catch (e) {}
         }
 
-        const cacheKey = cleanWord.toLowerCase();
+        const key = cleanWord.toLowerCase();
+        const slug = cyrillicToSlug(key);
+        const audioSrc = pronunciationIndex[key] || pronunciationIndex[slug] || `audio/pronunciations/${slug}.mp3`;
 
-        // 1. Check in-memory audio cache
-        if (audioPronounceCache.has(cacheKey)) {
-            const cachedAudio = audioPronounceCache.get(cacheKey);
-            cachedAudio.currentTime = 0;
-            currentPronounceAudio = cachedAudio;
-            cachedAudio.play().catch(err => {
-                console.warn('Cached audio playback error, falling back:', err);
-                fallbackSpeech(cleanWord);
-            });
-            return;
-        }
-
-        // 2. Dynamic high-quality TTS audio streaming (zero manual files needed for future chapters)
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ru&q=${encodeURIComponent(cleanWord)}`;
-        const audio = new Audio(ttsUrl);
+        const audio = new Audio(audioSrc);
         currentPronounceAudio = audio;
 
         const playPromise = audio.play();
         if (playPromise !== undefined) {
-            playPromise.then(() => {
-                audioPronounceCache.set(cacheKey, audio);
-            }).catch(err => {
-                console.warn('Dynamic stream error, falling back to Web Speech:', err);
+            playPromise.catch(err => {
+                console.warn('Local audio playback failed, falling back to Web Speech API:', err);
                 fallbackSpeech(cleanWord);
             });
         }
