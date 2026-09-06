@@ -14,8 +14,6 @@
     let activeDocPath = '';
     let focusedParagraphIndex = -1;
     let focusedResultIndex = -1;
-    let isProgrammaticScroll = false;
-    let programmaticScrollTimeout;
     let chapterMetadata = {
         povs: new Set(),
         focuses: new Set(),
@@ -1882,6 +1880,9 @@
             const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
             progressBar.style.width = `${percent}%`;
 
+            // Dynamically update paragraph spotlight in Zen Mode on scroll
+            triggerSpotlightUpdate();
+
             // Auto-mark chapter as read upon completing (scrolling past 80%)
             if (activeDocPath && isChapterUnlocked(activeDocPath) && percent >= 80) {
                 markChapterAsRead(activeDocPath);
@@ -1963,14 +1964,6 @@
 
     let spotlightThrottleTimeout;
     function triggerSpotlightUpdate() {
-        if (isProgrammaticScroll) {
-            clearTimeout(programmaticScrollTimeout);
-            programmaticScrollTimeout = setTimeout(() => {
-                isProgrammaticScroll = false;
-            }, 150);
-            return;
-        }
-
         if (!spotlightThrottleTimeout) {
             spotlightThrottleTimeout = requestAnimationFrame(() => {
                 updateSpotlight();
@@ -1984,75 +1977,53 @@
         const container = document.getElementById('document-body');
         if (!container || !wrapper) return;
         
-        const blocks = container.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .scene-divider');
-        const viewportHeight = window.innerHeight;
-        const targetCenter = viewportHeight * 0.35; // 35% down from top
-
-        // Find currently closest block to targetCenter to update focusedParagraphIndex
-        if (!isProgrammaticScroll && blocks.length > 0) {
-            let closestIndex = -1;
-            let minDistance = Infinity;
-            
-            blocks.forEach((block, idx) => {
-                const rect = block.getBoundingClientRect();
-                const blockCenter = rect.top + rect.height / 2;
-                const distance = Math.abs(blockCenter - targetCenter);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestIndex = idx;
-                }
-            });
-            
-            if (closestIndex !== -1) {
-                focusedParagraphIndex = closestIndex;
-            }
-        }
+        const blocks = Array.from(container.querySelectorAll('p, h1, h2, h3, h4, h5, h6, .scene-divider'));
+        if (blocks.length === 0) return;
 
         // Clean up spotlight classes if Zen/Spotlight is disabled
         if (!settings.zenEnabled || !settings.spotlightEnabled) {
             blocks.forEach(block => {
-                block.classList.remove('scroll-active');
-                block.classList.remove('scroll-neighbor-1');
-                block.classList.remove('scroll-neighbor-2');
+                block.classList.remove('scroll-active', 'scroll-neighbor-1', 'scroll-neighbor-2');
             });
             return;
         }
-        
-        // Define focus zone half-heights (bounds around targetCenter) based on spotlightSize
-        let activeRange = 60;       // Highlight at 1.0 opacity
-        let neighbor1Range = 140;   // Highlight at 0.65 opacity
-        let neighbor2Range = 220;   // Highlight at 0.40 opacity
-        
-        const size = parseInt(settings.spotlightSize) || 3;
-        if (size === 1) {
-            activeRange = 40;
-            neighbor1Range = 0;
-            neighbor2Range = 0;
-        } else if (size === 5) {
-            activeRange = 100;
-            neighbor1Range = 220;
-            neighbor2Range = 340;
-        }
-        
-        blocks.forEach(block => {
-            block.classList.remove('scroll-active');
-            block.classList.remove('scroll-neighbor-1');
-            block.classList.remove('scroll-neighbor-2');
-            
+
+        const viewportHeight = window.innerHeight;
+        const targetCenter = viewportHeight * 0.35; // 35% down from top
+
+        // Find currently closest block to targetCenter to update focusedParagraphIndex
+        let closestIndex = -1;
+        let minDistance = Infinity;
+
+        blocks.forEach((block, idx) => {
             const rect = block.getBoundingClientRect();
-            
             // Overlap check: is this element covering the target reading center line?
-            // (Extremely important for long paragraphs)
-            const overlapsTarget = (rect.top <= targetCenter && rect.bottom >= targetCenter);
-            
+            if (rect.top <= targetCenter && rect.bottom >= targetCenter) {
+                closestIndex = idx;
+                minDistance = 0;
+                return;
+            }
             const blockCenter = rect.top + rect.height / 2;
             const distance = Math.abs(blockCenter - targetCenter);
-            
-            if (overlapsTarget || distance <= activeRange) {
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestIndex = idx;
+            }
+        });
+
+        if (closestIndex !== -1) {
+            focusedParagraphIndex = closestIndex;
+        }
+
+        const size = parseInt(settings.spotlightSize) || 3;
+        blocks.forEach((block, idx) => {
+            block.classList.remove('scroll-active', 'scroll-neighbor-1', 'scroll-neighbor-2');
+            const diff = Math.abs(idx - closestIndex);
+            if (diff === 0) {
                 block.classList.add('scroll-active');
-            } else if (neighbor1Range > 0 && distance <= neighbor1Range) {
+            } else if (size >= 3 && diff === 1) {
                 block.classList.add('scroll-neighbor-1');
-            } else if (neighbor2Range > 0 && distance <= neighbor2Range) {
+            } else if (size >= 5 && diff === 2) {
                 block.classList.add('scroll-neighbor-2');
             }
         });
@@ -2245,17 +2216,22 @@
                 }
             }
 
-            // 'ArrowDown' or 'ArrowUp' focuses Next/Previous Paragraph (tap only, holding scrolls smoothly)
-            if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !e.repeat) {
+            // 'ArrowDown' or 'ArrowUp' focuses Next/Previous Paragraph (supports single taps & continuous holding)
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 const blocks = Array.from(document.querySelectorAll('#document-body p, #document-body h1, #document-body h2, #document-body h3, #document-body h4, #document-body h5, #document-body h6, #document-body .scene-divider'));
                 if (blocks.length > 0) {
                     const wrapper = document.getElementById('document-wrapper');
                     const targetCenter = window.innerHeight * 0.35;
                     
-                    if (focusedParagraphIndex === -1) {
+                    if (focusedParagraphIndex < 0 || focusedParagraphIndex >= blocks.length) {
                         let minDistance = Infinity;
                         blocks.forEach((block, idx) => {
                             const rect = block.getBoundingClientRect();
+                            if (rect.top <= targetCenter && rect.bottom >= targetCenter) {
+                                focusedParagraphIndex = idx;
+                                minDistance = 0;
+                                return;
+                            }
                             const blockCenter = rect.top + rect.height / 2;
                             const distance = Math.abs(blockCenter - targetCenter);
                             if (distance < minDistance) {
@@ -2272,7 +2248,7 @@
                         targetIndex = Math.max(0, focusedParagraphIndex - 1);
                     }
                     
-                    if (targetIndex !== focusedParagraphIndex || focusedParagraphIndex === -1) {
+                    if (targetIndex !== focusedParagraphIndex || e.repeat) {
                         focusedParagraphIndex = targetIndex;
                         const targetBlock = blocks[targetIndex];
                         const rect = targetBlock.getBoundingClientRect();
@@ -2280,35 +2256,12 @@
                         const relativeTop = rect.top - wrapperRect.top + wrapper.scrollTop;
                         const targetScrollTop = relativeTop + (rect.height / 2) - targetCenter;
                         
-                        isProgrammaticScroll = true;
                         wrapper.scrollTo({
                             top: Math.max(0, targetScrollTop),
-                            behavior: 'smooth'
+                            behavior: e.repeat ? 'auto' : 'smooth'
                         });
                         
-                        // Apply active class instantly for snappy visual feedback if enabled
-                        if (settings.zenEnabled && settings.spotlightEnabled) {
-                            blocks.forEach((block, idx) => {
-                                block.classList.remove('scroll-active');
-                                block.classList.remove('scroll-neighbor-1');
-                                block.classList.remove('scroll-neighbor-2');
-                                
-                                const size = parseInt(settings.spotlightSize) || 3;
-                                if (idx === targetIndex) {
-                                    block.classList.add('scroll-active');
-                                } else if (size >= 3 && Math.abs(idx - targetIndex) === 1) {
-                                    block.classList.add('scroll-neighbor-1');
-                                } else if (size >= 5 && Math.abs(idx - targetIndex) === 2) {
-                                    block.classList.add('scroll-neighbor-2');
-                                }
-                            });
-                        }
-
-                        clearTimeout(programmaticScrollTimeout);
-                        programmaticScrollTimeout = setTimeout(() => {
-                            isProgrammaticScroll = false;
-                        }, 500);
-                        
+                        updateSpotlight();
                         e.preventDefault();
                     }
                 }
