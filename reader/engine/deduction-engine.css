@@ -1499,7 +1499,8 @@ header {
     gap: 8px;
 }
 
-.docket-action-btn {
+.docket-action-btn,
+.modal-close-btn {
     background: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
@@ -1513,12 +1514,20 @@ header {
     line-height: 1;
     border-radius: 3px;
     transition: all 0.15s ease;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.docket-action-btn:hover {
+.docket-action-btn:hover,
+.modal-close-btn:hover {
     color: var(--text-primary);
     border-color: var(--accent);
     background: var(--bg-primary);
+}
+
+.docket-action-btn:active,
+.modal-close-btn:active {
+    transform: scale(0.94);
 }
 
 .docket-resize-handle {

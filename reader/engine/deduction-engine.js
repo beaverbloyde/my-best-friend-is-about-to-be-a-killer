@@ -1768,7 +1768,7 @@ class DeductionEngine {
                     <div class="lore-viewer-header">
                         <div style="font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1.5px;">${foundLore.tag || "ARCHIVE"}</div>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <button onclick="window.gameEngine.closeLoreModal('${loreId}')" style="background: transparent; border: none; color: var(--text-primary); font-size: 16px; cursor: pointer; line-height: 1; padding: 2px 6px;">✕</button>
+                            <button onclick="window.gameEngine.closeLoreModal('${loreId}')" class="modal-close-btn" title="Close dossier">✕</button>
                         </div>
                     </div>
                     <div class="lore-viewer-body">
@@ -1858,7 +1858,7 @@ class DeductionEngine {
                     <div class="lore-viewer-header">
                         <div style="font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">📋 ${t.badge || clue.title || "OFFICIAL DOCUMENT"}</div>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <button onclick="window.gameEngine.closeTableModal('${modalId}')" style="background: transparent; border: none; color: var(--text-primary); font-size: 16px; cursor: pointer; line-height: 1; padding: 2px 6px;">✕</button>
+                            <button onclick="window.gameEngine.closeTableModal('${modalId}')" class="modal-close-btn" title="Close document">✕</button>
                         </div>
                     </div>
                     <div class="lore-viewer-body" style="padding: 16px; display: flex; flex-direction: column; overflow: hidden;">
