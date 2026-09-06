@@ -2364,9 +2364,6 @@ class DeductionEngine {
             if (userVal !== undefined && userVal !== null && userVal !== "") {
                 if (Array.isArray(correctAns)) {
                     isCorrect = correctAns.includes(userVal);
-                } else if (typeof correctAns === "string" && correctAns.includes("/")) {
-                    const acceptable = correctAns.split("/").map(s => s.trim());
-                    isCorrect = acceptable.includes(userVal);
                 } else {
                     isCorrect = (userVal === correctAns);
                 }
