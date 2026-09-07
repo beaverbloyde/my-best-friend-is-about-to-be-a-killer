@@ -817,6 +817,7 @@ class DeductionEngine {
         if (!('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
+            window.speechSynthesis.resume();
             const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
             if (!cleanText) return;
 
@@ -824,11 +825,14 @@ class DeductionEngine {
             utterance.lang = 'ru-RU';
             utterance.rate = 0.85; // Natural measured pacing for vocabulary learning
             utterance.pitch = 1.0;
+            utterance.volume = 1.0;
 
             const voices = window.speechSynthesis.getVoices();
-            const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru')));
-            if (ruVoice) {
-                utterance.voice = ruVoice;
+            if (voices && voices.length > 0) {
+                const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru') || v.lang.includes('ru')));
+                if (ruVoice) {
+                    utterance.voice = ruVoice;
+                }
             }
 
             window.speechSynthesis.speak(utterance);
@@ -852,16 +856,38 @@ class DeductionEngine {
 
         const key = cleanWord.toLowerCase();
         const slug = this.cyrillicToSlug(key);
-        const audioSrc = (this.pronunciationIndex && (this.pronunciationIndex[key] || this.pronunciationIndex[slug])) || `audio/pronunciations/${slug}.mp3`;
+        const prefix = window.location.pathname.includes('/reader') ? '' : 'reader/';
 
-        const audio = new Audio(audioSrc);
-        this.currentPronounceAudio = audio;
+        let audioSrc = null;
+        if (this.pronunciationIndex && this.pronunciationIndex[key]) {
+            const raw = this.pronunciationIndex[key];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+        } else if (this.pronunciationIndex && this.pronunciationIndex[slug]) {
+            const raw = this.pronunciationIndex[slug];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+        }
 
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(err => {
-                this.fallbackSpeech(cleanWord);
-            });
+        if (audioSrc) {
+            const audio = new Audio(audioSrc);
+            audio.volume = 1.0;
+            this.currentPronounceAudio = audio;
+
+            let hasFallenBack = false;
+            const triggerFallback = () => {
+                if (!hasFallenBack) {
+                    hasFallenBack = true;
+                    this.fallbackSpeech(cleanWord);
+                }
+            };
+
+            audio.onerror = () => triggerFallback();
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => triggerFallback());
+            }
+        } else {
+            this.fallbackSpeech(cleanWord);
         }
     }
 

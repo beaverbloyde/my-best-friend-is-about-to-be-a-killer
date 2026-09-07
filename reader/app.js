@@ -1959,18 +1959,22 @@
         if (!('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
+            window.speechSynthesis.resume();
             const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
             if (!cleanText) return;
 
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'ru-RU';
-            utterance.rate = 0.85; // Slightly slower, clear pacing for vocabulary learning
+            utterance.rate = 0.85; // Natural measured pacing for vocabulary learning
             utterance.pitch = 1.0;
+            utterance.volume = 1.0;
 
             const voices = window.speechSynthesis.getVoices();
-            const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru')));
-            if (ruVoice) {
-                utterance.voice = ruVoice;
+            if (voices && voices.length > 0) {
+                const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru') || v.lang.includes('ru')));
+                if (ruVoice) {
+                    utterance.voice = ruVoice;
+                }
             }
 
             window.speechSynthesis.speak(utterance);
@@ -1994,17 +1998,38 @@
 
         const key = cleanWord.toLowerCase();
         const slug = cyrillicToSlug(key);
-        const audioSrc = pronunciationIndex[key] || pronunciationIndex[slug] || `audio/pronunciations/${slug}.mp3`;
+        const prefix = window.location.pathname.includes('/reader') ? '' : 'reader/';
 
-        const audio = new Audio(audioSrc);
-        currentPronounceAudio = audio;
+        let audioSrc = null;
+        if (pronunciationIndex && pronunciationIndex[key]) {
+            const raw = pronunciationIndex[key];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+        } else if (pronunciationIndex && pronunciationIndex[slug]) {
+            const raw = pronunciationIndex[slug];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+        }
 
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(err => {
-                console.warn('Local audio playback failed, falling back to Web Speech API:', err);
-                fallbackSpeech(cleanWord);
-            });
+        if (audioSrc) {
+            const audio = new Audio(audioSrc);
+            audio.volume = 1.0;
+            currentPronounceAudio = audio;
+
+            let hasFallenBack = false;
+            const triggerFallback = () => {
+                if (!hasFallenBack) {
+                    hasFallenBack = true;
+                    fallbackSpeech(cleanWord);
+                }
+            };
+
+            audio.onerror = () => triggerFallback();
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => triggerFallback());
+            }
+        } else {
+            fallbackSpeech(cleanWord);
         }
     }
 
