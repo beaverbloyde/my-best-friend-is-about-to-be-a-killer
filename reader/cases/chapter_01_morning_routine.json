@@ -280,16 +280,16 @@
     },
     "ROVD": {
       "id": "lore-rovd",
-      "tag": "MVD PRIMORSKY KRAI // DISTRICT MILITSIYA DIRECTIVE",
-      "title": "Pogranichny District Department of Internal Affairs (ROVD)",
+      "tag": "USSR STATE DIRECTORY // LAW ENFORCEMENT & PUBLIC SECURITY",
+      "title": "District Department of Internal Affairs (ROVD)",
       "fullName": "Районный отдел внутренних дел (District Department of Internal Affairs)",
       "cyrillic": "Районный отдел внутренних дел [rɐˈjonːɨj ɐdˈdʲel vnʉtrʲɪnʲɪx dʲel] (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])",
-      "facility": "Regional Militsiya Precinct ([ROVD])",
-      "location": "Central Sector, [Pogranichny], [Primorsky Krai]",
+      "facility": "Territorial Militsiya Precinct ([ROVD])",
+      "jurisdiction": "Municipal & District Level // Ministry of Internal Affairs ([MVD])",
       "requiredWords": [
         "ROVD"
       ],
-      "body": "The **Pogranichny [ROVD]** is the primary law enforcement and public security headquarters for the border district.\n\n**Structure & Role:**\nOperating under the territorial jurisdiction of the Primorsky Krai Directorate of the [MVD], the precinct houses municipal militsiya units, criminal investigators (*следователи*), and 24-hour duty desks (*дежурная часть*). Its duties include municipal patrols, rapid crisis intervention, forensic registry maintenance, and coordinating security logistics for state institutions such as [PIRM].\n\nThe precinct maintains automated telegraphic connections with Vladivostok central command and operates duty investigator desks 24 hours a day for emergency inquiries and civilian reports.\n\nCitizens registering emergency security or safety alerts are mandated to present initial statements at the duty officer desk."
+      "body": "A **District Department of Internal Affairs** ([ROVD]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs ([MVD]).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
     },
     "WSS": {
       "id": "lore-wss",
