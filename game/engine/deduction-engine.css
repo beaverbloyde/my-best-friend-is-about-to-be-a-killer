@@ -1409,10 +1409,19 @@ header {
     color: var(--text-secondary);
 }
 
-.tutorial-tips-box strong {
+.tutorial-tips-box > strong,
+.tutorial-tips-title {
     color: var(--accent);
     display: block;
     margin-bottom: 6px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.tutorial-tips-box li strong {
+    color: var(--text-primary);
+    display: inline;
+    font-weight: 700;
 }
 
 .tutorial-tips-box ul {
