@@ -545,7 +545,8 @@ class DeductionEngine {
 
     async loadRegistry(url) {
         try {
-            const res = await fetch(url);
+            const cacheBustUrl = url.includes('?') ? `${url}&t=${Date.now()}` : `${url}?t=${Date.now()}`;
+            const res = await fetch(cacheBustUrl);
             if (!res.ok) throw new Error("Failed to fetch registry");
             const registry = await res.json();
             this.registry = registry;
