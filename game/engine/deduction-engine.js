@@ -3048,6 +3048,150 @@ class DeductionEngine {
         }
     }
 
+    getSaveDataSnapshot() {
+        const relevantPatterns = [
+            /^chapter_read_/,
+            /^case_solved_/,
+            /^case_progress_/,
+            /^chapter_keywords_/,
+            /^deduction_engine_save_/,
+            'case_selected',
+            'deduction_engine_tutorial_suppressed',
+            'docket_width',
+            'docket_height',
+            /^lore_.*_(width|height)/,
+            /^table_.*_(width|height)/,
+            'chronos_bookmark_path',
+            'chronos_bookmark_ratio',
+            'reader-theme',
+            'reader-font-family',
+            'reader-custom-font',
+            'reader-font-size',
+            'reader-line-height',
+            'reader-max-width',
+            'reader-speech-enabled',
+            'reader-highlight-mode',
+            'reader-epaper-transition',
+            'reader-epaper-duration',
+            'reader-display-profile',
+            'reader-display-intensity',
+            'reader-display-speed',
+            'reader-zen-enabled',
+            'reader-spotlight-enabled',
+            'reader-spotlight-size',
+            'game-theme',
+            'game-font-size',
+            'game-line-height',
+            'game-font-family',
+            'game-display-profile',
+            'game-display-intensity',
+            'game-display-speed',
+            'game-scanlines',
+            'game-scanlines-intensity',
+            'game-scanlines-speed',
+            'sfx_enabled',
+            'sfx_volume',
+            'bgm_volume',
+            'bgm_track_id',
+            'bgm_is_playing'
+        ];
+
+        const storageData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key) continue;
+            const isMatch = relevantPatterns.some(pat => {
+                return typeof pat === 'string' ? key === pat : pat.test(key);
+            });
+            if (isMatch) {
+                storageData[key] = localStorage.getItem(key);
+            }
+        }
+
+        return {
+            app: "LOGOS-3",
+            version: "2.2",
+            exportedAt: new Date().toISOString(),
+            schemaVersion: 1,
+            data: storageData
+        };
+    }
+
+    exportSaveData() {
+        window.sfx?.playClick();
+        const payload = this.getSaveDataSnapshot();
+        const jsonStr = JSON.stringify(payload, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10);
+        const timeStr = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0') + String(now.getSeconds()).padStart(2, '0');
+        const filename = `logos3_save_${dateStr}_${timeStr}.json`;
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showToast(`✓ Save archive exported (${filename})`);
+    }
+
+    importSaveData(inputEl) {
+        const file = inputEl?.files && inputEl.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                if (!parsed || typeof parsed !== 'object') {
+                    throw new Error("Invalid file content.");
+                }
+                const dataToRestore = parsed.data || parsed.storageData || (parsed.schemaVersion ? null : parsed);
+                if (!dataToRestore || typeof dataToRestore !== 'object') {
+                    throw new Error("No recognized LOGOS-3 save data found in this file.");
+                }
+
+                let count = 0;
+                Object.entries(dataToRestore).forEach(([k, v]) => {
+                    if (typeof v === 'string') {
+                        localStorage.setItem(k, v);
+                        count++;
+                    } else if (v !== null && v !== undefined) {
+                        localStorage.setItem(k, JSON.stringify(v));
+                        count++;
+                    }
+                });
+
+                window.sfx?.playCorrect();
+                alert(`✓ Save data successfully restored (${count} parameters). Reloading...`);
+                window.location.reload();
+            } catch (err) {
+                alert(`⚠️ Error importing save file: ${err.message || err}`);
+            }
+        };
+        reader.onerror = () => {
+            alert("⚠️ Could not read the selected file.");
+        };
+        reader.readAsText(file);
+        if (inputEl) inputEl.value = '';
+    }
+
+    resetAllGlobalProgress() {
+        if (confirm("Reset ALL investigation progress, discovered keywords, and unlock states across both Game and Novel Reader?")) {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('case_solved_') || key.startsWith('chapter_read_') || key.startsWith('deduction_engine_save_') || key.startsWith('chapter_keywords_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            window.sfx?.playClick();
+            alert("🔒 All progress reset. Reloading...");
+            window.location.reload();
+        }
+    }
+
 }
 
 window.DeductionEngine = DeductionEngine;

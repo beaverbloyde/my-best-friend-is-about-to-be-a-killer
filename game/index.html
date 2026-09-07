@@ -435,6 +435,26 @@
                     </div>
                     <input type="range" id="game-sfx-vol-slider" min="0" max="100" step="5" value="45" class="game-range-input">
                 </div>
+
+                <!-- Save Data & Progress Archive Section -->
+                <div class="game-settings-section">
+                    <div class="game-settings-label">SAVE DATA &amp; PROGRESS ARCHIVE</div>
+                    <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; line-height: 1.5;">
+                        Export your investigation progress, collected keywords, decoded dossiers, and novel bookmarks to a JSON file, or import save data from another device.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" class="time-btn" onclick="window.gameEngine.exportSaveData()" style="padding: 8px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;" title="Download complete save data as a JSON file">
+                            💾 Export Save (.json)
+                        </button>
+                        <label class="time-btn" style="padding: 8px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin: 0;" title="Import a previously saved LOGOS-3 JSON backup">
+                            <input type="file" id="game-save-import-input" accept=".json" style="display: none;" onchange="window.gameEngine.importSaveData(this)">
+                            📂 Import Save (.json)
+                        </label>
+                        <button type="button" class="time-btn btn-relock" onclick="window.gameEngine.resetAllGlobalProgress()" style="padding: 8px 12px; font-size: 11px; color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" title="Reset all case solutions, discovered keywords, and chapter unlocks">
+                            🔒 Re-Lock All
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <div class="game-settings-footer">

@@ -399,16 +399,31 @@
                 </div>
             </section>
 
+            <!-- Save Data & Progress Archive -->
+            <section class="settings-section">
+                <h4>Save Data &amp; Progress Archive</h4>
+                <p class="section-desc">Export your story progress, bookmarks, solved cases, and collected keywords to a JSON backup, or import a save file from another device.</p>
+                <div class="progression-btn-group">
+                    <button id="reader-export-save-btn" class="progression-action-btn" title="Download your complete save file as JSON">
+                        💾 Export Save (.json)
+                    </button>
+                    <label class="progression-action-btn" style="cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0;" title="Upload and restore a LOGOS-3 save file">
+                        <input type="file" id="reader-import-save-input" accept=".json" style="display: none;">
+                        📂 Import Save (.json)
+                    </label>
+                </div>
+            </section>
+
             <!-- Case Progression & Locks -->
             <section class="settings-section">
-                <h4>Case Progression & Locks</h4>
+                <h4>Case Progression &amp; Locks</h4>
                 <p class="section-desc">Manage investigation unlocks and chapter access for testing or replaying.</p>
                 <div class="progression-btn-group">
                     <button id="relock-cases-btn" class="progression-action-btn btn-relock" title="Reset all solved case flags and re-lock Chapter 1">
                         🔒 Re-Lock Chapters (Reset Progress)
                     </button>
                     <button id="unlock-cases-btn" class="progression-action-btn" title="Mark all cases as solved and unlock all chapters">
-                        🔓 Unlock All Chapters & Cases
+                        🔓 Unlock All Chapters &amp; Cases
                     </button>
                 </div>
             </section>
