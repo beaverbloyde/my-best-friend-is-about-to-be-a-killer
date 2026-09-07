@@ -115,7 +115,7 @@
           "type": "Observation",
           "title": "A conflicted young man",
           "text": "A reluctant young man holding a pill bottle, questioning his diagnosis.",
-          "thought": "These pills are useless. I don't want to admit it but... what if it's true?"
+          "thought": "These pills are useless. I don't want to admit it but... what if it's real?"
         }
       ]
     },
@@ -128,7 +128,7 @@
           "type": "Terminal",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET 5G // ROAMING",
+            "network": "\u262d SOV-NET // ROAMING",
             "battery": "88%",
             "time": "07:25",
             "date": "14th [April]",
@@ -153,7 +153,7 @@
           "title": "Phone Call Log",
           "audio": {
             "label": "\u23fa COMM-REC // OUTGOING VOICEMAIL",
-            "time": "00:32 / 00:45",
+            "time": "00:00 / 00:45",
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
@@ -195,7 +195,7 @@
           "type": "Smart Device",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET 5G // ROAMING",
+            "network": "\u262d SOV-NET // ROAMING",
             "battery": "86%",
             "time": "07:50",
             "date": "14th [April]",
@@ -243,7 +243,7 @@
             "date": "[Sunday] 10 [April] (Jubilee Plenary)",
             "venue": "[Vladivostok] Central Plenary Hall",
             "agenda": [
-              "**What's Next After Time Ripple?** \u2014 Dr. [Krotov]",
+              "**What's Next After Time Ripple?** \u2014 Dr. [Stanislav] [Krotov]",
               "**Spacetime Paradigm** \u2014 Jr. Researcher [Luka] [Huo]",
               "**Recovery Plan & Community Suggestions**"
             ]

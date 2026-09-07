@@ -470,9 +470,7 @@
     <!-- Initialize Game Engine -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            window.gameEngine = new DeductionEngine({
-                registryUrl: "cases/cases_registry.json"
-            });
+            window.gameEngine = new DeductionEngine();
             window.gameEngine.init();
         });
     </script>

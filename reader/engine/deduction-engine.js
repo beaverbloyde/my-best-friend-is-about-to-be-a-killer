@@ -43,7 +43,7 @@ class DeductionEngine {
         this.options = Object.assign({
             container: document.body,
             defaultCase: null,
-            registryUrl: "cases/cases_registry.json"
+            progressionUrl: "cases/progression.json"
         }, options);
 
         this.currentCase = null;
@@ -427,10 +427,6 @@ class DeductionEngine {
     async init() {
         await this.loadProgressionRules();
 
-        if (this.options.registryUrl) {
-            await this.loadRegistry(this.options.registryUrl);
-        }
-
         const params = new URLSearchParams(window.location.search);
         const caseParam = params.get("case");
 
@@ -450,8 +446,12 @@ class DeductionEngine {
 
     async loadProgressionRules() {
         this.progressionRules = {};
+        const discoveredCases = new Map(); // id -> { id, title, file }
+        const progressionUrl = this.options.progressionUrl || "cases/progression.json";
+
         try {
-            const res = await fetch("cases/progression.json?t=" + Date.now());
+            const cacheBustUrl = progressionUrl.includes('?') ? `${progressionUrl}&t=${Date.now()}` : `${progressionUrl}?t=${Date.now()}`;
+            const res = await fetch(cacheBustUrl);
             if (res.ok) {
                 const data = await res.json();
                 if (data && Array.isArray(data.rules)) {
@@ -480,6 +480,30 @@ class DeductionEngine {
                             }
                         }
 
+                        // Auto-discover cases referenced as requirements
+                        if (req && req.type === 'case' && req.id) {
+                            if (!discoveredCases.has(req.id)) {
+                                const caseFile = req.url ? req.url.replace(/^.*case=/, '') : `cases/${req.id}.json`;
+                                discoveredCases.set(req.id, {
+                                    id: req.id,
+                                    title: req.title || req.id,
+                                    file: caseFile
+                                });
+                            }
+                        }
+
+                        // Auto-discover cases referenced as targets
+                        if (rule.targetType === 'case' || (!target.endsWith('.nwd') && !target.includes('/'))) {
+                            if (!discoveredCases.has(target)) {
+                                const caseFile = target.endsWith('.json') ? target : `cases/${target}.json`;
+                                discoveredCases.set(target, {
+                                    id: target,
+                                    title: rule.targetTitle || target,
+                                    file: caseFile
+                                });
+                            }
+                        }
+
                         if (req) {
                             this.progressionRules[target] = {
                                 targetType: rule.targetType || (target.endsWith('.nwd') ? 'chapter' : 'case'),
@@ -492,6 +516,26 @@ class DeductionEngine {
             }
         } catch (e) {
             console.warn("Could not load dynamic cases/progression.json in DeductionEngine:", e);
+        }
+
+        if (discoveredCases.size > 0) {
+            this.registry = Array.from(discoveredCases.values());
+            this.populateCaseSelector();
+        }
+    }
+
+    populateCaseSelector() {
+        const selector = document.getElementById("case-selector");
+        if (selector && Array.isArray(this.registry)) {
+            selector.innerHTML = "";
+            this.registry.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.file;
+                const check = this.isCaseUnlocked(c.id, c.file);
+                opt.innerText = check.unlocked ? (c.title || c.id) : `🔒 ${c.title || c.id} (Locked)`;
+                selector.appendChild(opt);
+            });
+            this.syncCaseSelector();
         }
     }
 
@@ -540,30 +584,6 @@ class DeductionEngine {
                 selector.selectedIndex = i;
                 return;
             }
-        }
-    }
-
-    async loadRegistry(url) {
-        try {
-            const cacheBustUrl = url.includes('?') ? `${url}&t=${Date.now()}` : `${url}?t=${Date.now()}`;
-            const res = await fetch(cacheBustUrl);
-            if (!res.ok) throw new Error("Failed to fetch registry");
-            const registry = await res.json();
-            this.registry = registry;
-            const selector = document.getElementById("case-selector");
-            if (selector && Array.isArray(registry)) {
-                selector.innerHTML = "";
-                registry.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c.file;
-                    const check = this.isCaseUnlocked(c.id, c.file);
-                    opt.innerText = check.unlocked ? (c.title || c.id) : `🔒 ${c.title || c.id} (Locked)`;
-                    selector.appendChild(opt);
-                });
-                this.syncCaseSelector();
-            }
-        } catch (err) {
-            console.warn("Could not load case registry via fetch:", err);
         }
     }
 
