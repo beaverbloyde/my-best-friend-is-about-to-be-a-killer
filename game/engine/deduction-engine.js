@@ -3371,7 +3371,7 @@ class DeductionEngine {
                 const parsed = JSON.parse(e.target.result);
                 const count = this.restoreSaveData(parsed);
 
-                window.sfx?.playCorrect();
+                window.sfx?.playSuccess();
                 alert(`✓ Save data successfully restored (${count} parameters). Reloading...`);
                 window.location.reload();
             } catch (err) {

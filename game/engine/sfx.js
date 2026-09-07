@@ -322,6 +322,10 @@ class SFXEngine {
         });
     }
 
+    playCorrect() {
+        return this.playSuccess();
+    }
+
     // 9. Negative Verification / Rejection Alert (low muffled warning buzz)
     playError() {
         if (!this.enabled || this.volume <= 0) return;
