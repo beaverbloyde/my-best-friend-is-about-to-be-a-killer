@@ -1457,14 +1457,64 @@ header {
     box-shadow: 0 0 10px var(--accent-glow);
 }
 
-.tutorial-footer-checkbox {
-    display: flex;
+.tutorial-checkbox-label {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-size: 11px;
-    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
     cursor: pointer;
     user-select: none;
+    transition: color 0.15s ease;
+}
+
+.tutorial-checkbox-label:hover {
+    color: var(--text-primary);
+}
+
+.tutorial-checkbox-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    margin: 0;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.tutorial-checkbox-label input[type="checkbox"]:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.tutorial-checkbox-label input[type="checkbox"]:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.tutorial-checkbox-label input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.tutorial-checkbox-label input[type="checkbox"]:checked::after {
+    content: "✓";
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--bg-primary);
+    line-height: 1;
+    display: block;
 }
 
 /* Global Hidden Utility */
