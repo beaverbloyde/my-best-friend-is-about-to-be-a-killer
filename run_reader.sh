@@ -3,7 +3,7 @@
 PORT=8002
 echo "=========================================================="
 echo " Starting Pogranichny 2118 (LOGOS-3) Web Reader Interface"
-echo " Open in your browser: http://localhost:$PORT/reader/"
+echo " Open in your browser: http://localhost:$PORT/"
 echo "=========================================================="
 python3 -c '
 import os, sys, re, http.server, socketserver

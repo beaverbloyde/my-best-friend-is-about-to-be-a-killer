@@ -13,5 +13,7 @@ Ideas/
 Drafts/
 Summaries/
 reader/agent_instructions.md
-reader/cases/case_schema.md
-reader/cases/case_template.json
+game/cases/case_schema.md
+game/cases/case_template.json
+__pycache__/
+*.pyc

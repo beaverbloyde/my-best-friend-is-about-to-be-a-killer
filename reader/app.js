@@ -39,7 +39,7 @@
                 type: 'case',
                 id: 'chapter_01_morning_routine',
                 title: 'Case 1: Morning Routine',
-                url: 'game.html?case=cases/chapter_01_morning_routine.json',
+                url: `${basePath}game/?case=cases/chapter_01_morning_routine.json`,
                 teaser: 'Reconstruct the morning timeline to verify the case docket and unlock this chapter.'
             }
         }
@@ -48,7 +48,7 @@
     let progressionRules = Object.assign({}, DEFAULT_PROGRESSION_RULES);
 
     async function loadProgressionRules() {
-        const casesBasePath = isSubFolder ? 'cases/' : 'reader/cases/';
+        const casesBasePath = `${basePath}game/cases/`;
         try {
             const res = await fetch(`${casesBasePath}progression.json?t=${Date.now()}`);
             if (res.ok) {
@@ -66,7 +66,7 @@
                                     type: 'case',
                                     id: rule.requiresCase,
                                     title: rule.caseTitle || `Case ${rule.requiresCase}`,
-                                    url: `game.html?case=cases/${rule.requiresCase}.json`,
+                                    url: `${basePath}game/?case=cases/${rule.requiresCase}.json`,
                                     teaser: rule.teaser || 'Solve the case investigation to unlock.'
                                 };
                             } else if (rule.requiresChapter) {
@@ -78,6 +78,10 @@
                                     teaser: rule.teaser || 'Read the required chapter to unlock.'
                                 };
                             }
+                        } else if (req && !req.url) {
+                            req.url = req.type === 'case'
+                                ? `${basePath}game/?case=cases/${req.id}.json`
+                                : `index.html?file=${encodeURIComponent(req.id)}`;
                         }
 
                         if (req) {
@@ -177,7 +181,7 @@
                         target: target,
                         targetType: rule.targetType,
                         targetTitle: rule.targetTitle || target,
-                        url: rule.targetType === 'case' ? `game.html?case=cases/${target}.json` : `index.html?file=${encodeURIComponent(target)}`
+                        url: rule.targetType === 'case' ? `${basePath}game/?case=cases/${target}.json` : `index.html?file=${encodeURIComponent(target)}`
                     });
                 }
             });
@@ -1154,7 +1158,7 @@
                         </div>
                         <div class="locked-case-title">${req?.title || (isCaseReq ? 'Case Investigation' : 'Previous Chapter')}</div>
                         <div class="locked-case-teaser">“${req?.teaser || (isCaseReq ? 'Reconstruct the investigation timeline to unlock.' : 'Read the previous chapter to unlock.')}”</div>
-                        <a href="${req?.url || (isCaseReq ? 'game.html' : 'index.html')}" class="locked-case-action-btn">
+                        <a href="${req?.url || (isCaseReq ? `${basePath}game/` : 'index.html')}" class="locked-case-action-btn">
                             <span>${isCaseReq ? '🚀 Launch Case Investigation' : '📖 Read Required Chapter'}</span>
                             <span>↵</span>
                         </a>
@@ -1554,7 +1558,7 @@
                 collectedSet.add(word);
                 el.classList.add('collected');
                 localStorage.setItem(`chapter_keywords_${path}`, JSON.stringify(Array.from(collectedSet)));
-                showUnlockToast(`Keyword Discovered: "${word}"`, `game.html`, 'case');
+                showUnlockToast(`Keyword Discovered: "${word}"`, `${basePath}game/`, 'case');
             });
 
             el.addEventListener('keydown', (e) => {
@@ -1948,7 +1952,7 @@
     }
 
     let pronunciationIndex = {};
-    fetch('audio/pronunciations/index.json')
+    fetch(`${basePath}audio/pronunciations/index.json`)
         .then(r => r.ok ? r.json() : {})
         .then(data => { pronunciationIndex = data || {}; })
         .catch(() => {});
@@ -1998,15 +2002,15 @@
 
         const key = cleanWord.toLowerCase();
         const slug = cyrillicToSlug(key);
-        const prefix = window.location.pathname.includes('/reader') ? '' : 'reader/';
+        const prefix = basePath;
 
         let audioSrc = null;
         if (pronunciationIndex && pronunciationIndex[key]) {
             const raw = pronunciationIndex[key];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         } else if (pronunciationIndex && pronunciationIndex[slug]) {
             const raw = pronunciationIndex[slug];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         }
 
         if (audioSrc) {

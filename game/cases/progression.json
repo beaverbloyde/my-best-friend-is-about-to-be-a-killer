@@ -9,8 +9,7 @@
         "type": "case",
         "id": "chapter_01_morning_routine",
         "title": "Case 1: Morning Routine",
-        "url": "game.html?case=cases/chapter_01_morning_routine.json",
-        "teaser": "Reconstruct the morning timeline to verify the case docket and unlock this chapter."
+        "teaser": "Solve Case 1: Morning Routine to unlock Chapter 1.1."
       }
     },
     {
@@ -21,8 +20,7 @@
         "type": "chapter",
         "id": "content/27601e10419ce.nwd",
         "title": "Chapter 1.1: Crime in the Future",
-        "url": "index.html?file=content/27601e10419ce.nwd",
-        "teaser": "Read Chapter 1.1 in the Novel Reader to unlock this award ceremony investigation."
+        "teaser": "Read Chapter 1.1 in the Novel Reader to unlock this conferral ceremony investigation."
       }
     },
     {
@@ -33,7 +31,6 @@
         "type": "case",
         "id": "chapter_01_award_ceremony",
         "title": "Case 2: The Conferral Ceremony",
-        "url": "game.html?case=cases/chapter_01_award_ceremony.json",
         "teaser": "Solve Case 2: The Conferral Ceremony to unlock Chapter 1.2."
       }
     },
@@ -45,7 +42,6 @@
         "type": "chapter",
         "id": "content/8e0179d6fe5e5.nwd",
         "title": "Chapter 1.2: The Man on the News",
-        "url": "index.html?file=content/8e0179d6fe5e5.nwd",
         "teaser": "Read Chapter 1.2 in the Novel Reader to unlock this suspect reconstruction investigation."
       }
     },
@@ -57,7 +53,6 @@
         "type": "case",
         "id": "chapter_01_the_man_on_the_news",
         "title": "Case 3: The Man on the News",
-        "url": "game.html?case=cases/chapter_01_the_man_on_the_news.json",
         "teaser": "Solve Case 3: The Man on the News to unlock Chapter 1.3."
       }
     },
@@ -69,7 +64,6 @@
         "type": "chapter",
         "id": "content/1bd7b006c55ac.nwd",
         "title": "Chapter 1.3: The Charred Body",
-        "url": "index.html?file=content/1bd7b006c55ac.nwd",
         "teaser": "Read Chapter 1.3 in the Novel Reader to unlock Chapter 1.4."
       }
     }

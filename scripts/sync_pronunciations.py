@@ -6,7 +6,7 @@ import urllib.parse
 import json
 
 CONTENT_DIR = os.path.join(os.path.dirname(__file__), '..', 'content')
-AUDIO_DIR = os.path.join(os.path.dirname(__file__), '..', 'reader', 'audio', 'pronunciations')
+AUDIO_DIR = os.path.join(os.path.dirname(__file__), '..', 'audio', 'pronunciations')
 INDEX_FILE = os.path.join(AUDIO_DIR, 'index.json')
 
 CYRILLIC_TO_LATIN = {

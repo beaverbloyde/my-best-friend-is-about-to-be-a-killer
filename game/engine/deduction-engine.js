@@ -65,7 +65,8 @@ class DeductionEngine {
         // Russian Transliteration & Pronunciation Engine
         this.pronunciationIndex = {};
         this.currentPronounceAudio = null;
-        fetch('audio/pronunciations/index.json')
+        const audioIndexUrl = (window.location.pathname.includes('/reader') || window.location.pathname.includes('/game')) ? '../audio/pronunciations/index.json' : 'audio/pronunciations/index.json';
+        fetch(audioIndexUrl)
             .then(r => r.ok ? r.json() : {})
             .then(data => { this.pronunciationIndex = data || {}; })
             .catch(() => {});
@@ -466,7 +467,7 @@ class DeductionEngine {
                                     type: 'case',
                                     id: rule.requiresCase,
                                     title: rule.caseTitle || `Case ${rule.requiresCase}`,
-                                    url: rule.caseUrl || `game.html?case=cases/${rule.requiresCase}.json`,
+                                    url: rule.caseUrl || `?case=cases/${rule.requiresCase}.json`,
                                     teaser: rule.teaser || 'Solve the case investigation to unlock.'
                                 };
                             } else if (rule.requiresChapter) {
@@ -474,10 +475,14 @@ class DeductionEngine {
                                     type: 'chapter',
                                     id: rule.requiresChapter,
                                     title: rule.chapterTitle || 'Required Chapter',
-                                    url: rule.chapterUrl || `index.html?file=${encodeURIComponent(rule.requiresChapter)}`,
+                                    url: rule.chapterUrl || `../reader/?file=${encodeURIComponent(rule.requiresChapter)}`,
                                     teaser: rule.teaser || 'Read the required chapter in Novel Reader to unlock.'
                                 };
                             }
+                        } else if (req && !req.url) {
+                            req.url = req.type === 'chapter'
+                                ? `../reader/?file=${encodeURIComponent(req.id)}`
+                                : `?case=cases/${req.id}.json`;
                         }
 
                         // Auto-discover cases referenced as requirements
@@ -877,15 +882,15 @@ class DeductionEngine {
 
         const key = cleanWord.toLowerCase();
         const slug = this.cyrillicToSlug(key);
-        const prefix = window.location.pathname.includes('/reader') ? '' : 'reader/';
+        const prefix = (window.location.pathname.includes('/reader') || window.location.pathname.includes('/game')) ? '../' : '';
 
         let audioSrc = null;
         if (this.pronunciationIndex && this.pronunciationIndex[key]) {
             const raw = this.pronunciationIndex[key];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         } else if (this.pronunciationIndex && this.pronunciationIndex[slug]) {
             const raw = this.pronunciationIndex[slug];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw;
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         }
 
         if (audioSrc) {
@@ -1246,7 +1251,7 @@ class DeductionEngine {
                             <span class="case-locked-req-label">REQUIRED PREREQUISITE</span>
                             <span class="case-locked-req-title">${req.title || (isChapterReq ? "Previous Chapter" : "Previous Case")}</span>
                             <p style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 10px 0;">${req.teaser || "Complete the required content to unlock this investigation."}</p>
-                            <a href="${req.url || (isChapterReq ? `index.html?file=${encodeURIComponent(req.id)}` : `game.html?case=cases/${req.id}.json`)}" class="case-locked-action-btn">
+                            <a href="${req.url || (isChapterReq ? `../reader/?file=${encodeURIComponent(req.id)}` : `?case=cases/${req.id}.json`)}" class="case-locked-action-btn">
                                 ${isChapterReq ? "📖 Open Chapter in Novel Reader ↵" : "🚀 Launch Prerequisite Case ↵"}
                             </a>
                         </div>
@@ -2602,7 +2607,7 @@ class DeductionEngine {
             }
             if (readBtn) {
                 readBtn.style.display = "inline-flex";
-                readBtn.href = `index.html?file=${encodeURIComponent(targetFile)}`;
+                readBtn.href = `../reader/?file=${encodeURIComponent(targetFile)}`;
                 readBtn.innerText = unlockInfo.buttonText || "📖 Read in Novel Reader ↵";
             }
         } else {

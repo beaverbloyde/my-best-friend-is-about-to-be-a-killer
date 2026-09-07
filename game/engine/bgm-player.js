@@ -513,12 +513,12 @@ class BGMPlayer {
         if (!relativeAudioPath || relativeAudioPath.startsWith('http') || relativeAudioPath.startsWith('blob:') || relativeAudioPath.startsWith('data:')) {
             return relativeAudioPath;
         }
-        const cleanPath = relativeAudioPath.replace(/^\/+/, '').replace(/^reader\//, '');
-        const isSubFolder = window.location.pathname.includes('/reader/') || window.location.pathname.endsWith('/reader') || window.location.pathname.includes('/reader');
+        const cleanPath = relativeAudioPath.replace(/^\/+/, '').replace(/^(reader\/|game\/)/, '');
+        const isSubFolder = window.location.pathname.includes('/reader') || window.location.pathname.includes('/game');
         if (isSubFolder) {
-            return cleanPath.startsWith('audio/') ? cleanPath : 'audio/' + cleanPath;
+            return cleanPath.startsWith('../') ? cleanPath : (cleanPath.startsWith('audio/') ? '../' + cleanPath : '../audio/' + cleanPath);
         } else {
-            return cleanPath.startsWith('audio/') ? 'reader/' + cleanPath : 'reader/audio/' + cleanPath;
+            return cleanPath.startsWith('audio/') ? cleanPath : 'audio/' + cleanPath;
         }
     }
 
