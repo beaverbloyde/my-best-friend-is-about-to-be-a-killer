@@ -62,6 +62,14 @@ class DeductionEngine {
         this.pickerHighlightedIndex = -1;
         this.justTouchDragged = false;
 
+        // Russian Transliteration & Pronunciation Engine
+        this.pronunciationIndex = {};
+        this.currentPronounceAudio = null;
+        fetch('audio/pronunciations/index.json')
+            .then(r => r.ok ? r.json() : {})
+            .then(data => { this.pronunciationIndex = data || {}; })
+            .catch(() => {});
+
         this.initDOM();
         this.initEventListeners();
         this.initDisplaySettings();
@@ -145,6 +153,21 @@ class DeductionEngine {
 
         this.initSlotDragAndDrop();
         this.initTouchDragAndDrop();
+
+        // Global Pronunciation Button Listener (Dossiers, Clues, Tables)
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.pronounce-btn');
+            if (btn) {
+                e.stopPropagation();
+                const word = btn.getAttribute('data-speak') || btn.innerText;
+                btn.classList.add('speaking');
+                window.sfx?.playClick();
+                this.speakRussian(word);
+                setTimeout(() => {
+                    btn.classList.remove('speaking');
+                }, 1200);
+            }
+        });
     }
 
     initDisplaySettings() {
@@ -773,11 +796,87 @@ class DeductionEngine {
         }
     }
 
+    // --- Russian Phonetics & Audio Pronunciation Engine ---
+
+    cyrillicToSlug(text) {
+        const CYRILLIC_TO_LATIN = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+            'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+            'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+            'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+            'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+        return String(text || '').toLowerCase().split('').map(c => {
+            if (CYRILLIC_TO_LATIN[c] !== undefined) return CYRILLIC_TO_LATIN[c];
+            if (/[a-z0-9\-_]/.test(c)) return c;
+            return '';
+        }).join('');
+    }
+
+    fallbackSpeech(text) {
+        if (!('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 0.85; // Natural measured pacing for vocabulary learning
+            utterance.pitch = 1.0;
+
+            const voices = window.speechSynthesis.getVoices();
+            const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru')));
+            if (ruVoice) {
+                utterance.voice = ruVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        } catch (err) {
+            console.warn('Speech synthesis error:', err);
+        }
+    }
+
+    speakRussian(text) {
+        const cleanWord = String(text)
+            .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
+            .trim();
+        if (!cleanWord) return;
+
+        if (this.currentPronounceAudio) {
+            try {
+                this.currentPronounceAudio.pause();
+                this.currentPronounceAudio.currentTime = 0;
+            } catch (e) {}
+        }
+
+        const key = cleanWord.toLowerCase();
+        const slug = this.cyrillicToSlug(key);
+        const audioSrc = (this.pronunciationIndex && (this.pronunciationIndex[key] || this.pronunciationIndex[slug])) || `audio/pronunciations/${slug}.mp3`;
+
+        const audio = new Audio(audioSrc);
+        this.currentPronounceAudio = audio;
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(err => {
+                this.fallbackSpeech(cleanWord);
+            });
+        }
+    }
+
     // --- Content & Markdown / Syntax Parsers ---
 
     parseText(str) {
         if (!str) return "";
         let text = String(str);
+
+        // Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [ˈvalʲɪnkʲɪ]) or (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])
+        text = text.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, (match, word, ipa) => {
+            const cleanWord = word.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
 
         // Convert [Keyword] into .kw element (ignore slot: and num:)
         text = text.replace(/\[\[([^\]]+)\]\]/g, `<span class="kw" data-word="$1">$1</span>`);
@@ -1777,8 +1876,10 @@ class DeductionEngine {
             modalDiv.style.left = `${defaultLeft}px`;
 
             let metaHtml = "";
-            if (foundLore.registration || foundLore.jurisdiction || foundLore.diagnosticCode || foundLore.facility || foundLore.organization || foundLore.established || foundLore.location || foundLore.etiology) {
+            if (foundLore.fullName || foundLore.cyrillic || foundLore.registration || foundLore.jurisdiction || foundLore.diagnosticCode || foundLore.facility || foundLore.organization || foundLore.established || foundLore.location || foundLore.etiology) {
                 let rows = [];
+                if (foundLore.fullName) rows.push(`<strong>FULL NAME:</strong> ${this.parseText(foundLore.fullName)}`);
+                if (foundLore.cyrillic) rows.push(`<strong>CYRILLIC:</strong> ${this.parseText(foundLore.cyrillic)}`);
                 if (foundLore.organization) rows.push(`<strong>ORGANIZATION:</strong> ${this.parseText(foundLore.organization)}`);
                 if (foundLore.established) rows.push(`<strong>ESTABLISHED:</strong> ${this.parseText(foundLore.established)}`);
                 if (foundLore.registration) rows.push(`<strong>REGISTRATION:</strong> ${this.parseText(foundLore.registration)}`);
