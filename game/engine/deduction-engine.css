@@ -1124,30 +1124,41 @@ header {
     text-transform: uppercase;
 }
 
-/* Draggable Lore Document Pop-up Window */
+/* Draggable & Resizable Lore Document Pop-up Window */
 .lore-viewer-modal {
     position: fixed;
     top: 70px;
     left: calc(50vw - 300px);
     width: 600px;
-    max-width: 94vw;
+    max-width: calc(100vw - 32px);
     height: 480px;
-    max-height: 85vh;
+    max-height: calc(100vh - 60px);
     background: transparent;
     z-index: 1000;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     pointer-events: auto;
+    box-sizing: border-box;
 }
 
-.lore-viewer-modal.hidden { display: none; }
+.lore-viewer-modal.hidden { display: none !important; }
 
 .table-viewer-modal {
-    width: 780px !important;
-    max-width: 96vw !important;
-    height: auto !important;
-    max-height: 88vh !important;
+    width: 780px;
+    max-width: calc(100vw - 32px);
+    height: 520px;
+    max-height: calc(100vh - 60px);
+}
+
+.lore-viewer-modal.expanded,
+.table-viewer-modal.expanded {
+    top: 20px !important;
+    left: 3vw !important;
+    width: 94vw !important;
+    height: 92vh !important;
+    max-width: 94vw !important;
+    max-height: 92vh !important;
 }
 
 .clue-table-trigger-card {
@@ -1175,6 +1186,8 @@ header {
     display: flex;
     flex-direction: column;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), 0 0 16px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
 }
 
 .lore-viewer-header {
@@ -1186,6 +1199,7 @@ header {
     background: var(--bg-tertiary);
     cursor: move;
     user-select: none;
+    flex-shrink: 0;
 }
 
 .lore-viewer-body {
@@ -1193,6 +1207,7 @@ header {
     overflow-y: auto;
     flex: 1;
     background: var(--bg-secondary);
+    min-height: 0;
 }
 
 /* Russian Pronunciation Audio Button */

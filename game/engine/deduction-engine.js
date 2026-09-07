@@ -1804,12 +1804,12 @@ class DeductionEngine {
             if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY, e.target);
         }, { passive: true });
         document.addEventListener("touchmove", (e) => {
-            if (isDragging && e.touches.length === 1) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        if (isDragging && e.touches.length === 1) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
         document.addEventListener("touchend", endDrag);
     }
 
-    makeWindowResizable(modal, handle, storageKeyPrefix = "docket") {
+    makeWindowResizable(modal, handle, storageKeyPrefix = "docket", minWidth = 380, minHeight = 260) {
         if (!modal || !handle) return;
 
         let isResizing = false;
@@ -1826,12 +1826,17 @@ class DeductionEngine {
             startHeight = rect.height;
             document.body.style.userSelect = "none";
             modal.classList.remove("expanded");
+            const expandBtn = modal.querySelector(".window-expand-btn, #docket-expand-btn");
+            if (expandBtn) {
+                expandBtn.innerText = "⤢";
+                expandBtn.title = "Maximize";
+            }
         };
 
         const moveResize = (clientX, clientY) => {
             if (!isResizing) return;
-            const newWidth = Math.max(460, Math.min(window.innerWidth * 0.98, startWidth + (clientX - startX)));
-            const newHeight = Math.max(380, Math.min(window.innerHeight * 0.96, startHeight + (clientY - startY)));
+            const newWidth = Math.max(minWidth, Math.min(window.innerWidth * 0.98, startWidth + (clientX - startX)));
+            const newHeight = Math.max(minHeight, Math.min(window.innerHeight * 0.96, startHeight + (clientY - startY)));
             modal.style.width = `${newWidth}px`;
             modal.style.height = `${newHeight}px`;
         };
@@ -1867,6 +1872,38 @@ class DeductionEngine {
         document.addEventListener("touchend", endResize);
     }
 
+    toggleWindowExpand(modal, btn, storageKeyPrefix = "window", defaultWidth = null, defaultHeight = null) {
+        if (!modal) return;
+        const isExpanded = modal.classList.toggle("expanded");
+        if (btn) {
+            btn.innerText = isExpanded ? "⤦" : "⤢";
+            btn.title = isExpanded ? "Restore Previous Size" : "Maximize";
+        }
+        if (!isExpanded) {
+            const savedW = localStorage.getItem(`${storageKeyPrefix}_width`);
+            const savedH = localStorage.getItem(`${storageKeyPrefix}_height`);
+            if (savedW && parseInt(savedW, 10) >= 360) {
+                modal.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
+            } else if (defaultWidth) {
+                modal.style.width = `${defaultWidth}px`;
+            } else {
+                modal.style.width = "";
+            }
+
+            if (savedH && parseInt(savedH, 10) >= 240) {
+                modal.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
+            } else if (defaultHeight) {
+                modal.style.height = `${defaultHeight}px`;
+            } else {
+                modal.style.height = "";
+            }
+        }
+        if (modal === this.docketModal) {
+            this.setupDocketScrollIndicators();
+        }
+        window.sfx?.playClick();
+    }
+
     restoreDocketSize() {
         if (window.innerWidth <= 900) return;
         const savedW = localStorage.getItem("docket_width");
@@ -1888,18 +1925,7 @@ class DeductionEngine {
     toggleDocketExpand() {
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (!this.docketModal) return;
-
-        const isExpanded = this.docketModal.classList.toggle("expanded");
-        const btn = document.getElementById("docket-expand-btn");
-        if (btn) {
-            btn.innerText = isExpanded ? "⤦" : "⤢";
-            btn.title = isExpanded ? "Restore Previous Size" : "Maximize Docket";
-        }
-        if (!isExpanded) {
-            this.restoreDocketSize();
-        }
-        this.setupDocketScrollIndicators();
-        window.sfx?.playClick();
+        this.toggleWindowExpand(this.docketModal, document.getElementById("docket-expand-btn"), "docket");
     }
 
     openLoreModal(loreId) {
@@ -1927,6 +1953,15 @@ class DeductionEngine {
             modalDiv.style.top = `${defaultTop}px`;
             modalDiv.style.left = `${defaultLeft}px`;
 
+            const savedW = localStorage.getItem(`lore_${loreId}_width`);
+            const savedH = localStorage.getItem(`lore_${loreId}_height`);
+            if (savedW && parseInt(savedW, 10) >= 360) {
+                modalDiv.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
+            }
+            if (savedH && parseInt(savedH, 10) >= 240) {
+                modalDiv.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
+            }
+
             let metaHtml = "";
             if (foundLore.fullName || foundLore.cyrillic || foundLore.registration || foundLore.jurisdiction || foundLore.diagnosticCode || foundLore.facility || foundLore.organization || foundLore.established || foundLore.location || foundLore.etiology) {
                 let rows = [];
@@ -1953,9 +1988,10 @@ class DeductionEngine {
             modalDiv.innerHTML = `
                 <div class="lore-viewer-paper">
                     <div class="lore-viewer-header">
-                        <div style="font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1.5px;">${foundLore.tag || "ARCHIVE"}</div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <button onclick="window.gameEngine.closeLoreModal('${loreId}')" class="modal-close-btn" title="Close dossier">✕</button>
+                        <div style="font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">${foundLore.tag || "ARCHIVE DOSSIER"}</div>
+                        <div class="docket-window-actions">
+                            <button class="docket-action-btn window-expand-btn" title="Toggle Maximize / Restore" onclick="window.gameEngine.toggleWindowExpand(document.getElementById('lore-modal-${loreId}'), this, 'lore_${loreId}')">⤢</button>
+                            <button onclick="window.gameEngine.closeLoreModal('${loreId}')" class="docket-action-btn modal-close-btn" title="Close dossier">✕</button>
                         </div>
                     </div>
                     <div class="lore-viewer-body">
@@ -1965,6 +2001,7 @@ class DeductionEngine {
                             ${bodyHtml}
                         </div>
                     </div>
+                    <div class="docket-resize-handle" title="Drag to resize dossier"></div>
                 </div>
             `;
             container.appendChild(modalDiv);
@@ -1973,6 +2010,11 @@ class DeductionEngine {
 
             const header = modal.querySelector(".lore-viewer-header");
             this.makeWindowDraggable(modal, header);
+
+            const resizeHandle = modal.querySelector(".docket-resize-handle");
+            if (resizeHandle) {
+                this.makeWindowResizable(modal, resizeHandle, `lore_${loreId}`, 360, 240);
+            }
 
             const bodyEl = modal.querySelector(".lore-viewer-body");
             this.setupDraggableKeywords(bodyEl);
@@ -2022,6 +2064,15 @@ class DeductionEngine {
             modalDiv.style.top = `${defaultTop}px`;
             modalDiv.style.left = `${defaultLeft}px`;
 
+            const savedW = localStorage.getItem(`${modalId}_width`);
+            const savedH = localStorage.getItem(`${modalId}_height`);
+            if (savedW && parseInt(savedW, 10) >= 460) {
+                modalDiv.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
+            }
+            if (savedH && parseInt(savedH, 10) >= 280) {
+                modalDiv.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
+            }
+
             let headersHtml = "";
             (t.headers || []).forEach(h => {
                 headersHtml += `<th style="padding: 10px 14px; border-bottom: 2px solid var(--accent); text-align: left; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">${this.parseText(h)}</th>`;
@@ -2044,14 +2095,15 @@ class DeductionEngine {
                 <div class="lore-viewer-paper">
                     <div class="lore-viewer-header">
                         <div style="font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700;">📋 ${t.badge || clue.title || "OFFICIAL DOCUMENT"}</div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <button onclick="window.gameEngine.closeTableModal('${modalId}')" class="modal-close-btn" title="Close document">✕</button>
+                        <div class="docket-window-actions">
+                            <button class="docket-action-btn window-expand-btn" title="Toggle Maximize / Restore" onclick="window.gameEngine.toggleWindowExpand(document.getElementById('${modalId}'), this, '${modalId}')">⤢</button>
+                            <button onclick="window.gameEngine.closeTableModal('${modalId}')" class="docket-action-btn modal-close-btn" title="Close document">✕</button>
                         </div>
                     </div>
-                    <div class="lore-viewer-body" style="padding: 16px; display: flex; flex-direction: column; overflow: hidden;">
+                    <div class="lore-viewer-body" style="padding: 16px; display: flex; flex-direction: column; overflow: hidden; flex: 1;">
                         <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">${clue.title || "Official Roster"}</h3>
                         ${captionHtml}
-                        <div style="overflow-x: auto; overflow-y: auto; max-height: 55vh; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px;">
+                        <div style="overflow-x: auto; overflow-y: auto; flex: 1; min-height: 160px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px;">
                             <table style="width: 100%; border-collapse: collapse; min-width: 620px;">
                                 ${headersHtml ? `<thead style="position: sticky; top: 0; background: var(--bg-secondary); z-index: 1;"><tr>${headersHtml}</tr></thead>` : ""}
                                 <tbody>${rowsHtml}</tbody>
@@ -2059,6 +2111,7 @@ class DeductionEngine {
                         </div>
                         ${footerHtml}
                     </div>
+                    <div class="docket-resize-handle" title="Drag to resize document"></div>
                 </div>
             `;
             container.appendChild(modalDiv);
@@ -2067,6 +2120,11 @@ class DeductionEngine {
 
             const header = modal.querySelector(".lore-viewer-header");
             this.makeWindowDraggable(modal, header);
+
+            const resizeHandle = modal.querySelector(".docket-resize-handle");
+            if (resizeHandle) {
+                this.makeWindowResizable(modal, resizeHandle, modalId, 460, 280);
+            }
 
             const bodyEl = modal.querySelector(".lore-viewer-body");
             this.setupDraggableKeywords(bodyEl);
