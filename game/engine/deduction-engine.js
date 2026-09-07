@@ -58,6 +58,8 @@ class DeductionEngine {
         this.highestZIndex = 1000;
         this.openLoreCount = 0;
         this.totalUniqueKeywords = 0;
+        this.baseCaseKeywords = null;
+        this.keywordTagIndex = new Map();
         this.activeSlot = null;
         this.pickerHighlightedIndex = -1;
         this.justTouchDragged = false;
@@ -720,6 +722,76 @@ class DeductionEngine {
         return canonical.length > 0 ? canonical : ["noun"];
     }
 
+    buildKeywordTagIndex() {
+        this.keywordTagIndex = new Map();
+        const rawTags = this.currentCase?.keywordTags || {};
+        for (const [word, tags] of Object.entries(rawTags)) {
+            const canonical = this.getCanonicalCategories(tags);
+            this.keywordTagIndex.set(String(word).toLowerCase().trim(), canonical);
+        }
+    }
+
+    getKeywordTags(word) {
+        if (!word) return ["noun"];
+        const normalized = String(word).toLowerCase().trim();
+        if (this.keywordTagIndex && this.keywordTagIndex.has(normalized)) {
+            return this.keywordTagIndex.get(normalized);
+        }
+        const direct = this.currentCase?.keywordTags?.[word];
+        if (direct) {
+            return this.getCanonicalCategories(direct);
+        }
+        return ["noun"];
+    }
+
+    cacheBaseCaseKeywords() {
+        this.baseCaseKeywords = new Set();
+        if (!this.currentCase) return;
+
+        const starterList = this.currentCase.initialKeywords || this.currentCase.starterKeywords || this.currentCase.presetKeywords;
+        if (Array.isArray(starterList)) {
+            starterList.forEach(item => {
+                const word = typeof item === "object" && item !== null ? (item.word || item.name) : String(item);
+                if (word && word.trim()) this.baseCaseKeywords.add(word.trim());
+            });
+        }
+
+        const extractFromText = (raw) => {
+            if (!raw) return;
+            const str = String(raw);
+            const bracketMatches = str.match(/\[(?!slot:|num:)([^\]]+)\]/g) || [];
+            bracketMatches.forEach(m => {
+                const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
+                if (w) this.baseCaseKeywords.add(w);
+            });
+
+            const htmlMatches = str.match(/<span[^>]*class=['"][^'"]*\bkw\b[^'"]*['"][^>]*>([\s\S]*?)<\/span>/gi) || [];
+            htmlMatches.forEach(m => {
+                const w = m.replace(/<[^>]+>/g, "").trim();
+                if (w) this.baseCaseKeywords.add(w);
+            });
+        };
+
+        const scanObj = (obj) => {
+            if (!obj) return;
+            if (typeof obj === "string") {
+                extractFromText(obj);
+            } else if (Array.isArray(obj)) {
+                obj.forEach(scanObj);
+            } else if (typeof obj === "object") {
+                for (let k in obj) scanObj(obj[k]);
+            }
+        };
+
+        for (let t in this.currentCase.timeline) {
+            scanObj(this.currentCase.timeline[t]);
+        }
+
+        for (let l in (this.currentCase.lore || {})) {
+            scanObj(this.currentCase.lore[l]);
+        }
+    }
+
     applyCategoryStyleToElement(element, canonicalTags, options = {}) {
         if (!element) return;
         const { isSlotEmpty = false, isCollected = false, isFilled = false } = options;
@@ -803,9 +875,7 @@ class DeductionEngine {
             slotElement.innerText = val;
             slotElement.classList.add("filled");
             slotElement.classList.remove("wrong", "correct");
-            const tagsDict = this.currentCase?.keywordTags || {};
-            const rawTags = tagsDict[val] || ["noun"];
-            const canonicalTags = this.getCanonicalCategories(rawTags);
+            const canonicalTags = this.getKeywordTags(val);
             this.applyCategoryStyleToElement(slotElement, canonicalTags, { isFilled: true, isSlot: true });
         } else {
             slotElement.innerText = "[ ? ]";
@@ -1229,6 +1299,9 @@ class DeductionEngine {
             headerTitleEl.innerText = caseData.meta?.title || "DEDUCTION INVESTIGATION";
         }
 
+        this.buildKeywordTagIndex();
+        this.cacheBaseCaseKeywords();
+
         // Check if case is locked behind a prerequisite chapter or case
         const check = this.isCaseUnlocked(caseData.id, caseData.file);
         if (!check.unlocked) {
@@ -1357,57 +1430,14 @@ class DeductionEngine {
     }
 
     calculateTotalKeywords() {
-        const allKws = new Set();
         if (!this.currentCase) return;
-
-        // 1. Initial / Starter Keywords & Collected Chapter Scoped Words
+        if (!this.baseCaseKeywords) {
+            this.cacheBaseCaseKeywords();
+        }
+        const allKws = new Set(this.baseCaseKeywords || []);
         this.collectedWords.forEach(w => {
             if (w) allKws.add(w);
         });
-
-        const starterList = this.currentCase.initialKeywords || this.currentCase.starterKeywords || this.currentCase.presetKeywords;
-        if (Array.isArray(starterList)) {
-            starterList.forEach(item => {
-                const word = typeof item === "object" && item !== null ? (item.word || item.name) : String(item);
-                if (word && word.trim()) allKws.add(word.trim());
-            });
-        }
-
-        // 2. Timeline and Lore keywords
-        const extractFromText = (raw) => {
-            if (!raw) return;
-            const bracketMatches = String(raw).match(/\[(?!slot:|num:)([^\]]+)\]/g) || [];
-            bracketMatches.forEach(m => {
-                const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
-                if (w) allKws.add(w);
-            });
-
-            const htmlMatches = String(raw).match(/<span[^>]*class=['"][^'"]*\bkw\b[^'"]*['"][^>]*>([\s\S]*?)<\/span>/gi) || [];
-            htmlMatches.forEach(m => {
-                const w = m.replace(/<[^>]+>/g, "").trim();
-                if (w) allKws.add(w);
-            });
-        };
-
-        const scanObj = (obj) => {
-            if (!obj) return;
-            if (typeof obj === "string") {
-                extractFromText(obj);
-            } else if (Array.isArray(obj)) {
-                obj.forEach(scanObj);
-            } else if (typeof obj === "object") {
-                for (let k in obj) scanObj(obj[k]);
-            }
-        };
-
-        for (let t in this.currentCase.timeline) {
-            scanObj(this.currentCase.timeline[t]);
-        }
-
-        for (let l in (this.currentCase.lore || {})) {
-            scanObj(this.currentCase.lore[l]);
-        }
-
         this.totalUniqueKeywords = allKws.size;
     }
 
@@ -1542,12 +1572,10 @@ class DeductionEngine {
     }
 
     refreshKeywordHighlights() {
-        const tagsDict = this.currentCase?.keywordTags || {};
         document.querySelectorAll(".kw").forEach(el => {
             const text = el.getAttribute("data-word") || el.innerText.trim();
             const isCollected = this.collectedWords.has(text);
-            const rawTags = tagsDict[text] || ["noun"];
-            const canonicalTags = this.getCanonicalCategories(rawTags);
+            const canonicalTags = this.getKeywordTags(text);
             this.applyCategoryStyleToElement(el, canonicalTags, { isCollected });
         });
     }
@@ -1615,12 +1643,11 @@ class DeductionEngine {
             return;
         }
 
-        const tagsDict = this.currentCase?.keywordTags || {};
         let wordsArray = Array.from(this.collectedWords);
 
         if (this.currentFilter !== "all") {
             wordsArray = wordsArray.filter(w => {
-                const tags = tagsDict[w] || ["noun"];
+                const tags = this.getKeywordTags(w);
                 return tags.includes(this.currentFilter);
             });
         }
@@ -1645,7 +1672,7 @@ class DeductionEngine {
             let renderedAny = false;
             categoryDefs.forEach(cat => {
                 const wordsInGroup = wordsArray.filter(w => {
-                    const tags = tagsDict[w] || ["noun"];
+                    const tags = this.getKeywordTags(w);
                     return tags.includes(cat.tag || cat.id);
                 });
 
@@ -1684,9 +1711,7 @@ class DeductionEngine {
         btn.setAttribute("draggable", "true");
         btn.setAttribute("data-word", word);
 
-        const tagsDict = this.currentCase?.keywordTags || {};
-        const rawTags = tagsDict[word] || ["noun"];
-        const canonicalTags = this.getCanonicalCategories(rawTags);
+        const canonicalTags = this.getKeywordTags(word);
         this.applyCategoryStyleToElement(btn, canonicalTags, { isCollected: false });
 
         btn.addEventListener("dragstart", (e) => {
@@ -2265,42 +2290,9 @@ class DeductionEngine {
 
     matchesSlotTag(word, slotTag) {
         if (!slotTag || slotTag === "all") return true;
-        const allowedTags = String(slotTag).split(/[,/|]+/).map(t => t.toLowerCase().trim()).filter(Boolean);
-        if (allowedTags.length === 0) return true;
-
-        const tagsDict = this.currentCase?.keywordTags || {};
-        let wordTags = tagsDict[word];
-
-        if (!wordTags) {
-            wordTags = ["noun"];
-        } else if (typeof wordTags === "string") {
-            wordTags = [wordTags];
-        }
-
-        const normWordTags = wordTags.map(t => String(t).toLowerCase().trim());
-
-        // Semantic / Category Alias groups
-        const aliasGroups = [
-            ["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"],
-            ["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"],
-            ["verb", "verbs", "action", "actions"],
-            ["medical", "medicine", "drug", "pathology", "symptom"],
-            ["temporal", "time", "anomaly"],
-            ["calendar", "date", "dates", "day", "month", "year"],
-            ["noun", "nouns", "item", "items", "vehicle", "weapon", "object"]
-        ];
-
-        return allowedTags.some(allowedTag => {
-            if (normWordTags.includes(allowedTag)) return true;
-            for (const group of aliasGroups) {
-                if (group.includes(allowedTag)) {
-                    if (normWordTags.some(t => group.includes(t))) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
+        const allowedCanonical = this.getCanonicalCategories(slotTag);
+        const wordCanonical = this.getKeywordTags(word);
+        return allowedCanonical.some(tag => wordCanonical.includes(tag));
     }
 
     openSlotPicker(slot) {
@@ -2407,11 +2399,8 @@ class DeductionEngine {
             return;
         }
 
-        const tagsDict = this.currentCase?.keywordTags || {};
-
         words.forEach((word) => {
-            const rawTags = tagsDict[word] || ["noun"];
-            const canonicalTags = this.getCanonicalCategories(rawTags);
+            const canonicalTags = this.getKeywordTags(word);
 
             let badgesHtml = "";
             canonicalTags.forEach(cat => {
@@ -2625,6 +2614,7 @@ class DeductionEngine {
             // 1. Correct (All correct) - Mark case as solved in localStorage
             const caseId = this.currentCase?.id || "chapter_01_morning_routine";
             localStorage.setItem(`case_solved_${caseId}`, "true");
+            this.saveProgress();
 
             window.sfx?.playSuccess();
             this.showToast("✓ Status: Correct");
@@ -2969,8 +2959,11 @@ class DeductionEngine {
     saveProgress() {
         if (!this.currentCase || !this.currentCase.id) return;
         try {
+            const caseId = this.currentCase.id;
+            const isSolved = localStorage.getItem(`case_solved_${caseId}`) === 'true';
             const data = {
-                caseId: this.currentCase.id,
+                caseId: caseId,
+                solved: isSolved,
                 collectedWords: Array.from(this.collectedWords),
                 unlockedLore: Array.from(this.unlockedLore),
                 docketSlots: this.docketSlots,
@@ -2979,7 +2972,7 @@ class DeductionEngine {
                 currentSort: this.currentSort,
                 savedAt: Date.now()
             };
-            localStorage.setItem(`deduction_engine_save_${this.currentCase.id}`, JSON.stringify(data));
+            localStorage.setItem(`deduction_engine_save_${caseId}`, JSON.stringify(data));
         } catch (e) {
             console.warn("Could not save game progress to localStorage:", e);
         }
@@ -2992,6 +2985,10 @@ class DeductionEngine {
             if (!savedStr) return false;
             const data = JSON.parse(savedStr);
             if (!data || data.caseId !== this.currentCase.id) return false;
+
+            if (data.solved) {
+                localStorage.setItem(`case_solved_${this.currentCase.id}`, "true");
+            }
 
             if (Array.isArray(data.collectedWords)) {
                 data.collectedWords.forEach(w => this.collectedWords.add(w));
@@ -3049,71 +3046,151 @@ class DeductionEngine {
     }
 
     getSaveDataSnapshot() {
-        const relevantPatterns = [
-            /^chapter_read_/,
-            /^case_solved_/,
-            /^case_progress_/,
-            /^chapter_keywords_/,
-            /^deduction_engine_save_/,
-            'case_selected',
-            'deduction_engine_tutorial_suppressed',
-            'docket_width',
-            'docket_height',
-            /^lore_.*_(width|height)/,
-            /^table_.*_(width|height)/,
-            'chronos_bookmark_path',
-            'chronos_bookmark_ratio',
-            'reader-theme',
-            'reader-font-family',
-            'reader-custom-font',
-            'reader-font-size',
-            'reader-line-height',
-            'reader-max-width',
-            'reader-speech-enabled',
-            'reader-highlight-mode',
-            'reader-epaper-transition',
-            'reader-epaper-duration',
-            'reader-display-profile',
-            'reader-display-intensity',
-            'reader-display-speed',
-            'reader-zen-enabled',
-            'reader-spotlight-enabled',
-            'reader-spotlight-size',
-            'game-theme',
-            'game-font-size',
-            'game-line-height',
-            'game-font-family',
-            'game-display-profile',
-            'game-display-intensity',
-            'game-display-speed',
-            'game-scanlines',
-            'game-scanlines-intensity',
-            'game-scanlines-speed',
-            'sfx_enabled',
-            'sfx_volume',
-            'bgm_volume',
-            'bgm_track_id',
-            'bgm_is_playing'
-        ];
+        // 1. Cases Progression
+        const cases = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('deduction_engine_save_')) {
+                const caseId = key.replace('deduction_engine_save_', '');
+                try {
+                    const caseData = JSON.parse(localStorage.getItem(key));
+                    if (caseData && typeof caseData === 'object') {
+                        caseData.solved = localStorage.getItem(`case_solved_${caseId}`) === 'true' || Boolean(caseData.solved);
+                        cases[caseId] = caseData;
+                    }
+                } catch (e) {}
+            } else if (key && key.startsWith('case_solved_')) {
+                const caseId = key.replace('case_solved_', '');
+                if (!cases[caseId]) {
+                    cases[caseId] = {
+                        caseId: caseId,
+                        solved: localStorage.getItem(key) === 'true'
+                    };
+                } else {
+                    cases[caseId].solved = localStorage.getItem(key) === 'true';
+                }
+            }
+        }
 
-        const storageData = {};
+        // 2. Chapters Progression
+        const chapters = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('chapter_keywords_')) {
+                const path = key.replace('chapter_keywords_', '');
+                if (!chapters[path]) chapters[path] = {};
+                try {
+                    chapters[path].collectedKeywords = JSON.parse(localStorage.getItem(key)) || [];
+                } catch (e) {
+                    chapters[path].collectedKeywords = [];
+                }
+            } else if (key && key.startsWith('chapter_read_')) {
+                const path = key.replace('chapter_read_', '');
+                if (!chapters[path]) chapters[path] = {};
+                chapters[path].read = localStorage.getItem(key) === 'true';
+            }
+        }
+
+        // 3. Window Layouts
+        const windowLayouts = {};
+        const docketW = localStorage.getItem('docket_width');
+        const docketH = localStorage.getItem('docket_height');
+        if (docketW || docketH) {
+            windowLayouts.docket = {
+                width: docketW ? parseInt(docketW, 10) : null,
+                height: docketH ? parseInt(docketH, 10) : null
+            };
+        }
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (!key) continue;
-            const isMatch = relevantPatterns.some(pat => {
-                return typeof pat === 'string' ? key === pat : pat.test(key);
-            });
-            if (isMatch) {
-                storageData[key] = localStorage.getItem(key);
+            const loreMatch = key.match(/^lore_(.+)_(width|height)$/);
+            if (loreMatch) {
+                const id = `lore_${loreMatch[1]}`;
+                if (!windowLayouts[id]) windowLayouts[id] = {};
+                windowLayouts[id][loreMatch[2]] = parseInt(localStorage.getItem(key), 10);
+            }
+            const tableMatch = key.match(/^table_(.+)_(width|height)$/);
+            if (tableMatch) {
+                const id = `table_${tableMatch[1]}`;
+                if (!windowLayouts[id]) windowLayouts[id] = {};
+                windowLayouts[id][tableMatch[2]] = parseInt(localStorage.getItem(key), 10);
             }
         }
+
+        // 4. Reader Settings & Bookmark
+        const reader = {
+            bookmark: {
+                path: localStorage.getItem('chronos_bookmark_path') || null,
+                ratio: parseFloat(localStorage.getItem('chronos_bookmark_ratio') || '0')
+            },
+            settings: {
+                theme: localStorage.getItem('reader-theme') || 'soviet-amber',
+                fontFamily: localStorage.getItem('reader-font-family') || 'lora',
+                customFont: localStorage.getItem('reader-custom-font') || 'Lora',
+                fontSize: parseInt(localStorage.getItem('reader-font-size') || '18', 10),
+                lineHeight: parseFloat(localStorage.getItem('reader-line-height') || '1.6'),
+                maxWidth: parseInt(localStorage.getItem('reader-max-width') || '750', 10),
+                speechEnabled: localStorage.getItem('reader-speech-enabled') !== 'false',
+                highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
+                epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
+                epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration') || '0.50'),
+                displayProfile: localStorage.getItem('reader-display-profile') || 'clean',
+                displayIntensity: parseInt(localStorage.getItem('reader-display-intensity') || '65', 10),
+                displaySpeed: parseInt(localStorage.getItem('reader-display-speed') || '2', 10),
+                zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
+                spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
+                spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size') || '3', 10)
+            }
+        };
+
+        // 5. Game Settings
+        const game = {
+            selectedCase: localStorage.getItem('case_selected') || null,
+            tutorialSuppressed: localStorage.getItem('deduction_engine_tutorial_suppressed') === 'true',
+            windowLayouts: windowLayouts,
+            settings: {
+                theme: localStorage.getItem('game-theme') || 'soviet-amber',
+                fontSize: parseInt(localStorage.getItem('game-font-size') || '13', 10),
+                lineHeight: parseFloat(localStorage.getItem('game-line-height') || '1.5'),
+                fontFamily: localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace",
+                displayProfile: localStorage.getItem('game-display-profile') || (localStorage.getItem('game-scanlines') === 'true' ? 'crt' : 'clean'),
+                displayIntensity: parseInt(localStorage.getItem('game-display-intensity') || '65', 10),
+                displaySpeed: parseInt(localStorage.getItem('game-display-speed') || '2', 10)
+            }
+        };
+
+        // 6. Audio Settings
+        const audioPositions = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('bgm_pos_')) {
+                const trackId = key.replace('bgm_pos_', '');
+                audioPositions[trackId] = parseFloat(localStorage.getItem(key) || '0');
+            }
+        }
+
+        const audio = {
+            sfxEnabled: localStorage.getItem('sfx_enabled') !== 'false',
+            sfxVolume: parseFloat(localStorage.getItem('sfx_volume') || '0.45'),
+            bgmVolume: parseFloat(localStorage.getItem('bgm_volume') || '0.35'),
+            bgmTrackId: localStorage.getItem('bgm_track_id') || 'sb_the_long_dark',
+            bgmIsPlaying: localStorage.getItem('bgm_is_playing') === 'true',
+            bgmPositions: audioPositions
+        };
 
         return {
             app: "LOGOS-3",
             version: "2.2",
+            schemaVersion: 2,
             exportedAt: new Date().toISOString(),
-            schemaVersion: 1,
-            data: storageData
+            progression: {
+                cases,
+                chapters
+            },
+            reader,
+            game,
+            audio
         };
     }
 
@@ -3138,6 +3215,152 @@ class DeductionEngine {
         this.showToast(`✓ Save archive exported (${filename})`);
     }
 
+    restoreSaveData(parsed) {
+        if (!parsed || typeof parsed !== 'object') {
+            throw new Error("Invalid file content.");
+        }
+
+        let count = 0;
+
+        // Structured Schema (schemaVersion: 2)
+        if (parsed.progression || parsed.reader || parsed.game || parsed.audio) {
+            // Restore Cases
+            if (parsed.progression?.cases) {
+                Object.entries(parsed.progression.cases).forEach(([caseId, cData]) => {
+                    if (cData && typeof cData === 'object') {
+                        if (cData.solved) {
+                            localStorage.setItem(`case_solved_${caseId}`, 'true');
+                        }
+                        localStorage.setItem(`deduction_engine_save_${caseId}`, JSON.stringify(cData));
+                        count++;
+                    }
+                });
+            }
+
+            // Restore Chapters
+            if (parsed.progression?.chapters) {
+                Object.entries(parsed.progression.chapters).forEach(([path, chData]) => {
+                    if (chData && typeof chData === 'object') {
+                        if (chData.read) {
+                            localStorage.setItem(`chapter_read_${path}`, 'true');
+                        }
+                        if (Array.isArray(chData.collectedKeywords)) {
+                            localStorage.setItem(`chapter_keywords_${path}`, JSON.stringify(chData.collectedKeywords));
+                        }
+                        count++;
+                    }
+                });
+            }
+
+            // Restore Reader
+            if (parsed.reader) {
+                if (parsed.reader.bookmark?.path) {
+                    localStorage.setItem('chronos_bookmark_path', parsed.reader.bookmark.path);
+                    localStorage.setItem('chronos_bookmark_ratio', String(parsed.reader.bookmark.ratio || 0));
+                    count++;
+                }
+                if (parsed.reader.settings) {
+                    const readerKeyMap = {
+                        theme: 'reader-theme',
+                        fontFamily: 'reader-font-family',
+                        customFont: 'reader-custom-font',
+                        fontSize: 'reader-font-size',
+                        lineHeight: 'reader-line-height',
+                        maxWidth: 'reader-max-width',
+                        speechEnabled: 'reader-speech-enabled',
+                        highlightMode: 'reader-highlight-mode',
+                        epaperTransition: 'reader-epaper-transition',
+                        epaperDuration: 'reader-epaper-duration',
+                        displayProfile: 'reader-display-profile',
+                        displayIntensity: 'reader-display-intensity',
+                        displaySpeed: 'reader-display-speed',
+                        zenEnabled: 'reader-zen-enabled',
+                        spotlightEnabled: 'reader-spotlight-enabled',
+                        spotlightSize: 'reader-spotlight-size'
+                    };
+                    Object.entries(parsed.reader.settings).forEach(([k, v]) => {
+                        const sk = readerKeyMap[k] || `reader-${k}`;
+                        localStorage.setItem(sk, String(v));
+                        count++;
+                    });
+                }
+            }
+
+            // Restore Game
+            if (parsed.game) {
+                if (parsed.game.selectedCase) {
+                    localStorage.setItem('case_selected', parsed.game.selectedCase);
+                    count++;
+                }
+                if (parsed.game.tutorialSuppressed !== undefined) {
+                    localStorage.setItem('deduction_engine_tutorial_suppressed', String(parsed.game.tutorialSuppressed));
+                    count++;
+                }
+                if (parsed.game.windowLayouts) {
+                    Object.entries(parsed.game.windowLayouts).forEach(([winId, dims]) => {
+                        if (winId === 'docket') {
+                            if (dims.width) localStorage.setItem('docket_width', String(dims.width));
+                            if (dims.height) localStorage.setItem('docket_height', String(dims.height));
+                        } else {
+                            if (dims.width) localStorage.setItem(`${winId}_width`, String(dims.width));
+                            if (dims.height) localStorage.setItem(`${winId}_height`, String(dims.height));
+                        }
+                        count++;
+                    });
+                }
+                if (parsed.game.settings) {
+                    const gameKeyMap = {
+                        theme: 'game-theme',
+                        fontSize: 'game-font-size',
+                        lineHeight: 'game-line-height',
+                        fontFamily: 'game-font-family',
+                        displayProfile: 'game-display-profile',
+                        displayIntensity: 'game-display-intensity',
+                        displaySpeed: 'game-display-speed'
+                    };
+                    Object.entries(parsed.game.settings).forEach(([k, v]) => {
+                        const sk = gameKeyMap[k] || `game-${k}`;
+                        localStorage.setItem(sk, String(v));
+                        count++;
+                    });
+                }
+            }
+
+            // Restore Audio
+            if (parsed.audio) {
+                if (parsed.audio.sfxEnabled !== undefined) localStorage.setItem('sfx_enabled', String(parsed.audio.sfxEnabled));
+                if (parsed.audio.sfxVolume !== undefined) localStorage.setItem('sfx_volume', String(parsed.audio.sfxVolume));
+                if (parsed.audio.bgmVolume !== undefined) localStorage.setItem('bgm_volume', String(parsed.audio.bgmVolume));
+                if (parsed.audio.bgmTrackId !== undefined) localStorage.setItem('bgm_track_id', String(parsed.audio.bgmTrackId));
+                if (parsed.audio.bgmIsPlaying !== undefined) localStorage.setItem('bgm_is_playing', String(parsed.audio.bgmIsPlaying));
+                if (parsed.audio.bgmPositions) {
+                    Object.entries(parsed.audio.bgmPositions).forEach(([tId, pos]) => {
+                        localStorage.setItem(`bgm_pos_${tId}`, String(pos));
+                    });
+                }
+                count++;
+            }
+        } else {
+            // Flat Data fallback
+            const flatData = parsed.data || parsed.storageData || parsed;
+            Object.entries(flatData).forEach(([k, v]) => {
+                if (typeof v === 'string') {
+                    localStorage.setItem(k, v);
+                    count++;
+                } else if (v !== null && v !== undefined) {
+                    localStorage.setItem(k, JSON.stringify(v));
+                    count++;
+                }
+            });
+        }
+
+        if (count === 0) {
+            throw new Error("No recognized LOGOS-3 save parameters found in this file.");
+        }
+
+        return count;
+    }
+
     importSaveData(inputEl) {
         const file = inputEl?.files && inputEl.files[0];
         if (!file) return;
@@ -3146,24 +3369,7 @@ class DeductionEngine {
         reader.onload = (e) => {
             try {
                 const parsed = JSON.parse(e.target.result);
-                if (!parsed || typeof parsed !== 'object') {
-                    throw new Error("Invalid file content.");
-                }
-                const dataToRestore = parsed.data || parsed.storageData || (parsed.schemaVersion ? null : parsed);
-                if (!dataToRestore || typeof dataToRestore !== 'object') {
-                    throw new Error("No recognized LOGOS-3 save data found in this file.");
-                }
-
-                let count = 0;
-                Object.entries(dataToRestore).forEach(([k, v]) => {
-                    if (typeof v === 'string') {
-                        localStorage.setItem(k, v);
-                        count++;
-                    } else if (v !== null && v !== undefined) {
-                        localStorage.setItem(k, JSON.stringify(v));
-                        count++;
-                    }
-                });
+                const count = this.restoreSaveData(parsed);
 
                 window.sfx?.playCorrect();
                 alert(`✓ Save data successfully restored (${count} parameters). Reloading...`);
