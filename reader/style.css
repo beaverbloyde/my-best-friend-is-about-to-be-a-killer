@@ -2563,6 +2563,43 @@ body.spotlight-enabled #document-body .scene-divider.scroll-neighbor-2 {
     filter: brightness(1.1);
 }
 
+.locked-screen-corner-override {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.security-override-btn {
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    opacity: 0.65;
+}
+
+.security-override-btn:hover {
+    opacity: 1;
+    color: #f59e0b;
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.security-override-btn .override-btn-icon {
+    font-size: 12px;
+}
+
 /* Chapter 1 Case Gateway Banner */
 .chapter-case-gateway {
     margin-top: 48px;

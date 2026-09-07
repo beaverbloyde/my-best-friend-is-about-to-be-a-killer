@@ -326,7 +326,43 @@ class SFXEngine {
         return this.playSuccess();
     }
 
-    // 9. Negative Verification / Rejection Alert (low muffled warning buzz)
+    // 9. Case / Chapter Unlock Clearance Chime (rich harmonic Soviet bell arpeggio)
+    playUnlock() {
+        if (!this.enabled || this.volume <= 0) return;
+        const ctx = this.ensureContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(this.volume * 0.45, now);
+        masterGain.connect(ctx.destination);
+
+        // 4-note ascending bell chime: F5 (698Hz) -> A5 (880Hz) -> C6 (1046Hz) -> F6 (1397Hz)
+        const notes = [
+            { freq: 698.46, start: 0, dur: 0.35, gain: 0.65 },
+            { freq: 880.00, start: 0.08, dur: 0.4, gain: 0.7 },
+            { freq: 1046.50, start: 0.16, dur: 0.55, gain: 0.8 },
+            { freq: 1396.91, start: 0.24, dur: 0.85, gain: 0.85 }
+        ];
+
+        notes.forEach(n => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(n.freq, now + n.start);
+
+            gain.gain.setValueAtTime(n.gain, now + n.start);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + n.start + n.dur);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(now + n.start);
+            osc.stop(now + n.start + n.dur);
+        });
+    }
+
+    // 10. Negative Verification / Rejection Alert (low muffled warning buzz)
     playError() {
         if (!this.enabled || this.volume <= 0) return;
         const ctx = this.ensureContext();

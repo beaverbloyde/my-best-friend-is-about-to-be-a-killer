@@ -64,14 +64,14 @@ class DeductionEngine {
         this.pickerHighlightedIndex = -1;
         this.justTouchDragged = false;
 
+        // Subsystem Components
+        this.slotPicker = (typeof LogosSlotPicker !== "undefined") ? new LogosSlotPicker(this) : null;
+        this.dragDrop = (typeof LogosDragDrop !== "undefined") ? new LogosDragDrop(this) : null;
+
         // Russian Transliteration & Pronunciation Engine
-        this.pronunciationIndex = {};
-        this.currentPronounceAudio = null;
-        const audioIndexUrl = (window.location.pathname.includes('/reader') || window.location.pathname.includes('/game')) ? '../audio/pronunciations/index.json' : 'audio/pronunciations/index.json';
-        fetch(audioIndexUrl)
-            .then(r => r.ok ? r.json() : {})
-            .then(data => { this.pronunciationIndex = data || {}; })
-            .catch(() => {});
+        if (typeof LogosPhonetics !== "undefined") {
+            LogosPhonetics.loadPronunciationIndex();
+        }
 
         this.initDOM();
         this.initEventListeners();
@@ -434,7 +434,13 @@ class DeductionEngine {
         const caseParam = params.get("case");
 
         if (caseParam) {
-            await this.loadCaseFromUrl(caseParam);
+            let targetCaseUrl = caseParam;
+            if (!targetCaseUrl.endsWith('.json')) {
+                targetCaseUrl = targetCaseUrl.startsWith('cases/') ? `${targetCaseUrl}.json` : `cases/${targetCaseUrl}.json`;
+            } else if (!targetCaseUrl.startsWith('cases/') && !targetCaseUrl.startsWith('/') && !targetCaseUrl.startsWith('http')) {
+                targetCaseUrl = `cases/${targetCaseUrl}`;
+            }
+            await this.loadCaseFromUrl(targetCaseUrl);
         } else if (this.registry && this.registry.length > 0 && this.registry[0].file) {
             await this.loadCaseFromUrl(this.registry[0].file);
         } else {
@@ -448,9 +454,14 @@ class DeductionEngine {
     }
 
     async loadProgressionRules() {
-        this.progressionRules = {};
-        const discoveredCases = new Map(); // id -> { id, title, file }
         const progressionUrl = this.options.progressionUrl || "cases/progression.json";
+        if (typeof LogosProgression !== "undefined") {
+            this.progressionRules = await LogosProgression.loadRules(progressionUrl);
+        } else {
+            this.progressionRules = {};
+        }
+
+        const discoveredCases = new Map(); // id -> { id, title, file }
 
         try {
             const cacheBustUrl = progressionUrl.includes('?') ? `${progressionUrl}&t=${Date.now()}` : `${progressionUrl}?t=${Date.now()}`;
@@ -470,7 +481,7 @@ class DeductionEngine {
                                     id: rule.requiresCase,
                                     title: rule.caseTitle || `Case ${rule.requiresCase}`,
                                     url: rule.caseUrl || `?case=cases/${rule.requiresCase}.json`,
-                                    teaser: rule.teaser || 'Solve the case investigation to unlock.'
+                                    teaser: rule.teaser || 'Solve the preceding case to unlock.'
                                 };
                             } else if (rule.requiresChapter) {
                                 req = {
@@ -489,11 +500,12 @@ class DeductionEngine {
 
                         // Auto-discover cases referenced as requirements
                         if (req && req.type === 'case' && req.id) {
-                            if (!discoveredCases.has(req.id)) {
-                                const caseFile = req.url ? req.url.replace(/^.*case=/, '') : `cases/${req.id}.json`;
-                                discoveredCases.set(req.id, {
-                                    id: req.id,
-                                    title: req.title || req.id,
+                            const cleanReqId = req.id.replace(/^cases\//, '').replace(/\.json$/, '');
+                            if (!discoveredCases.has(cleanReqId)) {
+                                const caseFile = req.url ? req.url.replace(/^.*case=/, '') : `cases/${cleanReqId}.json`;
+                                discoveredCases.set(cleanReqId, {
+                                    id: cleanReqId,
+                                    title: req.title || cleanReqId,
                                     file: caseFile
                                 });
                             }
@@ -501,11 +513,12 @@ class DeductionEngine {
 
                         // Auto-discover cases referenced as targets
                         if (rule.targetType === 'case' || (!target.endsWith('.nwd') && !target.includes('/'))) {
-                            if (!discoveredCases.has(target)) {
-                                const caseFile = target.endsWith('.json') ? target : `cases/${target}.json`;
-                                discoveredCases.set(target, {
-                                    id: target,
-                                    title: rule.targetTitle || target,
+                            const cleanTarget = target.replace(/^cases\//, '').replace(/\.json$/, '');
+                            if (!discoveredCases.has(cleanTarget)) {
+                                const caseFile = target.endsWith('.json') ? target : `cases/${cleanTarget}.json`;
+                                discoveredCases.set(cleanTarget, {
+                                    id: cleanTarget,
+                                    title: rule.targetTitle || cleanTarget,
                                     file: caseFile
                                 });
                             }
@@ -547,32 +560,27 @@ class DeductionEngine {
     }
 
     isCaseUnlocked(caseId, caseFile) {
-        let req = null;
-        if (this.currentCase?.meta?.requires) {
-            req = this.currentCase.meta.requires;
-        } else if (this.progressionRules) {
-            const rule = (caseId ? this.progressionRules[caseId] : null) || (caseFile ? this.progressionRules[caseFile] : null);
-            if (rule && rule.requires) req = rule.requires;
+        if (typeof LogosProgression !== "undefined") {
+            return LogosProgression.isCaseUnlocked(caseId, caseFile);
         }
-
-        if (!req || !req.id) return { unlocked: true };
-
-        let isUnlocked = false;
-        if (req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'))) {
-            isUnlocked = localStorage.getItem(`chapter_read_${req.id}`) === 'true';
-        } else {
-            isUnlocked = localStorage.getItem(`case_solved_${req.id}`) === 'true';
-        }
-
-        return {
-            unlocked: isUnlocked,
-            requirement: req
-        };
+        return { unlocked: true };
     }
 
     syncCaseSelector(targetUrl = null, caseData = null) {
         const selector = document.getElementById("case-selector");
         if (!selector || !selector.options.length) return;
+
+        // Re-evaluate lock labels across all options in selector
+        if (Array.isArray(this.registry)) {
+            for (let i = 0; i < selector.options.length; i++) {
+                const opt = selector.options[i];
+                const regItem = this.registry.find(c => c.file === opt.value || c.id === opt.value);
+                if (regItem) {
+                    const check = this.isCaseUnlocked(regItem.id, regItem.file);
+                    opt.innerText = check.unlocked ? (regItem.title || regItem.id) : `🔒 ${regItem.title || regItem.id} (Locked)`;
+                }
+            }
+        }
 
         const currentTarget = targetUrl || this.currentCaseUrl || (caseData ? (caseData._sourceUrl || caseData.file) : null);
         const currentCaseId = caseData ? caseData.id : (this.currentCase ? this.currentCase.id : null);
@@ -627,99 +635,25 @@ class DeductionEngine {
     // --- Category Color & Styling Utilities ---
 
     hexToRgba(hex, alpha = 0.16) {
-        if (!hex || typeof hex !== "string") return `rgba(148, 163, 184, ${alpha})`;
-        let clean = hex.replace("#", "").trim();
-        if (clean.length === 3) {
-            clean = clean.split("").map(c => c + c).join("");
-        }
-        if (clean.length !== 6) return `rgba(148, 163, 184, ${alpha})`;
-        const r = parseInt(clean.substring(0, 2), 16);
-        const g = parseInt(clean.substring(2, 4), 16);
-        const b = parseInt(clean.substring(4, 6), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        return typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(hex, alpha) : `rgba(148, 163, 184, ${alpha})`;
     }
 
     getCategoryConfig(catKey) {
-        const canonical = this.getCanonicalCategories(catKey)[0] || "noun";
-        const isGosplan = typeof document !== "undefined" && document.body && document.body.classList.contains("theme-gosplan");
-        const defaultPalette = isGosplan ? GOSPLAN_CATEGORY_COLORS : CATEGORY_COLORS;
-        const defaultConf = defaultPalette[canonical] || defaultPalette.noun;
-
-        const custom = this.currentCase?.categories?.[catKey] ||
-                       this.currentCase?.categories?.[canonical] ||
-                       this.currentCase?.categoryColors?.[catKey] ||
-                       this.currentCase?.categoryColors?.[canonical];
-
-        if (!custom) return defaultConf;
-
-        if (typeof custom === "string") {
-            const hex = custom;
-            return {
-                hex,
-                text: isGosplan ? "#0a0705" : hex,
-                bg: this.hexToRgba(hex, isGosplan ? 0.14 : 0.16),
-                border: isGosplan ? hex : this.hexToRgba(hex, 0.8),
-                icon: defaultConf.icon,
-                label: defaultConf.label
-            };
-        } else if (typeof custom === "object" && custom !== null) {
-            const hex = custom.hex || custom.color || defaultConf.hex;
-            return {
-                hex,
-                text: custom.text || (isGosplan ? "#0a0705" : hex),
-                bg: custom.bg || this.hexToRgba(hex, isGosplan ? 0.14 : 0.16),
-                border: custom.border || (isGosplan ? hex : this.hexToRgba(hex, 0.8)),
-                icon: custom.icon || defaultConf.icon,
-                label: custom.label || defaultConf.label
-            };
-        }
-
-        return defaultConf;
+        return typeof LogosCategoryTheme !== 'undefined'
+            ? LogosCategoryTheme.getCategoryConfig(catKey, this.currentCase)
+            : { hex: "#94a3b8", text: "#e2e8f0", bg: "rgba(148, 163, 184, 0.16)", border: "rgba(148, 163, 184, 0.8)", icon: "📦", label: "Noun" };
     }
 
     buildSplitGradient(colors, angle = "90deg") {
-        if (!colors || colors.length === 0) return "transparent";
-        if (colors.length === 1) return colors[0];
-        const n = colors.length;
-        const step = 100 / n;
-        const stops = [];
-        for (let i = 0; i < n; i++) {
-            const startPct = (i * step).toFixed(2);
-            const endPct = ((i + 1) * step).toFixed(2);
-            stops.push(`${colors[i]} ${startPct}% ${endPct}%`);
-        }
-        return `linear-gradient(${angle}, ${stops.join(", ")})`;
+        return typeof LogosCategoryTheme !== 'undefined'
+            ? LogosCategoryTheme.buildSplitGradient(colors, angle)
+            : "transparent";
     }
 
     getCanonicalCategories(tagOrTags) {
-        if (!tagOrTags) return ["noun"];
-        let tags = [];
-        if (Array.isArray(tagOrTags)) {
-            tags = tagOrTags;
-        } else if (typeof tagOrTags === "string") {
-            tags = tagOrTags.split(/[,/|]+/).map(t => t.trim()).filter(Boolean);
-        }
-        if (tags.length === 0) return ["noun"];
-
-        const canonical = [];
-        for (const tag of tags) {
-            const t = String(tag).toLowerCase().trim();
-            let cat = t;
-            if (["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"].includes(t)) cat = "name";
-            else if (["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"].includes(t)) cat = "location";
-            else if (["verb", "verbs", "action", "actions"].includes(t)) cat = "verb";
-            else if (["medical", "medicine", "drug", "pathology", "symptom"].includes(t)) cat = "medical";
-            else if (["temporal", "time", "anomaly"].includes(t)) cat = "temporal";
-            else if (["calendar", "date", "dates", "day", "month", "year"].includes(t)) cat = "calendar";
-            else if (["rank", "ranks", "officer_rank"].includes(t)) cat = "rank";
-            else if (["insignia", "star", "stars"].includes(t)) cat = "insignia";
-            else if (["noun", "nouns", "item", "items", "vehicle", "weapon", "object"].includes(t)) cat = "noun";
-
-            if (!canonical.includes(cat)) {
-                canonical.push(cat);
-            }
-        }
-        return canonical.length > 0 ? canonical : ["noun"];
+        return typeof LogosCategoryTheme !== 'undefined'
+            ? LogosCategoryTheme.getCanonicalCategories(tagOrTags)
+            : ["noun"];
     }
 
     buildKeywordTagIndex() {
@@ -758,17 +692,21 @@ class DeductionEngine {
 
         const extractFromText = (raw) => {
             if (!raw) return;
-            const str = String(raw);
-            const bracketMatches = str.match(/\[(?!slot:|num:)([^\]]+)\]/g) || [];
+            let str = String(raw);
+
+            // Strip Russian Cyrillic + IPA phonetic pronunciation before extracting keywords
+            str = str.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, "$1");
+
+            const bracketMatches = str.match(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g) || [];
             bracketMatches.forEach(m => {
                 const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
-                if (w) this.baseCaseKeywords.add(w);
+                if (w && !w.startsWith("%%") && !w.startsWith("@")) this.baseCaseKeywords.add(w);
             });
 
             const htmlMatches = str.match(/<span[^>]*class=['"][^'"]*\bkw\b[^'"]*['"][^>]*>([\s\S]*?)<\/span>/gi) || [];
             htmlMatches.forEach(m => {
                 const w = m.replace(/<[^>]+>/g, "").trim();
-                if (w) this.baseCaseKeywords.add(w);
+                if (w && !w.startsWith("%%") && !w.startsWith("@")) this.baseCaseKeywords.add(w);
             });
         };
 
@@ -895,95 +833,18 @@ class DeductionEngine {
     // --- Russian Phonetics & Audio Pronunciation Engine ---
 
     cyrillicToSlug(text) {
-        const CYRILLIC_TO_LATIN = {
-            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
-            'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
-            'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-            'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
-            'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
-        };
-        return String(text || '').toLowerCase().split('').map(c => {
-            if (CYRILLIC_TO_LATIN[c] !== undefined) return CYRILLIC_TO_LATIN[c];
-            if (/[a-z0-9\-_]/.test(c)) return c;
-            return '';
-        }).join('');
+        return (typeof LogosPhonetics !== "undefined") ? LogosPhonetics.cyrillicToSlug(text) : String(text || '').toLowerCase();
     }
 
     fallbackSpeech(text) {
-        if (!('speechSynthesis' in window)) return;
-        try {
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.resume();
-            const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
-            if (!cleanText) return;
-
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'ru-RU';
-            utterance.rate = 0.85; // Natural measured pacing for vocabulary learning
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-
-            const voices = window.speechSynthesis.getVoices();
-            if (voices && voices.length > 0) {
-                const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru') || v.lang.includes('ru')));
-                if (ruVoice) {
-                    utterance.voice = ruVoice;
-                }
-            }
-
-            window.speechSynthesis.speak(utterance);
-        } catch (err) {
-            console.warn('Speech synthesis error:', err);
+        if (typeof LogosPhonetics !== "undefined") {
+            LogosPhonetics.fallbackSpeech(text);
         }
     }
 
     speakRussian(text) {
-        const cleanWord = String(text)
-            .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
-            .trim();
-        if (!cleanWord) return;
-
-        if (this.currentPronounceAudio) {
-            try {
-                this.currentPronounceAudio.pause();
-                this.currentPronounceAudio.currentTime = 0;
-            } catch (e) {}
-        }
-
-        const key = cleanWord.toLowerCase();
-        const slug = this.cyrillicToSlug(key);
-        const prefix = (window.location.pathname.includes('/reader') || window.location.pathname.includes('/game')) ? '../' : '';
-
-        let audioSrc = null;
-        if (this.pronunciationIndex && this.pronunciationIndex[key]) {
-            const raw = this.pronunciationIndex[key];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
-        } else if (this.pronunciationIndex && this.pronunciationIndex[slug]) {
-            const raw = this.pronunciationIndex[slug];
-            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
-        }
-
-        if (audioSrc) {
-            const audio = new Audio(audioSrc);
-            audio.volume = 1.0;
-            this.currentPronounceAudio = audio;
-
-            let hasFallenBack = false;
-            const triggerFallback = () => {
-                if (!hasFallenBack) {
-                    hasFallenBack = true;
-                    this.fallbackSpeech(cleanWord);
-                }
-            };
-
-            audio.onerror = () => triggerFallback();
-
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => triggerFallback());
-            }
-        } else {
-            this.fallbackSpeech(cleanWord);
+        if (typeof LogosPhonetics !== "undefined") {
+            LogosPhonetics.speakRussian(text);
         }
     }
 
@@ -997,12 +858,12 @@ class DeductionEngine {
         text = text.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, (match, word, ipa) => {
             const cleanWord = word.trim();
             const cleanIpa = ipa.trim();
-            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-word="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
         });
 
-        // Convert [Keyword] into .kw element (ignore slot: and num:)
+        // Convert [Keyword] into .kw element (ignore system tags, slot:, and num:)
         text = text.replace(/\[\[([^\]]+)\]\]/g, `<span class="kw" data-word="$1">$1</span>`);
-        text = text.replace(/\[(?!slot:|num:)([^\]]+)\]/g, `<span class="kw" data-word="$1">$1</span>`);
+        text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, `<span class="kw" data-word="$1">$1</span>`);
 
         // Markdown bold & italics & newlines
         text = text.replace(/\*\*([^\*]+)\*\*/g, `<strong>$1</strong>`);
@@ -1328,8 +1189,33 @@ class DeductionEngine {
                                 ${isChapterReq ? "📖 Open Chapter in Novel Reader ↵" : "🚀 Launch Prerequisite Case ↵"}
                             </a>
                         </div>
+                        <div class="case-locked-corner-override">
+                            <button type="button" class="security-override-btn" id="override-unlock-case-btn" title="Emergency Protocol: Force unlock this case">
+                                <span class="override-btn-icon">⚠️</span>
+                                <span>[ OVERRIDE SECURITY // UNLOCK CASE ]</span>
+                            </button>
+                        </div>
                     </div>
                 `;
+
+                const caseOverrideBtn = document.getElementById("override-unlock-case-btn");
+                if (caseOverrideBtn) {
+                    caseOverrideBtn.addEventListener('click', () => {
+                        const caseTitle = caseData.meta?.title || caseData.id || "this case";
+                        const confirmed = confirm(`⚠️ SECURITY CLEARANCE OVERRIDE\n\nYou are about to bypass KGB/MVD protocol and forcibly unlock "${caseTitle}" without completing the required prerequisite.\n\nDo you want to proceed and unlock this investigation?`);
+                        if (confirmed) {
+                            if (typeof LogosProgression !== "undefined") {
+                                LogosProgression.unlockCase(caseData.id, caseData.file);
+                            } else {
+                                const cleanId = (caseData.id || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                                localStorage.setItem(`case_unlocked_${caseData.id}`, "true");
+                                localStorage.setItem(`case_unlocked_${cleanId}`, "true");
+                                localStorage.setItem(`case_solved_${cleanId}`, "true");
+                            }
+                            window.location.reload();
+                        }
+                    });
+                }
             }
             const timelineBar = document.getElementById("timeline-buttons");
             if (timelineBar) timelineBar.innerHTML = "";
@@ -1409,7 +1295,8 @@ class DeductionEngine {
                 }
                 const res = await fetch(`${fetchPath}?t=${Date.now()}`);
                 if (res.ok) {
-                    const text = await res.text();
+                    let text = await res.text();
+                    text = text.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, "$1");
                     const matches = text.match(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g) || [];
                     matches.forEach(m => {
                         const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
@@ -1779,178 +1666,46 @@ class DeductionEngine {
     // --- Window Focus & Multi-Lore Windows ---
 
     bringToFront(el) {
-        if (!el) return;
-        this.highestZIndex += 2;
-        el.style.zIndex = this.highestZIndex;
+        if (typeof LogosWindowManager !== "undefined") {
+            LogosWindowManager.bringToFront(el);
+            this.highestZIndex = LogosWindowManager.getHighestZIndex();
+        } else if (el) {
+            this.highestZIndex += 2;
+            el.style.zIndex = this.highestZIndex;
+        }
     }
 
     makeWindowDraggable(modal, header) {
-        if (!modal || !header) return;
-
-        modal.addEventListener("mousedown", () => this.bringToFront(modal));
-        modal.addEventListener("touchstart", () => this.bringToFront(modal), { passive: true });
-
-        let isDragging = false;
-        let startX, startY, initialLeft, initialTop;
-
-        const startDrag = (clientX, clientY, target) => {
-            if (window.innerWidth <= 900) return;
-            if (target.tagName === "BUTTON" || target.closest("button") || target.tagName === "INPUT") return;
-            this.bringToFront(modal);
-            isDragging = true;
-            startX = clientX;
-            startY = clientY;
-            const rect = modal.getBoundingClientRect();
-            initialLeft = rect.left;
-            initialTop = rect.top;
-            document.body.style.userSelect = "none";
-        };
-
-        const moveDrag = (clientX, clientY) => {
-            if (!isDragging) return;
-            const dx = clientX - startX;
-            const dy = clientY - startY;
-            modal.style.left = `${initialLeft + dx}px`;
-            modal.style.top = `${initialTop + dy}px`;
-        };
-
-        const endDrag = () => {
-            if (isDragging) {
-                isDragging = false;
-                document.body.style.userSelect = "";
-            }
-        };
-
-        header.addEventListener("mousedown", (e) => startDrag(e.clientX, e.clientY, e.target));
-        document.addEventListener("mousemove", (e) => moveDrag(e.clientX, e.clientY));
-        document.addEventListener("mouseup", endDrag);
-
-        header.addEventListener("touchstart", (e) => {
-            if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY, e.target);
-        }, { passive: true });
-        document.addEventListener("touchmove", (e) => {
-        if (isDragging && e.touches.length === 1) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true });
-        document.addEventListener("touchend", endDrag);
+        if (typeof LogosWindowManager !== "undefined") {
+            LogosWindowManager.makeWindowDraggable(modal, header);
+        }
     }
 
     makeWindowResizable(modal, handle, storageKeyPrefix = "docket", minWidth = 380, minHeight = 260) {
-        if (!modal || !handle) return;
-
-        let isResizing = false;
-        let startX, startY, startWidth, startHeight;
-
-        const startResize = (clientX, clientY) => {
-            if (window.innerWidth <= 900) return;
-            this.bringToFront(modal);
-            isResizing = true;
-            startX = clientX;
-            startY = clientY;
-            const rect = modal.getBoundingClientRect();
-            startWidth = rect.width;
-            startHeight = rect.height;
-            document.body.style.userSelect = "none";
-            modal.classList.remove("expanded");
-            const expandBtn = modal.querySelector(".window-expand-btn, #docket-expand-btn");
-            if (expandBtn) {
-                expandBtn.innerText = "⤢";
-                expandBtn.title = "Maximize";
-            }
-        };
-
-        const moveResize = (clientX, clientY) => {
-            if (!isResizing) return;
-            const newWidth = Math.max(minWidth, Math.min(window.innerWidth * 0.98, startWidth + (clientX - startX)));
-            const newHeight = Math.max(minHeight, Math.min(window.innerHeight * 0.96, startHeight + (clientY - startY)));
-            modal.style.width = `${newWidth}px`;
-            modal.style.height = `${newHeight}px`;
-        };
-
-        const endResize = () => {
-            if (isResizing) {
-                isResizing = false;
-                document.body.style.userSelect = "";
-                const rect = modal.getBoundingClientRect();
-                localStorage.setItem(`${storageKeyPrefix}_width`, Math.round(rect.width));
-                localStorage.setItem(`${storageKeyPrefix}_height`, Math.round(rect.height));
-            }
-        };
-
-        handle.addEventListener("mousedown", (e) => {
-            e.stopPropagation();
-            startResize(e.clientX, e.clientY);
-        });
-        document.addEventListener("mousemove", (e) => moveResize(e.clientX, e.clientY));
-        document.addEventListener("mouseup", endResize);
-
-        handle.addEventListener("touchstart", (e) => {
-            if (e.touches.length === 1) {
-                e.stopPropagation();
-                startResize(e.touches[0].clientX, e.touches[0].clientY);
-            }
-        }, { passive: true });
-        document.addEventListener("touchmove", (e) => {
-            if (isResizing && e.touches.length === 1) {
-                moveResize(e.touches[0].clientX, e.touches[0].clientY);
-            }
-        }, { passive: true });
-        document.addEventListener("touchend", endResize);
+        if (typeof LogosWindowManager !== "undefined") {
+            LogosWindowManager.makeWindowResizable(modal, handle, storageKeyPrefix, minWidth, minHeight);
+        }
     }
 
     toggleWindowExpand(modal, btn, storageKeyPrefix = "window", defaultWidth = null, defaultHeight = null) {
-        if (!modal) return;
-        const isExpanded = modal.classList.toggle("expanded");
-        if (btn) {
-            btn.innerText = isExpanded ? "⤦" : "⤢";
-            btn.title = isExpanded ? "Restore Previous Size" : "Maximize";
-        }
-        if (!isExpanded) {
-            const savedW = localStorage.getItem(`${storageKeyPrefix}_width`);
-            const savedH = localStorage.getItem(`${storageKeyPrefix}_height`);
-            if (savedW && parseInt(savedW, 10) >= 360) {
-                modal.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
-            } else if (defaultWidth) {
-                modal.style.width = `${defaultWidth}px`;
-            } else {
-                modal.style.width = "";
-            }
-
-            if (savedH && parseInt(savedH, 10) >= 240) {
-                modal.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
-            } else if (defaultHeight) {
-                modal.style.height = `${defaultHeight}px`;
-            } else {
-                modal.style.height = "";
-            }
+        if (typeof LogosWindowManager !== "undefined") {
+            LogosWindowManager.toggleWindowExpand(modal, btn, storageKeyPrefix, defaultWidth, defaultHeight);
         }
         if (modal === this.docketModal) {
             this.setupDocketScrollIndicators();
         }
-        window.sfx?.playClick();
     }
 
     restoreDocketSize() {
-        if (window.innerWidth <= 900) return;
-        const savedW = localStorage.getItem("docket_width");
-        const savedH = localStorage.getItem("docket_height");
-        if (this.docketModal) {
-            if (savedW && parseInt(savedW, 10) >= 460) {
-                this.docketModal.style.width = `${Math.min(parseInt(savedW, 10), window.innerWidth * 0.98)}px`;
-            } else {
-                this.docketModal.style.width = "";
-            }
-            if (savedH && parseInt(savedH, 10) >= 380) {
-                this.docketModal.style.height = `${Math.min(parseInt(savedH, 10), window.innerHeight * 0.96)}px`;
-            } else {
-                this.docketModal.style.height = "";
-            }
+        if (typeof LogosWindowManager !== "undefined") {
+            LogosWindowManager.restoreWindowSize(this.docketModal, "docket", 880, 640);
         }
     }
 
     toggleDocketExpand() {
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (!this.docketModal) return;
-        this.toggleWindowExpand(this.docketModal, document.getElementById("docket-expand-btn"), "docket");
+        this.toggleWindowExpand(this.docketModal, document.getElementById("docket-expand-btn"), "docket", 880, 640);
     }
 
     openLoreModal(loreId) {
@@ -2277,200 +2032,29 @@ class DeductionEngine {
         }, { passive: true });
     }
 
-    updatePickerHighlight(items) {
-        items.forEach((item, idx) => {
-            if (idx === this.pickerHighlightedIndex) {
-                item.classList.add("highlighted");
-                item.scrollIntoView({ block: "nearest" });
-            } else {
-                item.classList.remove("highlighted");
-            }
-        });
-    }
-
     matchesSlotTag(word, slotTag) {
-        if (!slotTag || slotTag === "all") return true;
-        const allowedCanonical = this.getCanonicalCategories(slotTag);
-        const wordCanonical = this.getKeywordTags(word);
-        return allowedCanonical.some(tag => wordCanonical.includes(tag));
+        if (this.slotPicker) return this.slotPicker.matchesSlotTag(word, slotTag);
+        return true;
     }
 
     openSlotPicker(slot) {
-        if (this.justTouchDragged) return;
-        const popover = document.getElementById("slot-picker-popover");
-        const input = document.getElementById("slot-picker-input");
-        const clearBtn = document.getElementById("slot-picker-clear-btn");
-        const badge = document.getElementById("slot-picker-constraint-badge");
-        if (!popover || !input) return;
-
-        this.activeSlot = slot;
-        this.pickerHighlightedIndex = -1;
-
-        const slotId = slot.getAttribute("data-id");
-        const slotTag = slot.getAttribute("data-tag");
-        const currentWord = this.docketSlots[slotId] || "";
-
-        if (clearBtn) {
-            clearBtn.style.display = currentWord ? "inline-block" : "none";
-        }
-
-        if (badge) {
-            if (slotTag) {
-                badge.style.display = "inline-flex";
-                const tags = this.getCanonicalCategories(slotTag);
-                if (tags.length === 1) {
-                    const conf = this.getCategoryConfig(tags[0]);
-                    badge.style.background = conf.hex;
-                    badge.style.color = "#000000";
-                    badge.innerText = `${conf.icon} ${conf.label.toUpperCase()}`;
-                } else {
-                    const hexes = tags.map(c => this.getCategoryConfig(c).hex);
-                    badge.style.background = this.buildSplitGradient(hexes, "90deg");
-                    badge.style.color = "#ffffff";
-                    badge.innerText = tags.map(c => this.getCategoryConfig(c).label.toUpperCase()).join(" / ");
-                }
-            } else {
-                badge.style.display = "none";
-            }
-        }
-
-        if (input) {
-            input.placeholder = slotTag ? `Filter [${slotTag.toUpperCase()}] keywords...` : "Search keywords...";
-        }
-
-        // Positioning for Desktop / Tablet (Mobile is anchored as bottom sheet via CSS)
-        if (window.innerWidth > 600) {
-            const rect = slot.getBoundingClientRect();
-            let top = rect.bottom + 6;
-            let left = rect.left;
-
-            if (left + 280 > window.innerWidth - 10) {
-                left = Math.max(10, window.innerWidth - 290);
-            }
-            if (top + 240 > window.innerHeight - 10) {
-                top = Math.max(10, rect.top - 240);
-            }
-
-            popover.style.top = `${top}px`;
-            popover.style.left = `${left}px`;
-        }
-
-        popover.classList.remove("hidden");
-        input.value = "";
-        this.filterSlotPicker("");
-        setTimeout(() => input.focus(), 60);
+        if (this.slotPicker) this.slotPicker.open(slot);
     }
 
     filterSlotPicker(query = "") {
-        const list = document.getElementById("slot-picker-list");
-        if (!list) return;
-        list.innerHTML = "";
-
-        const slotId = this.activeSlot?.getAttribute("data-id");
-        const slotTag = this.activeSlot?.getAttribute("data-tag");
-        const currentSlotWord = slotId ? this.docketSlots[slotId] : "";
-
-        const q = (query || "").trim().toLowerCase();
-        let words = Array.from(this.collectedWords);
-
-        // Filter by slot tag constraint if defined on slot
-        if (slotTag) {
-            words = words.filter(w => this.matchesSlotTag(w, slotTag));
-        }
-
-        if (words.length === 0) {
-            if (slotTag) {
-                list.innerHTML = `<div class="slot-picker-empty">No [${this.escapeHtml(slotTag.toUpperCase())}] keywords collected yet.<br>Explore scene clues & timeline first!</div>`;
-            } else {
-                list.innerHTML = `<div class="slot-picker-empty">No keywords collected yet.<br>Explore scene clues & timeline first!</div>`;
-            }
-            return;
-        }
-
-        // Sort alphabetically
-        words.sort((a, b) => a.localeCompare(b));
-
-        if (q) {
-            words = words.filter(w => w.toLowerCase().includes(q));
-        }
-
-        if (words.length === 0) {
-            list.innerHTML = `<div class="slot-picker-empty">No matching keywords for "${this.escapeHtml(query)}"</div>`;
-            return;
-        }
-
-        words.forEach((word) => {
-            const canonicalTags = this.getKeywordTags(word);
-
-            let badgesHtml = "";
-            canonicalTags.forEach(cat => {
-                const conf = this.getCategoryConfig(cat);
-                badgesHtml += `<span class="cat-pill" style="background: ${conf.bg}; border: 1px solid ${conf.border}; color: ${conf.text};">${conf.icon} ${conf.label}</span>`;
-            });
-
-            const item = document.createElement("button");
-            item.type = "button";
-            item.className = "slot-picker-item";
-            if (word === currentSlotWord) {
-                item.classList.add("active-choice");
-            }
-
-            if (canonicalTags.length === 1) {
-                const conf = this.getCategoryConfig(canonicalTags[0]);
-                item.style.borderLeft = `3.5px solid ${conf.hex}`;
-            } else if (canonicalTags.length > 1) {
-                const hexes = canonicalTags.map(c => this.getCategoryConfig(c).hex);
-                item.style.borderLeft = `3.5px solid transparent`;
-                item.style.borderImage = `${this.buildSplitGradient(hexes, "to bottom")} 1`;
-            }
-
-            item.innerHTML = `
-                <div class="slot-picker-item-left">
-                    <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
-                        ${badgesHtml}
-                    </div>
-                    <span style="font-weight: 600;">${this.escapeHtml(word)}</span>
-                </div>
-                ${word === currentSlotWord ? '<span style="font-size: 11px; font-weight: 700; color: var(--accent);">✓</span>' : ""}
-            `;
-
-            item.addEventListener("click", () => {
-                this.selectKeywordForSlot(word);
-            });
-
-            list.appendChild(item);
-        });
-
-        this.pickerHighlightedIndex = -1;
+        if (this.slotPicker) this.slotPicker.filter(query);
     }
 
     selectKeywordForSlot(word) {
-        if (!this.activeSlot) return;
-        const slotId = this.activeSlot.getAttribute("data-id");
-        this.docketSlots[slotId] = word;
-        this.updateSlotAppearance(this.activeSlot, word);
-        window.sfx?.playSnap();
-        this.updateProgress();
-        this.saveProgress();
-        this.closeSlotPicker();
+        if (this.slotPicker) this.slotPicker.selectWord(word);
     }
 
     clearActiveSlot() {
-        if (!this.activeSlot) return;
-        const slotId = this.activeSlot.getAttribute("data-id");
-        delete this.docketSlots[slotId];
-        this.updateSlotAppearance(this.activeSlot, null);
-        window.sfx?.playPop();
-        this.updateProgress();
-        this.saveProgress();
-        this.closeSlotPicker();
+        if (this.slotPicker) this.slotPicker.clearActiveSlot();
     }
 
     closeSlotPicker() {
-        const popover = document.getElementById("slot-picker-popover");
-        if (popover) popover.classList.add("hidden");
-        this.activeSlot = null;
-        this.pickerHighlightedIndex = -1;
+        if (this.slotPicker) this.slotPicker.close();
     }
 
     // --- Docket Modal & Slots ---
@@ -2684,265 +2268,11 @@ class DeductionEngine {
     // --- Drag & Drop Engines (HTML5 Desktop + Touch Mobile) ---
 
     initSlotDragAndDrop() {
-        const slots = document.querySelectorAll(".slot, .num-slot");
-        slots.forEach(slot => {
-            slot.setAttribute("draggable", "true");
-
-            slot.addEventListener("dragstart", (e) => {
-                const slotId = slot.getAttribute("data-id");
-                let currentWord = "";
-                if (slot.classList.contains("num-slot")) {
-                    currentWord = slot.value.trim();
-                } else {
-                    currentWord = slot.innerText.trim();
-                    if (currentWord === "[ ? ]") currentWord = "";
-                }
-
-                if (currentWord) {
-                    this.draggedSourceSlotId = slotId;
-                    e.dataTransfer.setData("text/plain", currentWord);
-                    e.dataTransfer.setData("application/x-docket-slot", slotId);
-                } else {
-                    e.preventDefault();
-                }
-            });
-
-            slot.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                slot.classList.add("drag-over");
-            });
-
-            slot.addEventListener("dragleave", () => {
-                slot.classList.remove("drag-over");
-            });
-
-            slot.addEventListener("drop", (e) => {
-                e.preventDefault();
-                slot.classList.remove("drag-over");
-
-                const incomingWord = e.dataTransfer.getData("text/plain");
-                if (!incomingWord) return;
-
-                const targetSlotId = slot.getAttribute("data-id");
-                const sourceSlotId = this.draggedSourceSlotId || e.dataTransfer.getData("application/x-docket-slot");
-
-                let existingTargetWord = "";
-                if (slot.classList.contains("num-slot")) {
-                    existingTargetWord = slot.value.trim();
-                } else {
-                    existingTargetWord = slot.innerText.trim();
-                    if (existingTargetWord === "[ ? ]") existingTargetWord = "";
-                }
-
-                const sourceEl = sourceSlotId ? document.querySelector(`[data-id="${sourceSlotId}"]`) : null;
-
-                if (slot.classList.contains("num-slot")) {
-                    const digits = incomingWord.replace(/[^0-9]/g, "");
-                    if (digits.length > 0) {
-                        const maxLen = parseInt(slot.getAttribute("maxlength") || "4", 10);
-                        slot.value = digits.slice(0, maxLen);
-                        slot.classList.add("filled");
-                        slot.classList.remove("wrong", "correct");
-                        this.docketSlots[targetSlotId] = slot.value;
-                    }
-                } else {
-                    this.docketSlots[targetSlotId] = incomingWord;
-                    this.updateSlotAppearance(slot, incomingWord);
-                }
-
-                if (sourceEl && sourceSlotId !== targetSlotId) {
-                    if (existingTargetWord) {
-                        if (sourceEl.classList.contains("num-slot")) {
-                            const digits = existingTargetWord.replace(/[^0-9]/g, "");
-                            if (digits.length > 0) {
-                                const maxLen = parseInt(sourceEl.getAttribute("maxlength") || "4", 10);
-                                sourceEl.value = digits.slice(0, maxLen);
-                                sourceEl.classList.add("filled");
-                                sourceEl.classList.remove("wrong", "correct");
-                                this.docketSlots[sourceSlotId] = sourceEl.value;
-                            } else {
-                                sourceEl.value = "";
-                                sourceEl.classList.remove("filled", "wrong", "correct");
-                                delete this.docketSlots[sourceSlotId];
-                            }
-                        } else {
-                            this.docketSlots[sourceSlotId] = existingTargetWord;
-                            this.updateSlotAppearance(sourceEl, existingTargetWord);
-                        }
-                    } else {
-                        if (sourceEl.classList.contains("num-slot")) {
-                            sourceEl.value = "";
-                            sourceEl.classList.remove("filled", "wrong", "correct");
-                        } else {
-                            this.updateSlotAppearance(sourceEl, null);
-                        }
-                        delete this.docketSlots[sourceSlotId];
-                    }
-                }
-
-                this.draggedSourceSlotId = null;
-                window.sfx?.playSnap();
-                this.updateProgress();
-                this.saveProgress();
-            });
-        });
+        if (this.dragDrop) this.dragDrop.initDesktopDragAndDrop();
     }
 
     initTouchDragAndDrop() {
-        const ghost = document.getElementById("touch-drag-ghost");
-        let touchDraggedWord = null;
-        let touchSourceSlotId = null;
-        let isTouchDragging = false;
-        let currentHoveredSlot = null;
-        let startX = 0, startY = 0;
-        let touchThresholdPassed = false;
-
-        document.addEventListener("touchstart", (e) => {
-            const touch = e.touches[0];
-            const target = e.target.closest(".kw, .tray-word, .slot, .num-slot");
-            if (!target) return;
-
-            let word = "";
-            let sourceSlotId = null;
-
-            if (target.classList.contains("slot")) {
-                word = target.innerText.trim();
-                sourceSlotId = target.getAttribute("data-id");
-                if (word === "[ ? ]") word = "";
-            } else if (target.classList.contains("num-slot")) {
-                word = target.value.trim();
-                sourceSlotId = target.getAttribute("data-id");
-            } else {
-                word = target.getAttribute("data-word") || target.innerText.trim();
-            }
-
-            if (!word) return;
-
-            startX = touch.clientX;
-            startY = touch.clientY;
-            touchDraggedWord = word;
-            touchSourceSlotId = sourceSlotId;
-            isTouchDragging = true;
-            touchThresholdPassed = false;
-        }, { passive: true });
-
-        document.addEventListener("touchmove", (e) => {
-            if (!isTouchDragging || !touchDraggedWord) return;
-            const touch = e.touches[0];
-
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            if (!touchThresholdPassed && Math.sqrt(dx * dx + dy * dy) > 8) {
-                touchThresholdPassed = true;
-                if (ghost) {
-                    ghost.innerText = touchDraggedWord;
-                    ghost.style.display = "block";
-                }
-            }
-
-            if (touchThresholdPassed && ghost) {
-                ghost.style.left = `${touch.clientX}px`;
-                ghost.style.top = `${touch.clientY}px`;
-
-                const elBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                const slot = elBelow ? elBelow.closest(".slot, .num-slot") : null;
-
-                if (currentHoveredSlot && currentHoveredSlot !== slot) {
-                    currentHoveredSlot.classList.remove("drag-over");
-                }
-
-                if (slot) {
-                    slot.classList.add("drag-over");
-                    currentHoveredSlot = slot;
-                } else {
-                    currentHoveredSlot = null;
-                }
-
-                if (e.cancelable) e.preventDefault();
-            }
-        }, { passive: false });
-
-        document.addEventListener("touchend", () => {
-            if (!isTouchDragging) return;
-
-            if (ghost) ghost.style.display = "none";
-            if (currentHoveredSlot) currentHoveredSlot.classList.remove("drag-over");
-
-            if (touchThresholdPassed) {
-                this.justTouchDragged = true;
-                setTimeout(() => { this.justTouchDragged = false; }, 100);
-
-                if (currentHoveredSlot && touchDraggedWord) {
-                    const targetSlotId = currentHoveredSlot.getAttribute("data-id");
-                    const isTargetNum = currentHoveredSlot.classList.contains("num-slot");
-
-                    let existingTargetWord = "";
-                    if (isTargetNum) {
-                        existingTargetWord = currentHoveredSlot.value.trim();
-                    } else {
-                        existingTargetWord = currentHoveredSlot.innerText.trim();
-                        if (existingTargetWord === "[ ? ]") existingTargetWord = "";
-                    }
-
-                    if (isTargetNum) {
-                        const digits = touchDraggedWord.replace(/[^0-9]/g, "");
-                        if (digits.length > 0) {
-                            const maxLen = parseInt(currentHoveredSlot.getAttribute("maxlength") || "4", 10);
-                            currentHoveredSlot.value = digits.slice(0, maxLen);
-                            currentHoveredSlot.classList.add("filled");
-                            currentHoveredSlot.classList.remove("wrong", "correct");
-                            this.docketSlots[targetSlotId] = currentHoveredSlot.value;
-                        }
-                    } else {
-                        this.docketSlots[targetSlotId] = touchDraggedWord;
-                        this.updateSlotAppearance(currentHoveredSlot, touchDraggedWord);
-                    }
-
-                    if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
-                        const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
-                        if (sourceEl) {
-                            const isSourceNum = sourceEl.classList.contains("num-slot");
-                            if (existingTargetWord) {
-                                if (isSourceNum) {
-                                    const digits = existingTargetWord.replace(/[^0-9]/g, "");
-                                    if (digits.length > 0) {
-                                        const maxLen = parseInt(sourceEl.getAttribute("maxlength") || "4", 10);
-                                        sourceEl.value = digits.slice(0, maxLen);
-                                        sourceEl.classList.add("filled");
-                                        sourceEl.classList.remove("wrong", "correct");
-                                        this.docketSlots[touchSourceSlotId] = sourceEl.value;
-                                    } else {
-                                        sourceEl.value = "";
-                                        sourceEl.classList.remove("filled", "wrong", "correct");
-                                        delete this.docketSlots[touchSourceSlotId];
-                                    }
-                                } else {
-                                    this.docketSlots[touchSourceSlotId] = existingTargetWord;
-                                    this.updateSlotAppearance(sourceEl, existingTargetWord);
-                                }
-                            } else {
-                                if (isSourceNum) {
-                                    sourceEl.value = "";
-                                    sourceEl.classList.remove("filled", "wrong", "correct");
-                                } else {
-                                    this.updateSlotAppearance(sourceEl, null);
-                                }
-                                delete this.docketSlots[touchSourceSlotId];
-                            }
-                        }
-                    }
-                    window.sfx?.playSnap();
-                    this.updateProgress();
-                    this.saveProgress();
-                }
-            }
-
-            isTouchDragging = false;
-            touchDraggedWord = null;
-            touchSourceSlotId = null;
-            currentHoveredSlot = null;
-            touchThresholdPassed = false;
-        });
+        if (this.dragDrop) this.dragDrop.initTouchDragAndDrop();
     }
 
     showToast(msg) {
@@ -3046,355 +2376,35 @@ class DeductionEngine {
     }
 
     getSaveDataSnapshot() {
-        // 1. Cases Progression
-        const cases = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('deduction_engine_save_')) {
-                const caseId = key.replace('deduction_engine_save_', '');
-                try {
-                    const caseData = JSON.parse(localStorage.getItem(key));
-                    if (caseData && typeof caseData === 'object') {
-                        caseData.solved = localStorage.getItem(`case_solved_${caseId}`) === 'true' || Boolean(caseData.solved);
-                        cases[caseId] = caseData;
-                    }
-                } catch (e) {}
-            } else if (key && key.startsWith('case_solved_')) {
-                const caseId = key.replace('case_solved_', '');
-                if (!cases[caseId]) {
-                    cases[caseId] = {
-                        caseId: caseId,
-                        solved: localStorage.getItem(key) === 'true'
-                    };
-                } else {
-                    cases[caseId].solved = localStorage.getItem(key) === 'true';
-                }
-            }
-        }
-
-        // 2. Chapters Progression
-        const chapters = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('chapter_keywords_')) {
-                const path = key.replace('chapter_keywords_', '');
-                if (!chapters[path]) chapters[path] = {};
-                try {
-                    chapters[path].collectedKeywords = JSON.parse(localStorage.getItem(key)) || [];
-                } catch (e) {
-                    chapters[path].collectedKeywords = [];
-                }
-            } else if (key && key.startsWith('chapter_read_')) {
-                const path = key.replace('chapter_read_', '');
-                if (!chapters[path]) chapters[path] = {};
-                chapters[path].read = localStorage.getItem(key) === 'true';
-            }
-        }
-
-        // 3. Window Layouts
-        const windowLayouts = {};
-        const docketW = localStorage.getItem('docket_width');
-        const docketH = localStorage.getItem('docket_height');
-        if (docketW || docketH) {
-            windowLayouts.docket = {
-                width: docketW ? parseInt(docketW, 10) : null,
-                height: docketH ? parseInt(docketH, 10) : null
-            };
-        }
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!key) continue;
-            const loreMatch = key.match(/^lore_(.+)_(width|height)$/);
-            if (loreMatch) {
-                const id = `lore_${loreMatch[1]}`;
-                if (!windowLayouts[id]) windowLayouts[id] = {};
-                windowLayouts[id][loreMatch[2]] = parseInt(localStorage.getItem(key), 10);
-            }
-            const tableMatch = key.match(/^table_(.+)_(width|height)$/);
-            if (tableMatch) {
-                const id = `table_${tableMatch[1]}`;
-                if (!windowLayouts[id]) windowLayouts[id] = {};
-                windowLayouts[id][tableMatch[2]] = parseInt(localStorage.getItem(key), 10);
-            }
-        }
-
-        // 4. Reader Settings & Bookmark
-        const reader = {
-            bookmark: {
-                path: localStorage.getItem('chronos_bookmark_path') || null,
-                ratio: parseFloat(localStorage.getItem('chronos_bookmark_ratio') || '0')
-            },
-            settings: {
-                theme: localStorage.getItem('reader-theme') || 'soviet-amber',
-                fontFamily: localStorage.getItem('reader-font-family') || 'lora',
-                customFont: localStorage.getItem('reader-custom-font') || 'Lora',
-                fontSize: parseInt(localStorage.getItem('reader-font-size') || '18', 10),
-                lineHeight: parseFloat(localStorage.getItem('reader-line-height') || '1.6'),
-                maxWidth: parseInt(localStorage.getItem('reader-max-width') || '750', 10),
-                speechEnabled: localStorage.getItem('reader-speech-enabled') !== 'false',
-                highlightMode: localStorage.getItem('reader-highlight-mode') || 'text-only',
-                epaperTransition: localStorage.getItem('reader-epaper-transition') !== 'false',
-                epaperDuration: parseFloat(localStorage.getItem('reader-epaper-duration') || '0.50'),
-                displayProfile: localStorage.getItem('reader-display-profile') || 'clean',
-                displayIntensity: parseInt(localStorage.getItem('reader-display-intensity') || '65', 10),
-                displaySpeed: parseInt(localStorage.getItem('reader-display-speed') || '2', 10),
-                zenEnabled: localStorage.getItem('reader-zen-enabled') === 'true',
-                spotlightEnabled: localStorage.getItem('reader-spotlight-enabled') === 'true',
-                spotlightSize: parseInt(localStorage.getItem('reader-spotlight-size') || '3', 10)
-            }
-        };
-
-        // 5. Game Settings
-        const game = {
-            selectedCase: localStorage.getItem('case_selected') || null,
-            tutorialSuppressed: localStorage.getItem('deduction_engine_tutorial_suppressed') === 'true',
-            windowLayouts: windowLayouts,
-            settings: {
-                theme: localStorage.getItem('game-theme') || 'soviet-amber',
-                fontSize: parseInt(localStorage.getItem('game-font-size') || '13', 10),
-                lineHeight: parseFloat(localStorage.getItem('game-line-height') || '1.5'),
-                fontFamily: localStorage.getItem('game-font-family') || "'IBM Plex Mono', monospace",
-                displayProfile: localStorage.getItem('game-display-profile') || (localStorage.getItem('game-scanlines') === 'true' ? 'crt' : 'clean'),
-                displayIntensity: parseInt(localStorage.getItem('game-display-intensity') || '65', 10),
-                displaySpeed: parseInt(localStorage.getItem('game-display-speed') || '2', 10)
-            }
-        };
-
-        // 6. Audio Settings
-        const audioPositions = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('bgm_pos_')) {
-                const trackId = key.replace('bgm_pos_', '');
-                audioPositions[trackId] = parseFloat(localStorage.getItem(key) || '0');
-            }
-        }
-
-        const audio = {
-            sfxEnabled: localStorage.getItem('sfx_enabled') !== 'false',
-            sfxVolume: parseFloat(localStorage.getItem('sfx_volume') || '0.45'),
-            bgmVolume: parseFloat(localStorage.getItem('bgm_volume') || '0.35'),
-            bgmTrackId: localStorage.getItem('bgm_track_id') || 'sb_the_long_dark',
-            bgmIsPlaying: localStorage.getItem('bgm_is_playing') === 'true',
-            bgmPositions: audioPositions
-        };
-
-        return {
-            app: "LOGOS-3",
-            version: "2.2",
-            schemaVersion: 2,
-            exportedAt: new Date().toISOString(),
-            progression: {
-                cases,
-                chapters
-            },
-            reader,
-            game,
-            audio
-        };
+        return (typeof LogosSaveManager !== "undefined") ? LogosSaveManager.getSnapshot() : {};
     }
 
     exportSaveData() {
-        window.sfx?.playClick();
-        const payload = this.getSaveDataSnapshot();
-        const jsonStr = JSON.stringify(payload, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const now = new Date();
-        const dateStr = now.toISOString().slice(0, 10);
-        const timeStr = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0') + String(now.getSeconds()).padStart(2, '0');
-        const filename = `logos3_save_${dateStr}_${timeStr}.json`;
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        this.showToast(`✓ Save archive exported (${filename})`);
+        if (typeof LogosSaveManager !== "undefined") {
+            LogosSaveManager.exportToFile();
+        }
     }
 
     restoreSaveData(parsed) {
-        if (!parsed || typeof parsed !== 'object') {
-            throw new Error("Invalid file content.");
+        if (typeof LogosSaveManager !== "undefined") {
+            return LogosSaveManager.restoreSnapshot(parsed);
         }
-
-        let count = 0;
-
-        // Structured Schema (schemaVersion: 2)
-        if (parsed.progression || parsed.reader || parsed.game || parsed.audio) {
-            // Restore Cases
-            if (parsed.progression?.cases) {
-                Object.entries(parsed.progression.cases).forEach(([caseId, cData]) => {
-                    if (cData && typeof cData === 'object') {
-                        if (cData.solved) {
-                            localStorage.setItem(`case_solved_${caseId}`, 'true');
-                        }
-                        localStorage.setItem(`deduction_engine_save_${caseId}`, JSON.stringify(cData));
-                        count++;
-                    }
-                });
-            }
-
-            // Restore Chapters
-            if (parsed.progression?.chapters) {
-                Object.entries(parsed.progression.chapters).forEach(([path, chData]) => {
-                    if (chData && typeof chData === 'object') {
-                        if (chData.read) {
-                            localStorage.setItem(`chapter_read_${path}`, 'true');
-                        }
-                        if (Array.isArray(chData.collectedKeywords)) {
-                            localStorage.setItem(`chapter_keywords_${path}`, JSON.stringify(chData.collectedKeywords));
-                        }
-                        count++;
-                    }
-                });
-            }
-
-            // Restore Reader
-            if (parsed.reader) {
-                if (parsed.reader.bookmark?.path) {
-                    localStorage.setItem('chronos_bookmark_path', parsed.reader.bookmark.path);
-                    localStorage.setItem('chronos_bookmark_ratio', String(parsed.reader.bookmark.ratio || 0));
-                    count++;
-                }
-                if (parsed.reader.settings) {
-                    const readerKeyMap = {
-                        theme: 'reader-theme',
-                        fontFamily: 'reader-font-family',
-                        customFont: 'reader-custom-font',
-                        fontSize: 'reader-font-size',
-                        lineHeight: 'reader-line-height',
-                        maxWidth: 'reader-max-width',
-                        speechEnabled: 'reader-speech-enabled',
-                        highlightMode: 'reader-highlight-mode',
-                        epaperTransition: 'reader-epaper-transition',
-                        epaperDuration: 'reader-epaper-duration',
-                        displayProfile: 'reader-display-profile',
-                        displayIntensity: 'reader-display-intensity',
-                        displaySpeed: 'reader-display-speed',
-                        zenEnabled: 'reader-zen-enabled',
-                        spotlightEnabled: 'reader-spotlight-enabled',
-                        spotlightSize: 'reader-spotlight-size'
-                    };
-                    Object.entries(parsed.reader.settings).forEach(([k, v]) => {
-                        const sk = readerKeyMap[k] || `reader-${k}`;
-                        localStorage.setItem(sk, String(v));
-                        count++;
-                    });
-                }
-            }
-
-            // Restore Game
-            if (parsed.game) {
-                if (parsed.game.selectedCase) {
-                    localStorage.setItem('case_selected', parsed.game.selectedCase);
-                    count++;
-                }
-                if (parsed.game.tutorialSuppressed !== undefined) {
-                    localStorage.setItem('deduction_engine_tutorial_suppressed', String(parsed.game.tutorialSuppressed));
-                    count++;
-                }
-                if (parsed.game.windowLayouts) {
-                    Object.entries(parsed.game.windowLayouts).forEach(([winId, dims]) => {
-                        if (winId === 'docket') {
-                            if (dims.width) localStorage.setItem('docket_width', String(dims.width));
-                            if (dims.height) localStorage.setItem('docket_height', String(dims.height));
-                        } else {
-                            if (dims.width) localStorage.setItem(`${winId}_width`, String(dims.width));
-                            if (dims.height) localStorage.setItem(`${winId}_height`, String(dims.height));
-                        }
-                        count++;
-                    });
-                }
-                if (parsed.game.settings) {
-                    const gameKeyMap = {
-                        theme: 'game-theme',
-                        fontSize: 'game-font-size',
-                        lineHeight: 'game-line-height',
-                        fontFamily: 'game-font-family',
-                        displayProfile: 'game-display-profile',
-                        displayIntensity: 'game-display-intensity',
-                        displaySpeed: 'game-display-speed'
-                    };
-                    Object.entries(parsed.game.settings).forEach(([k, v]) => {
-                        const sk = gameKeyMap[k] || `game-${k}`;
-                        localStorage.setItem(sk, String(v));
-                        count++;
-                    });
-                }
-            }
-
-            // Restore Audio
-            if (parsed.audio) {
-                if (parsed.audio.sfxEnabled !== undefined) localStorage.setItem('sfx_enabled', String(parsed.audio.sfxEnabled));
-                if (parsed.audio.sfxVolume !== undefined) localStorage.setItem('sfx_volume', String(parsed.audio.sfxVolume));
-                if (parsed.audio.bgmVolume !== undefined) localStorage.setItem('bgm_volume', String(parsed.audio.bgmVolume));
-                if (parsed.audio.bgmTrackId !== undefined) localStorage.setItem('bgm_track_id', String(parsed.audio.bgmTrackId));
-                if (parsed.audio.bgmIsPlaying !== undefined) localStorage.setItem('bgm_is_playing', String(parsed.audio.bgmIsPlaying));
-                if (parsed.audio.bgmPositions) {
-                    Object.entries(parsed.audio.bgmPositions).forEach(([tId, pos]) => {
-                        localStorage.setItem(`bgm_pos_${tId}`, String(pos));
-                    });
-                }
-                count++;
-            }
-        } else {
-            // Flat Data fallback
-            const flatData = parsed.data || parsed.storageData || parsed;
-            Object.entries(flatData).forEach(([k, v]) => {
-                if (typeof v === 'string') {
-                    localStorage.setItem(k, v);
-                    count++;
-                } else if (v !== null && v !== undefined) {
-                    localStorage.setItem(k, JSON.stringify(v));
-                    count++;
-                }
-            });
-        }
-
-        if (count === 0) {
-            throw new Error("No recognized LOGOS-3 save parameters found in this file.");
-        }
-
-        return count;
+        throw new Error("Save manager not loaded.");
     }
 
     importSaveData(inputEl) {
         const file = inputEl?.files && inputEl.files[0];
         if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const parsed = JSON.parse(e.target.result);
-                const count = this.restoreSaveData(parsed);
-
-                window.sfx?.playSuccess();
-                alert(`✓ Save data successfully restored (${count} parameters). Reloading...`);
-                window.location.reload();
-            } catch (err) {
-                alert(`⚠️ Error importing save file: ${err.message || err}`);
-            }
-        };
-        reader.onerror = () => {
-            alert("⚠️ Could not read the selected file.");
-        };
-        reader.readAsText(file);
-        if (inputEl) inputEl.value = '';
+        if (typeof LogosSaveManager !== "undefined") {
+            LogosSaveManager.importFromFile(file, () => {
+                if (inputEl) inputEl.value = '';
+            });
+        }
     }
 
     resetAllGlobalProgress() {
-        if (confirm("Reset ALL investigation progress, discovered keywords, and unlock states across both Game and Novel Reader?")) {
-            Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('case_solved_') || key.startsWith('chapter_read_') || key.startsWith('deduction_engine_save_') || key.startsWith('chapter_keywords_')) {
-                    localStorage.removeItem(key);
-                }
-            });
-            window.sfx?.playClick();
-            alert("🔒 All progress reset. Reloading...");
-            window.location.reload();
+        if (typeof LogosSaveManager !== "undefined") {
+            LogosSaveManager.resetGlobalProgress();
         }
     }
 

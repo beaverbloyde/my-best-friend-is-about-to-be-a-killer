@@ -3,6 +3,12 @@
    ========================================================================== */
 
 (function () {
+    if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    let isResettingProgression = false;
+    let isLoadingDocument = false;
+
     // 1. Path Resolver: Adapt depending on whether we run from /reader/ or the root
     const pathname = window.location.pathname;
     const isSubFolder = pathname.includes('/reader/') || pathname.endsWith('/reader') || pathname.includes('/reader');
@@ -31,16 +37,71 @@
     let tagsIndex = {};
 
     // Dynamic Chapter & Case Gating & Progression System
-    const DEFAULT_PROGRESSION_RULES = {
+    const DEFAULT_PROGRESSION_RULES = (typeof LogosProgression !== "undefined" && LogosProgression.getRules) ? LogosProgression.getRules() : {
         'content/27601e10419ce.nwd': {
             targetType: 'chapter',
-            targetTitle: 'Chapter 1: The ROVD',
+            targetTitle: 'Chapter 1.1: Crime in the Future',
             requires: {
                 type: 'case',
                 id: 'chapter_01_morning_routine',
                 title: 'Case 1: Morning Routine',
                 url: `${basePath}game/?case=cases/chapter_01_morning_routine.json`,
-                teaser: 'Reconstruct the morning timeline to verify the case docket and unlock this chapter.'
+                teaser: 'Solve Case 1: Morning Routine to unlock Chapter 1.1.'
+            }
+        },
+        'chapter_01_award_ceremony': {
+            targetType: 'case',
+            targetTitle: 'Case 2: The Conferral Ceremony',
+            requires: {
+                type: 'chapter',
+                id: 'content/27601e10419ce.nwd',
+                title: 'Chapter 1.1: Crime in the Future',
+                url: 'index.html?file=content%2F27601e10419ce.nwd',
+                teaser: 'Read Chapter 1.1 in the Novel Reader to unlock this conferral ceremony investigation.'
+            }
+        },
+        'content/8e0179d6fe5e5.nwd': {
+            targetType: 'chapter',
+            targetTitle: 'Chapter 1.2: The Man on the News',
+            requires: {
+                type: 'case',
+                id: 'chapter_01_award_ceremony',
+                title: 'Case 2: The Conferral Ceremony',
+                url: `${basePath}game/?case=cases/chapter_01_award_ceremony.json`,
+                teaser: 'Solve Case 2: The Conferral Ceremony to unlock Chapter 1.2.'
+            }
+        },
+        'chapter_01_the_man_on_the_news': {
+            targetType: 'case',
+            targetTitle: 'Case 3: The Man on the News',
+            requires: {
+                type: 'chapter',
+                id: 'content/8e0179d6fe5e5.nwd',
+                title: 'Chapter 1.2: The Man on the News',
+                url: 'index.html?file=content%2F8e0179d6fe5e5.nwd',
+                teaser: 'Read Chapter 1.2 in the Novel Reader to unlock this suspect reconstruction investigation.'
+            }
+        },
+        'content/1bd7b006c55ac.nwd': {
+            targetType: 'chapter',
+            targetTitle: 'Chapter 1.3: The Charred Body',
+            requires: {
+                type: 'case',
+                id: 'chapter_01_the_man_on_the_news',
+                title: 'Case 3: The Man on the News',
+                url: `${basePath}game/?case=cases/chapter_01_the_man_on_the_news.json`,
+                teaser: 'Solve Case 3: The Man on the News to unlock Chapter 1.3.'
+            }
+        },
+        'content/9d0d0bb96c432.nwd': {
+            targetType: 'chapter',
+            targetTitle: 'Chapter 1.4: Prime Suspect',
+            requires: {
+                type: 'chapter',
+                id: 'content/1bd7b006c55ac.nwd',
+                title: 'Chapter 1.3: The Charred Body',
+                url: 'index.html?file=content%2F1bd7b006c55ac.nwd',
+                teaser: 'Read Chapter 1.3 in the Novel Reader to unlock Chapter 1.4.'
             }
         }
     };
@@ -49,6 +110,14 @@
 
     async function loadProgressionRules() {
         const casesBasePath = `${basePath}game/cases/`;
+        if (typeof LogosProgression !== "undefined") {
+            try {
+                progressionRules = await LogosProgression.loadRules(`${casesBasePath}progression.json`);
+                return progressionRules;
+            } catch (e) {
+                console.warn("LogosProgression loadRules failed, falling back to fetch:", e);
+            }
+        }
         try {
             const res = await fetch(`${casesBasePath}progression.json?t=${Date.now()}`);
             if (res.ok) {
@@ -62,11 +131,12 @@
                         let req = rule.requires;
                         if (!req) {
                             if (rule.requiresCase) {
+                                const cleanCaseId = rule.requiresCase.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
                                 req = {
                                     type: 'case',
                                     id: rule.requiresCase,
                                     title: rule.caseTitle || `Case ${rule.requiresCase}`,
-                                    url: `${basePath}game/?case=cases/${rule.requiresCase}.json`,
+                                    url: `${basePath}game/?case=cases/${cleanCaseId}.json`,
                                     teaser: rule.teaser || 'Solve the case investigation to unlock.'
                                 };
                             } else if (rule.requiresChapter) {
@@ -79,17 +149,21 @@
                                 };
                             }
                         } else if (req && !req.url) {
+                            const cleanCaseId = (req.id || '').replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
                             req.url = req.type === 'case'
-                                ? `${basePath}game/?case=cases/${req.id}.json`
+                                ? `${basePath}game/?case=cases/${cleanCaseId}.json`
                                 : `index.html?file=${encodeURIComponent(req.id)}`;
                         }
 
                         if (req) {
-                            progressionRules[target] = {
+                            const ruleObj = {
                                 targetType: rule.targetType || (target.endsWith('.nwd') ? 'chapter' : 'case'),
                                 targetTitle: rule.targetTitle || '',
                                 requires: req
                             };
+                            progressionRules[target] = ruleObj;
+                            const cleanTarget = target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                            progressionRules[cleanTarget] = ruleObj;
                         }
                     });
                 }
@@ -97,18 +171,43 @@
         } catch (e) {
             console.warn("Could not load dynamic cases/progression.json:", e);
         }
+        return progressionRules;
     }
 
     function isChapterUnlocked(path) {
-        const rule = progressionRules[path];
+        if (typeof LogosProgression !== "undefined") {
+            return LogosProgression.isChapterUnlocked(path);
+        }
+        if (!path) return true;
+        const cleanPath = path.replace(/^[./]+/, '').replace(/^\.\.\//, '');
+        const rawPath = cleanPath.replace(/^content\//, '');
+        if (
+            localStorage.getItem(`chapter_unlocked_${path}`) === 'true' ||
+            localStorage.getItem(`chapter_unlocked_${cleanPath}`) === 'true' ||
+            localStorage.getItem(`chapter_unlocked_${rawPath}`) === 'true' ||
+            localStorage.getItem(`chapter_unlocked_content/${rawPath}`) === 'true'
+        ) {
+            return true;
+        }
+
+        const rule = progressionRules[path] || 
+                     progressionRules[cleanPath] || 
+                     progressionRules[rawPath] || 
+                     progressionRules[`content/${rawPath}`];
         if (!rule || !rule.requires) return true;
-        
+
         const req = rule.requires;
         if (req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'))) {
-            return localStorage.getItem(`chapter_read_${req.id}`) === 'true';
+            const reqPath = req.id.replace(/^[./]+/, '');
+            const rawReqPath = reqPath.replace(/^content\//, '');
+            return localStorage.getItem(`chapter_read_${req.id}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_${reqPath}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_${rawReqPath}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_content/${rawReqPath}`) === 'true';
         }
-        // Default to checking case completion
-        return localStorage.getItem(`case_solved_${req.id}`) === 'true';
+        const reqCaseId = (req.id || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+        return localStorage.getItem(`case_solved_${reqCaseId}`) === 'true' ||
+               localStorage.getItem(`case_solved_${req.id}`) === 'true';
     }
 
     let unlockToastTimeout;
@@ -154,6 +253,15 @@
         }
 
         toast.classList.remove('hidden');
+        try {
+            if (window.sfx) {
+                if (typeof window.sfx.playUnlock === 'function') {
+                    window.sfx.playUnlock();
+                } else if (typeof window.sfx.playSuccess === 'function') {
+                    window.sfx.playSuccess();
+                }
+            }
+        } catch (e) {}
         clearTimeout(unlockToastTimeout);
         unlockToastTimeout = setTimeout(() => {
             hideUnlockToast();
@@ -169,20 +277,40 @@
         if (!path || !path.endsWith('.nwd')) return;
         if (!isChapterUnlocked(path)) return;
         autoCollectAllChapterKeywords(path);
-        const alreadyRead = localStorage.getItem(`chapter_read_${path}`) === 'true';
+        const cleanPath = path.replace(/^[./]+/, '');
+        const alreadyRead = localStorage.getItem(`chapter_read_${path}`) === 'true' ||
+                            localStorage.getItem(`chapter_read_${cleanPath}`) === 'true';
         if (!alreadyRead) {
-            localStorage.setItem(`chapter_read_${path}`, 'true');
+            if (typeof LogosProgression !== "undefined") {
+                LogosProgression.markChapterRead(path);
+            } else {
+                localStorage.setItem(`chapter_read_${path}`, 'true');
+                localStorage.setItem(`chapter_read_${cleanPath}`, 'true');
+            }
 
             // Find what was unlocked by completing this chapter
             const newlyUnlocked = [];
-            Object.entries(progressionRules).forEach(([target, rule]) => {
-                if (rule.requires && rule.requires.id === path) {
-                    newlyUnlocked.push({
-                        target: target,
-                        targetType: rule.targetType,
-                        targetTitle: rule.targetTitle || target,
-                        url: rule.targetType === 'case' ? `${basePath}game/?case=cases/${target}.json` : `index.html?file=${encodeURIComponent(target)}`
-                    });
+            const allRules = (typeof LogosProgression !== "undefined" && LogosProgression.getRules) ? LogosProgression.getRules() : progressionRules;
+            const rawPath = cleanPath.replace(/^content\//, '');
+
+            Object.entries(allRules).forEach(([target, rule]) => {
+                if (!rule || !rule.requires) return;
+                const req = rule.requires;
+                const reqId = req.id ? req.id.replace(/^[./]+/, '') : '';
+                const cleanReqId = reqId.replace(/^content\//, '');
+
+                if (req.type === 'chapter' && (req.id === path || reqId === cleanPath || cleanReqId === rawPath)) {
+                    const isCase = rule.targetType === 'case' || (!target.endsWith('.nwd') && !target.includes('/'));
+                    const cleanTarget = target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+
+                    if (!newlyUnlocked.some(u => u.target === target || (cleanTarget && u.target === cleanTarget))) {
+                        newlyUnlocked.push({
+                            target: target,
+                            targetType: isCase ? 'case' : 'chapter',
+                            targetTitle: rule.targetTitle || target,
+                            url: isCase ? `${basePath}game/?case=cases/${cleanTarget}.json` : `index.html?file=${encodeURIComponent(target)}`
+                        });
+                    }
                 }
             });
 
@@ -742,35 +870,25 @@
         const relockBtn = document.getElementById('relock-cases-btn');
         if (relockBtn) {
             relockBtn.addEventListener('click', () => {
-                Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('case_solved_') || key.startsWith('chapter_read_') || key.startsWith('deduction_engine_save_') || key.startsWith('chapter_keywords_')) {
-                        localStorage.removeItem(key);
-                    }
-                });
-                renderNavigation();
-                if (activeDocPath) loadDocument(activeDocPath);
-                alert("🔒 All progression reset. Gated chapters and cases are now locked!");
-            });
-        }
+                isResettingProgression = true;
+                window.isProgressionResetting = true;
+                clearTimeout(saveScrollTimeout);
+                const wrapper = document.getElementById('document-wrapper');
+                if (wrapper) wrapper.scrollTop = 0;
 
-        const unlockBtn = document.getElementById('unlock-cases-btn');
-        if (unlockBtn) {
-            unlockBtn.addEventListener('click', () => {
-                Object.values(progressionRules).forEach(r => {
-                    if (r.requires) {
-                        if (r.requires.type === 'chapter' || (r.requires.id && r.requires.id.endsWith('.nwd'))) {
-                            localStorage.setItem(`chapter_read_${r.requires.id}`, 'true');
-                        } else if (r.requires.id) {
-                            localStorage.setItem(`case_solved_${r.requires.id}`, 'true');
+                if (typeof LogosSaveManager !== "undefined") {
+                    LogosSaveManager.resetGlobalProgress();
+                } else {
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('case_solved_') || key.startsWith('case_unlocked_') || key.startsWith('chapter_read_') || key.startsWith('chapter_unlocked_') || key.startsWith('deduction_engine_save_') || key.startsWith('chapter_keywords_') || key.startsWith('chronos_bookmark_') || key === 'chronos_bookmark_path' || key === 'chronos_bookmark_ratio') {
+                            localStorage.removeItem(key);
                         }
+                    });
+                    if ('scrollRestoration' in history) {
+                        history.scrollRestoration = 'manual';
                     }
-                });
-                docList.forEach(d => {
-                    if (d.path) localStorage.setItem(`chapter_read_${d.path}`, 'true');
-                });
-                renderNavigation();
-                if (activeDocPath) loadDocument(activeDocPath);
-                alert("🔓 All cases marked solved and all chapters unlocked!");
+                    window.location.href = window.location.pathname;
+                }
             });
         }
 
@@ -1316,9 +1434,13 @@
             li.className = 'nav-item';
             li.dataset.path = ch.path;
 
-            const req = progressionRules[ch.path];
+            const req = (typeof LogosProgression !== "undefined" && LogosProgression.getRule)
+                ? LogosProgression.getRule(ch.path)
+                : (progressionRules[ch.path] || progressionRules[ch.path.replace(/^[./]+/, '')]);
             const unlocked = isChapterUnlocked(ch.path);
-            const isRead = localStorage.getItem(`chapter_read_${ch.path}`) === 'true';
+            const cleanChPath = ch.path.replace(/^[./]+/, '');
+            const isRead = localStorage.getItem(`chapter_read_${ch.path}`) === 'true' ||
+                           localStorage.getItem(`chapter_read_${cleanChPath}`) === 'true';
 
             let statusSubtitle = ch.layout;
             if (req && req.requires) {
@@ -1462,9 +1584,12 @@
 
     // 8. Fetch, Parse, and Render File (Consolidating sub-scenes dynamically)
     async function loadDocument(path) {
+        isLoadingDocument = true;
         activeDocPath = path;
         focusedParagraphIndex = -1;
         const bodyContainer = document.getElementById('document-body');
+        const wrapper = document.getElementById('document-wrapper');
+        if (wrapper) wrapper.scrollTop = 0;
         
         const activeDoc = docList.find(d => d.path === path);
         if (activeDoc) {
@@ -1487,11 +1612,24 @@
 
         // Check if chapter is locked behind an unsolved case or unread chapter
         if (!isChapterUnlocked(path)) {
-            const rule = progressionRules[path];
+            const rule = (typeof LogosProgression !== "undefined" && LogosProgression.getRule)
+                ? LogosProgression.getRule(path)
+                : (progressionRules[path] || progressionRules[path.replace(/^[./]+/, '')]);
             const req = rule ? rule.requires : null;
             const activeDoc = docList.find(d => d.path === path);
             const isCaseReq = !req || req.type === 'case';
             
+            let actionUrl = req?.url;
+            if (isCaseReq) {
+                const caseId = req?.id || '';
+                const cleanCaseId = caseId.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                actionUrl = cleanCaseId ? `${basePath}game/?case=cases/${cleanCaseId}.json` : `${basePath}game/`;
+            } else if (req?.id) {
+                actionUrl = `index.html?file=${encodeURIComponent(req.id)}`;
+            } else {
+                actionUrl = 'index.html';
+            }
+
             bodyContainer.innerHTML = `
                 <div class="chapter-locked-screen">
                     <div class="locked-security-banner">
@@ -1511,15 +1649,51 @@
                         </div>
                         <div class="locked-case-title">${req?.title || (isCaseReq ? 'Case Investigation' : 'Previous Chapter')}</div>
                         <div class="locked-case-teaser">“${req?.teaser || (isCaseReq ? 'Reconstruct the investigation timeline to unlock.' : 'Read the previous chapter to unlock.')}”</div>
-                        <a href="${req?.url || (isCaseReq ? `${basePath}game/` : 'index.html')}" class="locked-case-action-btn">
+                        <a href="${actionUrl}" class="locked-case-action-btn">
                             <span>${isCaseReq ? '🚀 Launch Case Investigation' : '📖 Read Required Chapter'}</span>
                             <span>↵</span>
                         </a>
                     </div>
+
+                    <div class="locked-screen-corner-override">
+                        <button type="button" class="security-override-btn" id="override-unlock-chapter-btn" title="Emergency Protocol: Force unlock this chapter">
+                            <span class="override-btn-icon">⚠️</span>
+                            <span>[ OVERRIDE SECURITY // UNLOCK CHAPTER ]</span>
+                        </button>
+                    </div>
                 </div>
             `;
             bodyContainer.classList.remove('transition-exit');
+
+            const overrideChapterBtn = document.getElementById('override-unlock-chapter-btn');
+            if (overrideChapterBtn) {
+                overrideChapterBtn.addEventListener('click', () => {
+                    const chapterName = activeDoc ? activeDoc.title : 'this chapter';
+                    const confirmed = confirm(`⚠️ SECURITY CLEARANCE OVERRIDE\n\nYou are about to bypass KGB/MVD protocol and forcibly unlock "${chapterName}" without completing the required prerequisite.\n\nDo you want to proceed and unlock this chapter?`);
+                    if (confirmed) {
+                        clearTimeout(saveScrollTimeout);
+                        localStorage.removeItem('chronos_bookmark_ratio');
+                        const wrapper = document.getElementById('document-wrapper');
+                        if (wrapper) wrapper.scrollTop = 0;
+
+                        if (typeof LogosProgression !== "undefined") {
+                            LogosProgression.unlockChapter(path);
+                        } else {
+                            const cleanPath = path.replace(/^[./]+/, '').replace(/^\.\.\//, '');
+                            const rawPath = cleanPath.replace(/^content\//, '');
+                            localStorage.setItem(`chapter_unlocked_${path}`, "true");
+                            localStorage.setItem(`chapter_unlocked_${cleanPath}`, "true");
+                            localStorage.setItem(`chapter_unlocked_${rawPath}`, "true");
+                            localStorage.setItem(`chapter_unlocked_content/${rawPath}`, "true");
+                        }
+                        renderNavigation();
+                        loadDocument(path);
+                    }
+                });
+            }
+
             setupPrevNextButtons();
+            setTimeout(() => { isLoadingDocument = false; }, 100);
             return;
         }
 
@@ -1655,11 +1829,11 @@
         const savedPath = localStorage.getItem('chronos_bookmark_path');
         let restored = false;
         
-        if (savedPath === path) {
+        if (!isResettingProgression && !window.isProgressionResetting && savedPath === path) {
             const savedRatio = parseFloat(localStorage.getItem('chronos_bookmark_ratio') || '0');
-            if (savedRatio > 0.01) {
-                const wrapper = document.getElementById('document-wrapper');
+            if (savedRatio > 0.02) {
                 setTimeout(() => {
+                    if (isResettingProgression || window.isProgressionResetting || !wrapper) return;
                     const scrollHeight = wrapper.scrollHeight - wrapper.clientHeight;
                     wrapper.scrollTop = savedRatio * scrollHeight;
                     showResumeToast();
@@ -1669,9 +1843,15 @@
             }
         }
 
-        if (!restored) {
-            document.getElementById('document-wrapper').scrollTop = 0;
-            triggerSpotlightUpdate();
+        if (!restored && wrapper) {
+            wrapper.scrollTop = 0;
+            requestAnimationFrame(() => {
+                if (wrapper && !restored) wrapper.scrollTop = 0;
+                triggerSpotlightUpdate();
+            });
+            setTimeout(() => {
+                if (wrapper && !restored) wrapper.scrollTop = 0;
+            }, 50);
         }
 
         // 10. Reveal the new content with Electro-Cellulose E-Paper Magnetic Refresh
@@ -1683,6 +1863,10 @@
             bodyContainer.offsetHeight; // trigger reflow
             bodyContainer.classList.remove('transition-enter');
         }
+
+        setTimeout(() => {
+            isLoadingDocument = false;
+        }, 300);
     }
 
     let epaperTimeout = null;
@@ -2449,6 +2633,10 @@
         const progressBar = document.getElementById('progress-bar');
         
         wrapper.addEventListener('scroll', () => {
+            if (isLoadingDocument) return;
+            if (isResettingProgression || window.isProgressionResetting) return;
+            if (!activeDocPath || !isChapterUnlocked(activeDocPath)) return;
+
             const scrollTop = wrapper.scrollTop;
             const scrollHeight = wrapper.scrollHeight - wrapper.clientHeight;
             const percent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
@@ -2457,25 +2645,29 @@
             // Dynamically update paragraph spotlight in Zen Mode on scroll
             triggerSpotlightUpdate();
 
-            // Auto-mark chapter as read upon completing (scrolling past 80%)
-            if (activeDocPath && isChapterUnlocked(activeDocPath) && percent >= 80) {
+            // Auto-mark chapter as read upon completing (scrolling past 75%)
+            if (percent >= 75) {
                 markChapterAsRead(activeDocPath);
             }
 
-            // Auto-Bookmark Scroll Position (Debounced)
-            if (activeDocPath) {
-                clearTimeout(saveScrollTimeout);
-                saveScrollTimeout = setTimeout(() => {
-                    const activeDoc = docList.find(d => d.path === activeDocPath);
-                    // Don't bookmark the Title Page
-                    const isTitlePage = activeDoc && activeDoc.title.toLowerCase().includes('title page');
-                    if (isTitlePage) return;
+            // Auto-Bookmark Scroll Position (Debounced) - only for unlocked readable chapters
+            clearTimeout(saveScrollTimeout);
+            saveScrollTimeout = setTimeout(() => {
+                if (isLoadingDocument || isResettingProgression || window.isProgressionResetting) return;
+                if (!isChapterUnlocked(activeDocPath)) return;
+                const activeDoc = docList.find(d => d.path === activeDocPath);
+                // Don't bookmark the Title Page
+                const isTitlePage = activeDoc && activeDoc.title.toLowerCase().includes('title page');
+                if (isTitlePage) return;
 
-                    const scrollRatio = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+                const scrollRatio = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+                if (scrollRatio > 0.02) {
                     localStorage.setItem('chronos_bookmark_path', activeDocPath);
                     localStorage.setItem('chronos_bookmark_ratio', scrollRatio.toString());
-                }, 300);
-            }
+                } else {
+                    localStorage.removeItem('chronos_bookmark_ratio');
+                }
+            }, 300);
         });
     }
 

@@ -1550,12 +1550,13 @@ header {
 #docket-modal {
     position: fixed;
     top: 40px;
-    left: max(16px, calc(50vw - 460px));
-    width: 920px;
+    left: max(16px, calc(50vw - 440px));
+    width: 880px;
     max-width: calc(100vw - 32px);
-    height: auto;
+    height: 640px;
     max-height: calc(100vh - 60px);
-    min-width: 0;
+    min-width: 380px;
+    min-height: 260px;
     box-sizing: border-box;
     background: transparent;
     z-index: 1000;
@@ -2471,6 +2472,43 @@ header {
 .case-locked-action-btn:hover {
     filter: brightness(1.15);
     transform: translateY(-1px);
+}
+
+.case-locked-corner-override {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+}
+
+.security-override-btn {
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    opacity: 0.65;
+}
+
+.security-override-btn:hover {
+    opacity: 1;
+    color: #f59e0b;
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.security-override-btn .override-btn-icon {
+    font-size: 12px;
 }
 
 /* ============================================================

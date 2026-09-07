@@ -419,11 +419,8 @@
                 <h4>Case Progression &amp; Locks</h4>
                 <p class="section-desc">Manage investigation unlocks and chapter access for testing or replaying.</p>
                 <div class="progression-btn-group">
-                    <button id="relock-cases-btn" class="progression-action-btn btn-relock" title="Reset all solved case flags and re-lock Chapter 1">
+                    <button id="relock-cases-btn" class="progression-action-btn btn-relock" style="width: 100%;" title="Reset all solved case flags and re-lock Chapter 1">
                         🔒 Re-Lock Chapters (Reset Progress)
-                    </button>
-                    <button id="unlock-cases-btn" class="progression-action-btn" title="Mark all cases as solved and unlock all chapters">
-                        🔓 Unlock All Chapters &amp; Cases
                     </button>
                 </div>
             </section>
@@ -547,7 +544,17 @@
         </div>
     </div>
 
-    <!-- Background Script Loading -->
+    <!-- Shared Utilities -->
+    <script src="../shared/save-manager.js?v=2.2"></script>
+    <script src="../shared/phonetics.js?v=2.2"></script>
+    <script src="../shared/progression-manager.js?v=2.2"></script>
+
+    <!-- Reader Modules -->
+    <script src="js/novel-parser.js?v=2.2"></script>
+    <script src="js/font-manager.js?v=2.2"></script>
+    <script src="js/reader-settings.js?v=2.2"></script>
+
+    <!-- Audio & App Engines -->
     <script src="../game/engine/sfx.js?v=2.2"></script>
     <script src="../game/engine/bgm-player.js?v=2.2"></script>
     <script src="app.js?v=2.2"></script>
