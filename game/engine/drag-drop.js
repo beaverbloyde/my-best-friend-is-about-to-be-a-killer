@@ -73,6 +73,9 @@
                     } else {
                         e.preventDefault();
                     }
+                } else {
+                    this.draggedSourceSlotId = null;
+                    this.engine.isDragging = true;
                 }
             });
 
@@ -108,13 +111,9 @@
                     const targetSlotId = slot.getAttribute("data-id");
                     const sourceSlotId = this.draggedSourceSlotId || e.dataTransfer.getData("application/x-docket-slot");
 
-                    let existingTargetWord = "";
-                    if (slot.classList.contains("num-slot")) {
-                        existingTargetWord = slot.value.trim();
-                    } else {
-                        existingTargetWord = slot.innerText.trim();
-                        if (existingTargetWord === "[ ? ]") existingTargetWord = "";
-                    }
+                    const existingTargetWord = slot.classList.contains("num-slot")
+                        ? slot.value.trim()
+                        : (this.engine.docketSlots[targetSlotId] || "");
 
                     const sourceEl = sourceSlotId ? document.querySelector(`[data-id="${sourceSlotId}"]`) : null;
 
@@ -132,13 +131,13 @@
                         this.engine.updateSlotAppearance(slot, incomingWord);
                     }
 
-                    if (sourceEl && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
+                    if (sourceEl && sourceSlotId && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
                         if (existingTargetWord) {
                             this.engine.docketSlots[sourceSlotId] = existingTargetWord;
                             this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
                         } else {
-                            this.engine.updateSlotAppearance(sourceEl, null);
                             delete this.engine.docketSlots[sourceSlotId];
+                            this.engine.updateSlotAppearance(sourceEl, null);
                         }
                     }
 
@@ -267,13 +266,9 @@
                         const targetSlotId = currentHoveredSlot.getAttribute("data-id");
                         const isTargetNum = currentHoveredSlot.classList.contains("num-slot");
 
-                        let existingTargetWord = "";
-                        if (isTargetNum) {
-                            existingTargetWord = currentHoveredSlot.value.trim();
-                        } else {
-                            existingTargetWord = currentHoveredSlot.innerText.trim();
-                            if (existingTargetWord === "[ ? ]") existingTargetWord = "";
-                        }
+                        const existingTargetWord = isTargetNum
+                            ? currentHoveredSlot.value.trim()
+                            : (this.engine.docketSlots[targetSlotId] || "");
 
                         if (isTargetNum) {
                             const digits = touchDraggedWord.replace(/[^0-9]/g, "");
@@ -296,8 +291,8 @@
                                     this.engine.docketSlots[touchSourceSlotId] = existingTargetWord;
                                     this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
                                 } else {
-                                    this.engine.updateSlotAppearance(sourceEl, null);
                                     delete this.engine.docketSlots[touchSourceSlotId];
+                                    this.engine.updateSlotAppearance(sourceEl, null);
                                 }
                             }
                         }
