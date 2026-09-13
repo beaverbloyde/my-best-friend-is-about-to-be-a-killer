@@ -29,29 +29,29 @@
         {
           "type": "Observation",
           "title": "Shoulder Insignia of the woman officer",
-          "text": "A shoulder pad: 1 red stripe in the middle, bearing [1 star]."
+          "text": "A shoulder pad: 1 red stripe in the middle, bearing [one_star]."
         },
         {
           "type": "Observation",
           "title": "Shoulder Insignia in the presentation box",
-          "text": "A velvet-lined presentation box holding a new pair of shoulder pads: 1 red stripe in the middle, bearing [3 stars]."
+          "text": "A velvet-lined presentation box holding a new pair of shoulder pads: 1 red stripe in the middle, bearing [three_stars]."
         },
         {
           "type": "Subject",
           "title": "A senior officer",
           "text": "A senior officer is shaking hand with the newly promoted officer.",
-          "spoken": "Congratulations, glad to see my disciple get promoted. A step closer to being a [Captain]."
+          "spoken": "Congratulations, glad to see my disciple get promoted. A step closer to being a [captain:upper]."
         },
         {
           "type": "Observation",
           "title": "Shoulder Insignia of the senior officer",
-          "text": "A shoulder pad: [1 big star] in the middle with embroidered oak leaves."
+          "text": "A shoulder pad: [one_big_star] in the middle with embroidered oak leaves."
         },
         {
           "type": "Subject",
           "title": "The host",
-          "text": "The host of the ceremony is holding a microphone in one hand and the [Roster] in another.",
-          "thought": "I haven't flipped a page in my roster yet... This is going to be long..."
+          "text": "The host of the ceremony is holding a microphone in one hand and the [roster:upper] in another.",
+          "thought": "I haven't flipped a page in my [roster] yet... This is going to be long..."
         },
         {
           "type": "Data Table",
@@ -68,74 +68,74 @@
             "rows": [
               [
                 "01",
-                "[Anton Belov]",
+                "[anton_belov]",
                 "Motorized Patrol",
-                "[Junior Lieutenant]",
-                "[Senior Lieutenant]"
+                "[junior_lieutenant]",
+                "[senior_lieutenant]"
               ],
               [
                 "02",
-                "[Elena Petrova]",
+                "[elena_petrova]",
                 "Forensic Pathology",
-                "[Lieutenant]",
-                "[Captain]"
+                "[lieutenant]",
+                "[captain]"
               ],
               [
                 "03",
-                "[Sasha Lebedev]",
+                "[sasha_lebedev]",
                 "Communications",
-                "[Senior Lieutenant]",
-                "[Major]"
+                "[senior_lieutenant]",
+                "[major]"
               ],
               [
                 "04",
-                "[Nadezhda Morozova]",
+                "[nadezhda_morozova]",
                 "Special Investigation",
-                "[Junior Lieutenant]",
-                "[Senior Lieutenant]"
+                "[junior_lieutenant]",
+                "[senior_lieutenant]"
               ],
               [
                 "05",
-                "[Ksenia Pavlova]",
+                "[ksenia_pavlova]",
                 "Judicial Inquiries",
-                "[Senior Lieutenant]",
-                "[Captain]"
+                "[senior_lieutenant]",
+                "[captain]"
               ],
               [
                 "06",
-                "[Zhenya Sokolov]",
+                "[zhenya_sokolov]",
                 "Technical Records",
-                "[Junior Lieutenant]",
-                "[Lieutenant]"
+                "[junior_lieutenant]",
+                "[lieutenant]"
               ],
               [
                 "07",
-                "[Boris Volkov]",
+                "[boris_volkov]",
                 "Administration",
-                "[Captain]",
-                "[Major]"
+                "[captain]",
+                "[major]"
               ],
               [
                 "08",
-                "[Viktor Smirnov]",
+                "[viktor_smirnov]",
                 "Highway Division",
-                "[Lieutenant]",
-                "[Senior Lieutenant]"
+                "[lieutenant]",
+                "[senior_lieutenant]"
               ]
             ],
-            "footer": "Presented by: The Commandant of [Vladivostok] Higher School of [MVD], [Major General]."
+            "footer": "Presented by: The Commandant of [vladivostok] Higher School of [mvd], [major_general]."
           }
         },
         {
           "type": "Public Notice",
           "title": "Banner",
           "poster": {
-            "logo": "[MVD]",
+            "logo": "[mvd]",
             "established": "",
             "badge": "Award Ceremony",
-            "headline": "Honoring the Foremost Officers of the [Primorsky Krai] OVD",
+            "headline": "Honoring the Foremost Officers of the [primorsky_krai] OVD",
             "date": "2118",
-            "venue": "[Vladivostok] Higher School of [MVD]"
+            "venue": "[vladivostok] Higher School of [mvd]"
           }
         }
       ]
@@ -146,14 +146,14 @@
       "id": "lore-mvd",
       "tag": "USSR STATE DIRECTORY // LAW ENFORCEMENT & INSTITUTIONS",
       "title": "Ministry of Internal Affairs (MVD)",
-      "facility": "Vladivostok Higher School of the MVD",
-      "location": "Vladivostok, Primorsky Krai, Russian SFSR",
+      "facility": "[vladivostok] Higher School of the [mvd]",
+      "location": "[vladivostok], [primorsky_krai], Russian SFSR",
       "diagnosticCode": "MVD-STRUCT-2118 // REGIONAL INSTITUTIONS",
       "etiology": "Civil Order, Forensic Inquiries, and Frontier Security",
       "requiredWords": [
-        "MVD"
+        "mvd"
       ],
-      "body": "The **Ministry of Internal Affairs ([MVD])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [USSR].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([ROVD]). In the Far East, the **[Vladivostok] Higher School of the [MVD]** serves as the primary regional academy for officer training, procedural jurisprudence, and forensic education."
+      "body": "The **Ministry of Internal Affairs ([mvd])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [ussr].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([rovd]). In the Far East, the **[vladivostok] Higher School of the [mvd]** serves as the primary regional academy for officer training, procedural jurisprudence, and forensic education."
     }
   },
   "categories": {
@@ -187,87 +187,6 @@
       "icon": "📦",
       "label": "Noun"
     }
-  },
-  "keywordTags": {
-    "Anton Belov": [
-      "name"
-    ],
-    "Elena Petrova": [
-      "name"
-    ],
-    "Sasha Lebedev": [
-      "name"
-    ],
-    "Nadezhda Morozova": [
-      "name"
-    ],
-    "Ksenia Pavlova": [
-      "name"
-    ],
-    "Zhenya Sokolov": [
-      "name"
-    ],
-    "Boris Volkov": [
-      "name"
-    ],
-    "Viktor Smirnov": [
-      "name"
-    ],
-    "Junior Lieutenant": [
-      "rank"
-    ],
-    "Lieutenant": [
-      "rank"
-    ],
-    "Senior Lieutenant": [
-      "rank"
-    ],
-    "Captain": [
-      "rank"
-    ],
-    "Major": [
-      "rank"
-    ],
-    "Major General": [
-      "rank"
-    ],
-    "Vladivostok": [
-      "location"
-    ],
-    "Primorsky Krai": [
-      "location"
-    ],
-    "Pogranichny": [
-      "location"
-    ],
-    "ROVD": [
-      "location"
-    ],
-    "MVD": [
-      "location",
-      "noun"
-    ],
-    "PIRM": [
-      "location"
-    ],
-    "USSR": [
-      "location"
-    ],
-    "1 star": [
-      "insignia",
-      "noun"
-    ],
-    "3 stars": [
-      "insignia",
-      "noun"
-    ],
-    "1 big star": [
-      "insignia",
-      "noun"
-    ],
-    "Roster": [
-      "noun"
-    ]
   },
   "customCategories": [
     {
@@ -305,18 +224,224 @@
     "template": "**OFFICER RANK HIERARCHY (From Low to High):**\n[slot:r1:rank] ➔ [slot:r2:rank] ➔ [slot:r3:rank] ➔ [slot:r4:rank] ➔ [slot:r5:rank] ➔ [slot:r6:rank]\n\n**WHAT IS GOING TO HAPPEN:**\nYear: [num:year:4:YYYY]\nCity: [slot:city:location]\nRegion: [slot:region:location]\n\n[slot:person:name], currently holding the rank: [slot:rank_old:rank], will be promoted to rank: [slot:rank_new:rank].\nShe will be awarded by an officer of rank: [slot:awarder_rank:rank]."
   },
   "solution": {
-    "r1": "Junior Lieutenant",
-    "r2": "Lieutenant",
-    "r3": "Senior Lieutenant",
-    "r4": "Captain",
-    "r5": "Major",
-    "r6": "Major General",
+    "r1": "junior_lieutenant",
+    "r2": "lieutenant",
+    "r3": "senior_lieutenant",
+    "r4": "captain",
+    "r5": "major",
+    "r6": "major_general",
     "year": "2118",
-    "city": "Vladivostok",
-    "region": "Primorsky Krai",
-    "person": "Nadezhda Morozova",
-    "rank_old": "Junior Lieutenant",
-    "rank_new": "Senior Lieutenant",
-    "awarder_rank": "Major General"
+    "city": "vladivostok",
+    "region": "primorsky_krai",
+    "person": "nadezhda_morozova",
+    "rank_old": "junior_lieutenant",
+    "rank_new": "senior_lieutenant",
+    "awarder_rank": "major_general"
+  },
+  "keywords": {
+    "anton_belov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Anton Belov"
+      }
+    },
+    "elena_petrova": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Elena Petrova"
+      }
+    },
+    "sasha_lebedev": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Sasha Lebedev"
+      }
+    },
+    "nadezhda_morozova": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Nadezhda Morozova"
+      }
+    },
+    "ksenia_pavlova": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Ksenia Pavlova"
+      }
+    },
+    "zhenya_sokolov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Zhenya Sokolov"
+      }
+    },
+    "boris_volkov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Boris Volkov"
+      }
+    },
+    "viktor_smirnov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Viktor Smirnov"
+      }
+    },
+    "junior_lieutenant": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Junior Lieutenant"
+      }
+    },
+    "lieutenant": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Lieutenant"
+      }
+    },
+    "senior_lieutenant": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Senior Lieutenant"
+      }
+    },
+    "captain": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Captain"
+      }
+    },
+    "major": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Major"
+      }
+    },
+    "major_general": {
+      "category": [
+        "rank"
+      ],
+      "variations": {
+        "base": "Major General"
+      }
+    },
+    "vladivostok": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Vladivostok"
+      }
+    },
+    "primorsky_krai": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Primorsky Krai"
+      }
+    },
+    "pogranichny": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Pogranichny"
+      }
+    },
+    "rovd": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "ROVD"
+      }
+    },
+    "mvd": {
+      "category": [
+        "location",
+        "noun"
+      ],
+      "variations": {
+        "base": "MVD"
+      }
+    },
+    "pirm": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "PIRM"
+      }
+    },
+    "ussr": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "USSR"
+      }
+    },
+    "one_star": {
+      "category": [
+        "insignia",
+        "noun"
+      ],
+      "variations": {
+        "base": "1 star"
+      }
+    },
+    "three_stars": {
+      "category": [
+        "insignia",
+        "noun"
+      ],
+      "variations": {
+        "base": "3 stars"
+      }
+    },
+    "one_big_star": {
+      "category": [
+        "insignia",
+        "noun"
+      ],
+      "variations": {
+        "base": "1 big star"
+      }
+    },
+    "roster": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "roster"
+      }
+    }
   }
 }

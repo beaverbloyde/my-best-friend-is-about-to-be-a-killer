@@ -23,7 +23,7 @@
         {
           "type": "Broadcast Excerpt",
           "title": "Primorsky Krai Daily",
-          "text": "“...aid from [China] arrived at [Khabarovsk] [today] via freight [train] from [Pogranichny], though some [shipment] was delayed due to an ongoing investigation...”"
+          "text": "“...aid from [china] arrived at [khabarovsk] [today] via freight [train] from [pogranichny], though some [shipment] was delayed due to an ongoing investigation...”"
         },
         {
           "type": "Economic Column",
@@ -33,152 +33,73 @@
         {
           "type": "Radio Commentary",
           "title": "Primorsky Krai Local News Anchor",
-          "text": "“...[talk] about an [obsession]! His [sports car] collection is already a [red flag]! He has to [pay] for what he'd done!...”"
+          "text": "“...[talk] about an [obsession]! His [sports_car] collection is already a [red_flag]! He has to [pay] for what he'd done!...”"
         },
         {
           "type": "State Address",
           "title": "USSR Today (National Edition)",
-          "text": "“...The [chairwoman] said in her speech [yesterday]: ‘The [state funds] will be [diverted] to the most affected area first...’...”"
+          "text": "“...The [chairwoman] said in her speech [yesterday]: ‘The [state_funds] will be [divert:past] to the most affected area first...’...”"
         },
         {
           "type": "Public Feed",
           "title": "Regional Anti-Corruption Network",
-          "text": "“...On Monday, automated anti-corruption system flagged [Regional Freight Directorate] ledger. The reason cited: Highly suspicious [repair] of personal transportation...”"
+          "text": "“...On Monday, automated anti-corruption system flagged [regional_freight_directorate] ledger. The reason cited: Highly suspicious [repair] of personal transportation...”"
         },
         {
           "type": "Tabloid Column",
           "title": "Far Eastern Whispers",
-          "text": "“...The [director] of the [Ministry of Communications] [refused] to [give] [comment] about his controversial [opinion] he [posted] online...”"
+          "text": "“...The [director] of the [ministry_of_communications] [refuse:past] to [give] [comment] about his controversial [opinion] he [post:past] online...”"
         },
         {
           "type": "Biographical Archive",
           "title": "State Online Encyclopedia",
-          "text": "“...Graduated from [Khabarovsk] [Institute of Planned Economics], Igor specializes in [logistics] and [communications]...”"
+          "text": "“...Graduated from [khabarovsk] [institute_of_planned_economics], Igor specializes in [logistics] and [communications]...”"
         },
         {
           "type": "Police Bulletin",
           "title": "Khabarovsk ROVD Official Dispatch",
-          "text": "“...The [colonel] of the [ROVD] said, ‘The clues suggest that he had [fled] around evening to midnight on Wednesday. High-alert [border] inspections will continue through [tomorrow]...’...”"
+          "text": "“...The [colonel] of the [rovd] said, ‘The clues suggest that he had [flee:past] around evening to midnight on Wednesday. High-alert [border] inspections will continue through [tomorrow]...’...”"
         }
       ]
     }
   },
-  "keywordTags": {
-    "China": [
-      "location"
-    ],
-    "Khabarovsk": [
-      "location"
-    ],
-    "Pogranichny": [
-      "location"
-    ],
-    "border": [
-      "location"
-    ],
-    "train": [
-      "noun"
-    ],
-    "shipment": [
-      "noun"
-    ],
-    "embezzlement": [
-      "noun"
-    ],
-    "fraud": [
-      "noun"
-    ],
-    "mismanagement": [
-      "noun"
-    ],
-    "sports car": [
-      "noun"
-    ],
-    "obsession": [
-      "noun"
-    ],
-    "red flag": [
-      "noun"
-    ],
-    "state funds": [
-      "noun"
-    ],
-    "repair": [
-      "noun"
-    ],
-    "Regional Freight Directorate": [
-      "noun",
-      "location"
-    ],
-    "Ministry of Communications": [
-      "noun",
-      "location"
-    ],
-    "Institute of Planned Economics": [
-      "noun",
-      "location"
-    ],
-    "ROVD": [
-      "location",
-      "noun"
-    ],
-    "director": [
-      "noun",
-      "rank"
-    ],
-    "chairwoman": [
-      "noun",
-      "rank"
-    ],
-    "colonel": [
-      "rank",
-      "noun"
-    ],
-    "logistics": [
-      "noun"
-    ],
-    "communications": [
-      "noun"
-    ],
-    "comment": [
-      "noun"
-    ],
-    "opinion": [
-      "noun"
-    ],
-    "yesterday": [
-      "calendar",
-      "temporal"
-    ],
-    "today": [
-      "calendar",
-      "temporal"
-    ],
-    "tomorrow": [
-      "calendar",
-      "temporal"
-    ],
-    "talk": [
-      "verb"
-    ],
-    "pay": [
-      "verb"
-    ],
-    "diverted": [
-      "verb"
-    ],
-    "refused": [
-      "verb"
-    ],
-    "give": [
-      "verb"
-    ],
-    "posted": [
-      "verb"
-    ],
-    "fled": [
-      "verb"
-    ]
+  "lore": {},
+  "categories": {
+    "name": {
+      "hex": "#38bdf8",
+      "icon": "👤",
+      "label": "Name"
+    },
+    "location": {
+      "hex": "#34d399",
+      "icon": "📍",
+      "label": "Location"
+    },
+    "verb": {
+      "hex": "#fbbf24",
+      "icon": "⚡",
+      "label": "Verb"
+    },
+    "rank": {
+      "hex": "#f59e0b",
+      "icon": "🎖️",
+      "label": "Rank"
+    },
+    "calendar": {
+      "hex": "#fb923c",
+      "icon": "📅",
+      "label": "Calendar"
+    },
+    "temporal": {
+      "hex": "#fb7185",
+      "icon": "🌀",
+      "label": "Temporal"
+    },
+    "noun": {
+      "hex": "#94a3b8",
+      "icon": "📦",
+      "label": "Noun"
+    }
   },
   "customCategories": [
     {
@@ -208,21 +129,334 @@
     }
   ],
   "docket": {
-    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] for the [slot:p1_org:noun,location] in [slot:p1_city:location].\n\nA few days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
+    "template": "Igor Romashin is a [slot:p1_title:noun,rank] of [slot:p1_field:noun] for the [slot:p1_org:noun,location] in [slot:p1_city:location].\n\nA few days ago, he was accused of [slot:p2_crime:noun] by using the [slot:p2_funds:noun] to [slot:p2_action:verb] for the [slot:p2_service:noun] of his [slot:p2_vehicle:noun].\n\nSince [slot:p3_time:calendar,temporal], he had [slot:p3_motion:verb:past] in his [slot:p3_vehicle:noun] likely toward the [slot:p3_dest:location]."
   },
   "solution": {
     "p1_title": "director",
     "p1_field": "logistics",
-    "p1_city": "Khabarovsk",
-    "p1_org": "Regional Freight Directorate",
+    "p1_city": "khabarovsk",
+    "p1_org": "regional_freight_directorate",
     "p2_crime": "embezzlement",
-    "p2_funds": "state funds",
+    "p2_funds": "state_funds",
     "p2_action": "pay",
     "p2_service": "repair",
-    "p2_vehicle": "sports car",
+    "p2_vehicle": "sports_car",
     "p3_time": "yesterday",
-    "p3_motion": "fled",
-    "p3_vehicle": "sports car",
+    "p3_motion": "flee",
+    "p3_vehicle": "sports_car",
     "p3_dest": "border"
+  },
+  "keywords": {
+    "china": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "China"
+      }
+    },
+    "khabarovsk": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Khabarovsk"
+      }
+    },
+    "pogranichny": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Pogranichny"
+      }
+    },
+    "border": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "border"
+      }
+    },
+    "train": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "train"
+      }
+    },
+    "shipment": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "shipment"
+      }
+    },
+    "embezzlement": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "embezzlement"
+      }
+    },
+    "fraud": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "fraud"
+      }
+    },
+    "mismanagement": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "mismanagement"
+      }
+    },
+    "sports_car": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "sports car"
+      }
+    },
+    "obsession": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "obsession"
+      }
+    },
+    "red_flag": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "red flag"
+      }
+    },
+    "state_funds": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "state funds"
+      }
+    },
+    "repair": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "repair"
+      }
+    },
+    "regional_freight_directorate": {
+      "category": [
+        "noun",
+        "location"
+      ],
+      "variations": {
+        "base": "Regional Freight Directorate"
+      }
+    },
+    "ministry_of_communications": {
+      "category": [
+        "noun",
+        "location"
+      ],
+      "variations": {
+        "base": "Ministry of Communications"
+      }
+    },
+    "institute_of_planned_economics": {
+      "category": [
+        "noun",
+        "location"
+      ],
+      "variations": {
+        "base": "Institute of Planned Economics"
+      }
+    },
+    "rovd": {
+      "category": [
+        "location",
+        "noun"
+      ],
+      "variations": {
+        "base": "ROVD"
+      }
+    },
+    "director": {
+      "category": [
+        "noun",
+        "rank"
+      ],
+      "variations": {
+        "base": "director"
+      }
+    },
+    "chairwoman": {
+      "category": [
+        "noun",
+        "rank"
+      ],
+      "variations": {
+        "base": "chairwoman"
+      }
+    },
+    "colonel": {
+      "category": [
+        "rank",
+        "noun"
+      ],
+      "variations": {
+        "base": "colonel"
+      }
+    },
+    "logistics": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "logistics"
+      }
+    },
+    "communications": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "communications"
+      }
+    },
+    "comment": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "comment"
+      }
+    },
+    "opinion": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "opinion"
+      }
+    },
+    "yesterday": {
+      "category": [
+        "calendar",
+        "temporal"
+      ],
+      "variations": {
+        "base": "yesterday"
+      }
+    },
+    "today": {
+      "category": [
+        "calendar",
+        "temporal"
+      ],
+      "variations": {
+        "base": "today"
+      }
+    },
+    "tomorrow": {
+      "category": [
+        "calendar",
+        "temporal"
+      ],
+      "variations": {
+        "base": "tomorrow"
+      }
+    },
+    "talk": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "talk",
+        "past": "talked",
+        "present_singular": "talks",
+        "continuous": "talking"
+      }
+    },
+    "pay": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "pay",
+        "past": "paid",
+        "present_singular": "pays",
+        "continuous": "paying"
+      }
+    },
+    "divert": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "divert",
+        "past": "diverted",
+        "present_singular": "diverts",
+        "continuous": "diverting"
+      }
+    },
+    "refuse": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "refuse",
+        "past": "refused",
+        "present_singular": "refuses",
+        "continuous": "refusing"
+      }
+    },
+    "give": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "give",
+        "past": "gave",
+        "present_singular": "gives",
+        "continuous": "giving"
+      }
+    },
+    "post": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "post",
+        "past": "posted",
+        "present_singular": "posts",
+        "continuous": "posting"
+      }
+    },
+    "flee": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "flee",
+        "past": "fled",
+        "present_singular": "flees",
+        "continuous": "fleeing"
+      }
+    }
   }
 }
