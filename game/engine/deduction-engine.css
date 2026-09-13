@@ -1097,26 +1097,28 @@ header {
 .lore-card.just-unlocked {
     border: 1px solid var(--accent) !important;
     border-left: 4px solid var(--accent) !important;
-    background: linear-gradient(90deg, rgba(217, 119, 6, 0.16), var(--bg-tertiary)) !important;
-    box-shadow: 0 0 14px var(--accent-glow), inset 0 0 8px rgba(217, 119, 6, 0.1);
+    background: var(--bg-secondary) !important;
+    box-shadow: 0 0 12px var(--accent-glow);
     animation: loreCardGlow 2s infinite ease-in-out;
 }
 
 .lore-card.just-unlocked .lore-tag {
     color: var(--accent) !important;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
 .lore-card.just-unlocked .lore-status {
-    color: #ffffff !important;
-    background: var(--accent);
+    color: var(--bg-primary) !important;
+    background: var(--accent) !important;
     padding: 2px 7px;
     border-radius: 2px;
-    font-weight: 700;
+    font-weight: 800;
+    font-size: 9.5px;
     letter-spacing: 0.5px;
     display: inline-block;
     width: fit-content;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
     animation: loreTagShimmer 1.5s infinite alternate;
 }
 
