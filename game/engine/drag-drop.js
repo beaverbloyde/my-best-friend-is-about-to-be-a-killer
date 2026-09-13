@@ -233,6 +233,9 @@
                         this.engine.updateSlotAppearance(slot, canonVal);
                     }
 
+                    // Auto-collect keyword when placed into a valid slot
+                    this.engine.collectWord(null, incomingWord);
+
                     if (sourceEl && sourceSlotId && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
                         if (existingTargetWord && this.engine.isWordAllowedInSlot(existingTargetWord, sourceEl)) {
                             const exDef = this.engine.getKeywordDefinition(existingTargetWord);
@@ -459,6 +462,9 @@
                             this.engine.docketSlots[targetSlotId] = canonVal;
                             this.engine.updateSlotAppearance(currentHoveredSlot, canonVal);
                         }
+
+                        // Auto-collect keyword when placed into a valid slot
+                        this.engine.collectWord(null, touchDraggedWord);
 
                         if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
                             const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);

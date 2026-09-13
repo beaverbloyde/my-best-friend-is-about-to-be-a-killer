@@ -1686,7 +1686,6 @@ class DeductionEngine {
                 this.draggedSourceSlotId = null;
                 e.dataTransfer.setData("text/plain", wordId);
                 e.dataTransfer.setData("application/x-docket-slot", "");
-                this.collectWord(el, wordId);
             });
         });
     }
