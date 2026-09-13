@@ -50,6 +50,8 @@
                 }
             }, true);
 
+            const ghost = document.getElementById("touch-drag-ghost");
+
             // Delegated Desktop Drag & Drop handlers on document
             document.addEventListener("dragstart", (e) => {
                 const target = e.target.closest?.(".slot, .num-slot, .kw, .tray-word");
@@ -83,9 +85,41 @@
                     e.dataTransfer.setData("application/x-docket-slot", "");
                 }
                 this.draggedWord = draggedWord;
+
+                if (draggedWord && ghost) {
+                    const def = this.engine.getKeywordDefinition(draggedWord);
+                    const baseText = def?.variations?.base || def?.baseWord || draggedWord;
+                    ghost.innerText = baseText;
+                    ghost.style.display = "block";
+                    ghost.style.left = `${e.clientX}px`;
+                    ghost.style.top = `${e.clientY}px`;
+
+                    try {
+                        const emptyImg = document.createElement("canvas");
+                        emptyImg.width = 1;
+                        emptyImg.height = 1;
+                        if (e.dataTransfer && e.dataTransfer.setDragImage) {
+                            e.dataTransfer.setDragImage(emptyImg, 0, 0);
+                        }
+                    } catch (err) {}
+                }
+            });
+
+            document.addEventListener("drag", (e) => {
+                if (this.draggedWord && ghost && (e.clientX !== 0 || e.clientY !== 0)) {
+                    ghost.style.left = `${e.clientX}px`;
+                    ghost.style.top = `${e.clientY}px`;
+                    ghost.style.display = "block";
+                }
             });
 
             document.addEventListener("dragover", (e) => {
+                if (this.draggedWord && ghost && (e.clientX !== 0 || e.clientY !== 0)) {
+                    ghost.style.left = `${e.clientX}px`;
+                    ghost.style.top = `${e.clientY}px`;
+                    ghost.style.display = "block";
+                }
+
                 const slot = e.target.closest?.(".slot, .num-slot");
                 if (slot) {
                     e.preventDefault();
@@ -96,6 +130,7 @@
                         const variation = slot.getAttribute("data-variation") || "base";
                         const capitalize = slot.getAttribute("data-capitalize");
                         const conjugated = this.engine.getConjugatedKeyword(this.draggedWord, variation, capitalize);
+                        if (ghost) ghost.innerText = conjugated;
                         if (!slot.classList.contains("previewing-drag")) {
                             slot.classList.add("previewing-drag");
                             slot.setAttribute("data-prev-text", slot.innerText);
@@ -105,6 +140,11 @@
                 } else if (this.draggedSourceSlotId || this.engine.isDragging) {
                     e.preventDefault();
                     if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+                    if (this.draggedWord && ghost) {
+                        const def = this.engine.getKeywordDefinition(this.draggedWord);
+                        const baseText = def?.variations?.base || def?.baseWord || this.draggedWord;
+                        ghost.innerText = baseText;
+                    }
                 }
             });
 
@@ -122,6 +162,7 @@
             });
 
             document.addEventListener("drop", (e) => {
+                if (ghost) ghost.style.display = "none";
                 const slot = e.target.closest?.(".slot, .num-slot");
 
                 if (slot) {
@@ -187,6 +228,7 @@
             });
 
             document.addEventListener("dragend", () => {
+                if (ghost) ghost.style.display = "none";
                 this.engine.isDragging = false;
                 this.engine.justDragged = true;
                 setTimeout(() => { this.engine.justDragged = false; }, 300);
