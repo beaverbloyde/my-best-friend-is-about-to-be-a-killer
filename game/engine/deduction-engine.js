@@ -778,6 +778,22 @@ class DeductionEngine {
         return ["noun"];
     }
 
+    isWordAllowedInSlot(wordOrId, slotElement) {
+        if (!slotElement || !wordOrId) return false;
+        if (slotElement.classList.contains("num-slot")) {
+            const digits = String(wordOrId).replace(/[^0-9]/g, "");
+            return digits.length > 0;
+        }
+        const slotTag = slotElement.getAttribute("data-tag");
+        if (!slotTag) return true;
+
+        const allowedTags = slotTag.split(",").map(t => t.trim().toLowerCase());
+        const def = this.getKeywordDefinition(wordOrId);
+        const wordCategories = (def?.categories || this.getKeywordTags(wordOrId)).map(t => t.toLowerCase());
+
+        return wordCategories.some(cat => allowedTags.includes(cat));
+    }
+
     cacheBaseCaseKeywords() {
         this.baseCaseKeywords = new Set();
         if (!this.currentCase) return;

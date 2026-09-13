@@ -123,19 +123,39 @@
                 const slot = e.target.closest?.(".slot, .num-slot");
                 if (slot) {
                     e.preventDefault();
-                    slot.classList.add("drag-over");
-                    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+                    const isAllowed = !this.draggedWord || this.engine.isWordAllowedInSlot(this.draggedWord, slot);
 
-                    if (this.draggedWord && !slot.classList.contains("num-slot")) {
-                        const variation = slot.getAttribute("data-variation") || "base";
-                        const capitalize = slot.getAttribute("data-capitalize");
-                        const conjugated = this.engine.getConjugatedKeyword(this.draggedWord, variation, capitalize);
-                        if (ghost) ghost.innerText = conjugated;
-                        if (!slot.classList.contains("previewing-drag")) {
-                            slot.classList.add("previewing-drag");
-                            slot.setAttribute("data-prev-text", slot.innerText);
+                    if (isAllowed) {
+                        slot.classList.add("drag-over");
+                        slot.classList.remove("drag-invalid");
+                        if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+
+                        if (this.draggedWord && !slot.classList.contains("num-slot")) {
+                            const variation = slot.getAttribute("data-variation") || "base";
+                            const capitalize = slot.getAttribute("data-capitalize");
+                            const conjugated = this.engine.getConjugatedKeyword(this.draggedWord, variation, capitalize);
+                            if (ghost) ghost.innerText = conjugated;
+                            if (!slot.classList.contains("previewing-drag")) {
+                                slot.classList.add("previewing-drag");
+                                slot.setAttribute("data-prev-text", slot.innerText);
+                            }
+                            slot.innerText = conjugated;
                         }
-                        slot.innerText = conjugated;
+                    } else {
+                        slot.classList.add("drag-invalid");
+                        slot.classList.remove("drag-over");
+                        if (slot.classList.contains("previewing-drag")) {
+                            slot.classList.remove("previewing-drag");
+                            const prev = slot.getAttribute("data-prev-text");
+                            if (prev !== null && prev !== undefined) slot.innerText = prev;
+                            slot.removeAttribute("data-prev-text");
+                        }
+                        if (e.dataTransfer) e.dataTransfer.dropEffect = "none";
+                        if (this.draggedWord && ghost) {
+                            const def = this.engine.getKeywordDefinition(this.draggedWord);
+                            const baseText = def?.variations?.base || def?.baseWord || this.draggedWord;
+                            ghost.innerText = baseText;
+                        }
                     }
                 } else if (this.draggedSourceSlotId || this.engine.isDragging) {
                     e.preventDefault();
@@ -151,7 +171,7 @@
             document.addEventListener("dragleave", (e) => {
                 const slot = e.target.closest?.(".slot, .num-slot");
                 if (slot) {
-                    slot.classList.remove("drag-over");
+                    slot.classList.remove("drag-over", "drag-invalid");
                     if (slot.classList.contains("previewing-drag")) {
                         slot.classList.remove("previewing-drag");
                         const prev = slot.getAttribute("data-prev-text");
@@ -167,7 +187,7 @@
 
                 if (slot) {
                     e.preventDefault();
-                    slot.classList.remove("drag-over");
+                    slot.classList.remove("drag-over", "drag-invalid");
                     if (slot.classList.contains("previewing-drag")) {
                         slot.classList.remove("previewing-drag");
                         slot.removeAttribute("data-prev-text");
@@ -175,6 +195,16 @@
 
                     const incomingWord = e.dataTransfer.getData("text/plain");
                     if (!incomingWord) return;
+
+                    // Enforce category restriction
+                    if (!this.engine.isWordAllowedInSlot(incomingWord, slot)) {
+                        window.sfx?.playError?.() || window.sfx?.playPop?.();
+                        const slotTag = slot.getAttribute("data-tag") || "required category";
+                        const def = this.engine.getKeywordDefinition(incomingWord);
+                        const display = def?.variations?.base || def?.baseWord || incomingWord;
+                        this.engine.showToast(`⚠️ Category mismatch: "${display}" is not a ${slotTag} keyword`, "warning");
+                        return;
+                    }
 
                     const targetSlotId = slot.getAttribute("data-id");
                     const sourceSlotId = this.draggedSourceSlotId || e.dataTransfer.getData("application/x-docket-slot");
@@ -202,7 +232,7 @@
                     }
 
                     if (sourceEl && sourceSlotId && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
-                        if (existingTargetWord) {
+                        if (existingTargetWord && this.engine.isWordAllowedInSlot(existingTargetWord, sourceEl)) {
                             const exDef = this.engine.getKeywordDefinition(existingTargetWord);
                             const exCanonVal = exDef ? exDef.id : existingTargetWord;
                             this.engine.docketSlots[sourceSlotId] = exCanonVal;
@@ -233,8 +263,8 @@
                 this.engine.justDragged = true;
                 setTimeout(() => { this.engine.justDragged = false; }, 300);
 
-                document.querySelectorAll(".previewing-drag").forEach(s => {
-                    s.classList.remove("previewing-drag", "drag-over");
+                document.querySelectorAll(".previewing-drag, .drag-over, .drag-invalid").forEach(s => {
+                    s.classList.remove("previewing-drag", "drag-over", "drag-invalid");
                     const prev = s.getAttribute("data-prev-text");
                     if (prev !== null && prev !== undefined) s.innerText = prev;
                     s.removeAttribute("data-prev-text");
@@ -321,7 +351,7 @@
                     const slot = elBelow ? elBelow.closest(".slot, .num-slot") : null;
 
                     if (currentHoveredSlot && currentHoveredSlot !== slot) {
-                        currentHoveredSlot.classList.remove("drag-over");
+                        currentHoveredSlot.classList.remove("drag-over", "drag-invalid");
                         if (currentHoveredSlot.classList.contains("previewing-drag")) {
                             currentHoveredSlot.classList.remove("previewing-drag");
                             const prev = currentHoveredSlot.getAttribute("data-prev-text");
@@ -331,19 +361,36 @@
                     }
 
                     if (slot) {
-                        slot.classList.add("drag-over");
+                        const isAllowed = this.engine.isWordAllowedInSlot(touchDraggedWord, slot);
                         currentHoveredSlot = slot;
 
-                        if (!slot.classList.contains("num-slot")) {
-                            const variation = slot.getAttribute("data-variation") || "base";
-                            const capitalize = slot.getAttribute("data-capitalize");
-                            const conjugated = this.engine.getConjugatedKeyword(touchDraggedWord, variation, capitalize);
-                            if (ghost) ghost.innerText = conjugated;
-                            if (!slot.classList.contains("previewing-drag")) {
-                                slot.classList.add("previewing-drag");
-                                slot.setAttribute("data-prev-text", slot.innerText);
+                        if (isAllowed) {
+                            slot.classList.add("drag-over");
+                            slot.classList.remove("drag-invalid");
+
+                            if (!slot.classList.contains("num-slot")) {
+                                const variation = slot.getAttribute("data-variation") || "base";
+                                const capitalize = slot.getAttribute("data-capitalize");
+                                const conjugated = this.engine.getConjugatedKeyword(touchDraggedWord, variation, capitalize);
+                                if (ghost) ghost.innerText = conjugated;
+                                if (!slot.classList.contains("previewing-drag")) {
+                                    slot.classList.add("previewing-drag");
+                                    slot.setAttribute("data-prev-text", slot.innerText);
+                                }
+                                slot.innerText = conjugated;
                             }
-                            slot.innerText = conjugated;
+                        } else {
+                            slot.classList.add("drag-invalid");
+                            slot.classList.remove("drag-over");
+                            if (slot.classList.contains("previewing-drag")) {
+                                slot.classList.remove("previewing-drag");
+                                const prev = slot.getAttribute("data-prev-text");
+                                if (prev !== null && prev !== undefined) slot.innerText = prev;
+                                slot.removeAttribute("data-prev-text");
+                            }
+                            const def = this.engine.getKeywordDefinition(touchDraggedWord);
+                            const baseText = def?.variations?.base || def?.baseWord || touchDraggedWord;
+                            if (ghost) ghost.innerText = baseText;
                         }
                     } else {
                         currentHoveredSlot = null;
@@ -361,7 +408,7 @@
 
                 if (ghost) ghost.style.display = "none";
                 if (currentHoveredSlot) {
-                    currentHoveredSlot.classList.remove("drag-over");
+                    currentHoveredSlot.classList.remove("drag-over", "drag-invalid");
                     if (currentHoveredSlot.classList.contains("previewing-drag")) {
                         currentHoveredSlot.classList.remove("previewing-drag");
                         currentHoveredSlot.removeAttribute("data-prev-text");
@@ -373,6 +420,21 @@
                     setTimeout(() => { this.engine.justTouchDragged = false; }, 300);
 
                     if (currentHoveredSlot && touchDraggedWord) {
+                        const isAllowed = this.engine.isWordAllowedInSlot(touchDraggedWord, currentHoveredSlot);
+                        if (!isAllowed) {
+                            window.sfx?.playError?.() || window.sfx?.playPop?.();
+                            const slotTag = currentHoveredSlot.getAttribute("data-tag") || "required category";
+                            const def = this.engine.getKeywordDefinition(touchDraggedWord);
+                            const display = def?.variations?.base || def?.baseWord || touchDraggedWord;
+                            this.engine.showToast(`⚠️ Category mismatch: "${display}" is not a ${slotTag} keyword`, "warning");
+                            isTouchDragging = false;
+                            touchDraggedWord = null;
+                            touchSourceSlotId = null;
+                            currentHoveredSlot = null;
+                            touchThresholdPassed = false;
+                            return;
+                        }
+
                         const targetSlotId = currentHoveredSlot.getAttribute("data-id");
                         const isTargetNum = currentHoveredSlot.classList.contains("num-slot");
 
@@ -399,7 +461,7 @@
                         if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
                             const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
                             if (sourceEl && !sourceEl.classList.contains("num-slot")) {
-                                if (existingTargetWord) {
+                                if (existingTargetWord && this.engine.isWordAllowedInSlot(existingTargetWord, sourceEl)) {
                                     const exDef = this.engine.getKeywordDefinition(existingTargetWord);
                                     const exCanonVal = exDef ? exDef.id : existingTargetWord;
                                     this.engine.docketSlots[touchSourceSlotId] = exCanonVal;

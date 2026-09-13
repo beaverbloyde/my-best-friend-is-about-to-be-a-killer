@@ -1852,6 +1852,12 @@ header {
     box-shadow: 0 0 8px var(--accent-glow);
 }
 
+.slot.drag-invalid, .num-slot.drag-invalid {
+    border: 2px dashed var(--danger, #ef4444) !important;
+    background: rgba(239, 68, 68, 0.15) !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4) !important;
+}
+
 .slot.previewing-drag {
     font-style: italic;
     opacity: 0.95;
