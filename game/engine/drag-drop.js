@@ -150,7 +150,7 @@
                             if (prev !== null && prev !== undefined) slot.innerText = prev;
                             slot.removeAttribute("data-prev-text");
                         }
-                        if (e.dataTransfer) e.dataTransfer.dropEffect = "none";
+                        if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
                         if (this.draggedWord && ghost) {
                             const def = this.engine.getKeywordDefinition(this.draggedWord);
                             const baseText = def?.variations?.base || def?.baseWord || this.draggedWord;
@@ -203,6 +203,8 @@
                         const def = this.engine.getKeywordDefinition(incomingWord);
                         const display = def?.variations?.base || def?.baseWord || incomingWord;
                         this.engine.showToast(`⚠️ Category mismatch: "${display}" is not a ${slotTag} keyword`, "warning");
+                        this.draggedSourceSlotId = null;
+                        this.draggedWord = null;
                         return;
                     }
 
