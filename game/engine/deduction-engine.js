@@ -2255,7 +2255,6 @@ class DeductionEngine {
     unlockHintStage(stageNum) {
         this.unlockedHintStages.add(Number(stageNum));
         try { window.sfx?.playSuccess(); } catch (e) {}
-        this.saveProgress();
         this.renderHintModal();
     }
 
@@ -2716,7 +2715,6 @@ class DeductionEngine {
                 solved: isSolved,
                 collectedWords: Array.from(this.collectedWords),
                 unlockedLore: Array.from(this.unlockedLore),
-                unlockedHintStages: Array.from(this.unlockedHintStages),
                 docketSlots: this.docketSlots,
                 currentTimelineKey: this.currentTimelineKey,
                 currentFilter: this.currentFilter,
@@ -2753,9 +2751,6 @@ class DeductionEngine {
                         this.unlockedLore.add(l);
                     }
                 });
-            }
-            if (Array.isArray(data.unlockedHintStages)) {
-                this.unlockedHintStages = new Set(data.unlockedHintStages.map(Number));
             }
             if (data.docketSlots && typeof data.docketSlots === "object") {
                 this.docketSlots = {};
