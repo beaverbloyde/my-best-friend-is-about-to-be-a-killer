@@ -29,12 +29,12 @@
         {
           "type": "Observation",
           "title": "Shoulder Insignia of the woman officer",
-          "text": "A shoulder pad: 1 red stripe in the middle, bearing [one_star]."
+          "text": "A shoulder pad: 1 red stripe in the middle, bearing 1 small star."
         },
         {
           "type": "Observation",
           "title": "Shoulder Insignia in the presentation box",
-          "text": "A velvet-lined presentation box holding a new pair of shoulder pads: 1 red stripe in the middle, bearing [three_stars]."
+          "text": "A velvet-lined presentation box holding a new pair of shoulder pads: 1 red stripe in the middle, bearing 3 small stars."
         },
         {
           "type": "Subject",
@@ -45,13 +45,13 @@
         {
           "type": "Observation",
           "title": "Shoulder Insignia of the senior officer",
-          "text": "A shoulder pad: [one_big_star] in the middle with embroidered oak leaves."
+          "text": "A shoulder pad: 1 large star in the middle with embroidered oak leaves."
         },
         {
           "type": "Subject",
           "title": "The host",
-          "text": "The host of the ceremony is holding a microphone in one hand and the [roster:upper] in another.",
-          "thought": "I haven't flipped a page in my [roster] yet... This is going to be long..."
+          "text": "The host of the ceremony is holding a microphone in one hand and the roster in another.",
+          "thought": "I haven't flipped a page in my roster yet... This is going to be long..."
         },
         {
           "type": "Data Table",
@@ -171,21 +171,6 @@
       "hex": "#34d399",
       "icon": "📍",
       "label": "Location"
-    },
-    "insignia": {
-      "hex": "#eab308",
-      "icon": "⭐",
-      "label": "Insignia"
-    },
-    "calendar": {
-      "hex": "#fb923c",
-      "icon": "📅",
-      "label": "Calendar"
-    },
-    "noun": {
-      "hex": "#94a3b8",
-      "icon": "📦",
-      "label": "Noun"
     }
   },
   "customCategories": [
@@ -203,21 +188,6 @@
       "id": "locations",
       "label": "📍 Locations & Precincts",
       "tag": "location"
-    },
-    {
-      "id": "insignia",
-      "label": "⭐ Stars & Insignia",
-      "tag": "insignia"
-    },
-    {
-      "id": "nouns",
-      "label": "📦 Objects & Documents",
-      "tag": "noun"
-    },
-    {
-      "id": "calendar",
-      "label": "📅 Dates & Years",
-      "tag": "calendar"
     }
   ],
   "docket": {
@@ -385,8 +355,7 @@
     },
     "mvd": {
       "category": [
-        "location",
-        "noun"
+        "location"
       ],
       "variations": {
         "base": "MVD"
@@ -406,41 +375,6 @@
       ],
       "variations": {
         "base": "USSR"
-      }
-    },
-    "one_star": {
-      "category": [
-        "insignia",
-        "noun"
-      ],
-      "variations": {
-        "base": "1 star"
-      }
-    },
-    "three_stars": {
-      "category": [
-        "insignia",
-        "noun"
-      ],
-      "variations": {
-        "base": "3 stars"
-      }
-    },
-    "one_big_star": {
-      "category": [
-        "insignia",
-        "noun"
-      ],
-      "variations": {
-        "base": "1 big star"
-      }
-    },
-    "roster": {
-      "category": [
-        "noun"
-      ],
-      "variations": {
-        "base": "roster"
       }
     }
   }
