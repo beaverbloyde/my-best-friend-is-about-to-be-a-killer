@@ -1358,6 +1358,7 @@ class DeductionEngine {
         this.syncCaseSelector(this.currentCaseUrl, caseData);
         this.collectedWords = new Set();
         this.unlockedLore = new Set();
+        this.newlyUnlockedLore = new Set();
         this.unlockedHintStages = new Set();
         this.selectedWord = null;
         this.docketSlots = {};
@@ -1365,6 +1366,11 @@ class DeductionEngine {
         this.closeSlotPicker();
         this.closeLoreModal();
         this.closeTableModal();
+
+        const loreTabBtn = document.getElementById("tab-lore-btn");
+        if (loreTabBtn) {
+            loreTabBtn.classList.remove("tab-unread-pulse");
+        }
 
         // Ensure keywordTags map exists
         if (!this.currentCase.keywordTags || typeof this.currentCase.keywordTags !== "object") {
@@ -1893,7 +1899,8 @@ class DeductionEngine {
         if (unlockedTitles.length > 0) {
             window.sfx?.playLoreUnlock?.() || window.sfx?.playUnlock?.();
             const loreTabBtn = document.getElementById("tab-lore-btn");
-            if (loreTabBtn) {
+            const isLoreTabActive = loreTabBtn && (loreTabBtn.classList.contains("active") || document.getElementById("sidebar-lore")?.style.display === "flex");
+            if (loreTabBtn && !isLoreTabActive) {
                 loreTabBtn.classList.add("tab-unread-pulse");
             }
             unlockedTitles.forEach(title => {

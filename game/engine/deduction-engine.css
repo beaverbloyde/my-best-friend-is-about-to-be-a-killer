@@ -113,7 +113,7 @@ body.theme-gosplan {
     --text-secondary: #241c15;
     --text-tertiary: #473a2e;
     --accent: #8b1818;
-    --accent-glow: rgba(139, 24, 24, 0.18);
+    --accent-glow: rgba(139, 24, 24, 0.45);
     --danger: #8b1818;
     --success: #15803d;
 
@@ -174,6 +174,59 @@ body.theme-gosplan .tray-word {
 
 body.theme-gosplan .slot {
     font-weight: 700;
+}
+
+/* Gosplan Cellulose Paper - High-Contrast Deep Crimson Unlocked Lore Card & Pulse Styles */
+body.theme-gosplan .lore-card.just-unlocked {
+    border: 1.5px solid #8b1818 !important;
+    border-left: 6px solid #8b1818 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 1.5px #8b1818, 0 3px 14px rgba(139, 24, 24, 0.45) !important;
+    animation: gosplanLoreCardGlow 1.8s infinite ease-in-out !important;
+}
+
+body.theme-gosplan .lore-card.just-unlocked .lore-tag {
+    color: #8b1818 !important;
+    font-weight: 800;
+}
+
+body.theme-gosplan .lore-card.just-unlocked .lore-status {
+    color: #ffffff !important;
+    background: #8b1818 !important;
+    box-shadow: 0 2px 6px rgba(139, 24, 24, 0.5) !important;
+}
+
+body.theme-gosplan #tab-lore-btn.tab-unread-pulse {
+    border-color: #8b1818 !important;
+    color: #8b1818 !important;
+    background: rgba(139, 24, 24, 0.12) !important;
+    animation: gosplanTabUnlockPulse 1.4s infinite ease-in-out !important;
+}
+
+body.theme-gosplan #tab-lore-btn.tab-unread-pulse::after {
+    color: #8b1818 !important;
+}
+
+@keyframes gosplanLoreCardGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 1.5px rgba(139, 24, 24, 0.5), 0 2px 8px rgba(139, 24, 24, 0.35);
+        background: #ffffff;
+    }
+    50% {
+        box-shadow: 0 0 0 2.5px #8b1818, 0 4px 18px rgba(139, 24, 24, 0.65), 0 0 26px rgba(185, 28, 28, 0.35);
+        background: #fff8f8;
+    }
+}
+
+@keyframes gosplanTabUnlockPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 1px rgba(139, 24, 24, 0.4), 0 1px 4px rgba(139, 24, 24, 0.25);
+        border-color: #8b1818;
+    }
+    50% {
+        box-shadow: 0 0 0 2px #8b1818, 0 3px 12px rgba(139, 24, 24, 0.6), 0 0 16px rgba(185, 28, 28, 0.35);
+        border-color: #b91c1c;
+    }
 }
 
 /* Theme 5: Monochrome CRT / Microfiche */
@@ -1127,7 +1180,7 @@ header {
         box-shadow: 0 0 6px var(--accent-glow);
     }
     50% {
-        box-shadow: 0 0 16px var(--accent-glow), 0 0 24px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 18px var(--accent-glow), 0 0 28px var(--accent);
     }
 }
 
