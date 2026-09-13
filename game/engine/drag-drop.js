@@ -8,90 +8,97 @@
     class LogosDragDrop {
         constructor(engine) {
             this.engine = engine;
-            this.draggedSourceSlotId = null;
+            this._draggedSourceSlotId = null;
+            this._globalBound = false;
+            this._touchBound = false;
             this.initGlobalDesktopDrop();
             this.initDesktopDragAndDrop();
             this.initTouchDragAndDrop();
         }
 
+        get draggedSourceSlotId() {
+            return this.engine ? this.engine.draggedSourceSlotId : this._draggedSourceSlotId;
+        }
+
+        set draggedSourceSlotId(val) {
+            if (this.engine) this.engine.draggedSourceSlotId = val;
+            this._draggedSourceSlotId = val;
+        }
+
+        clearSlot(slotId) {
+            if (!slotId) return;
+            const sourceEl = document.querySelector(`[data-id="${slotId}"]`);
+            if (sourceEl && !sourceEl.classList.contains("num-slot")) {
+                delete this.engine.docketSlots[slotId];
+                this.engine.updateSlotAppearance(sourceEl, null);
+                window.sfx?.playPop?.() || window.sfx?.playSnap?.();
+                this.engine.updateProgress();
+                this.engine.saveProgress();
+            }
+        }
+
         initGlobalDesktopDrop() {
-            document.addEventListener("dragover", (e) => {
-                if (this.draggedSourceSlotId) {
+            if (this._globalBound) return;
+            this._globalBound = true;
+
+            // Capture-phase click interceptor to prevent synthetic click events on slots/buttons after dragging
+            window.addEventListener("click", (e) => {
+                if (this.engine.justDragged || this.engine.justTouchDragged || this.engine.isDragging) {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
                     e.preventDefault();
+                }
+            }, true);
+
+            // Delegated Desktop Drag & Drop handlers on document
+            document.addEventListener("dragstart", (e) => {
+                const target = e.target.closest?.(".slot, .num-slot, .kw, .tray-word");
+                if (!target) return;
+
+                if (target.classList.contains("num-slot")) {
+                    e.preventDefault();
+                    return;
+                }
+
+                if (target.classList.contains("slot")) {
+                    const slotId = target.getAttribute("data-id");
+                    const currentWord = this.engine.docketSlots[slotId] || (target.innerText.trim() !== "[ ? ]" ? target.innerText.trim() : "");
+
+                    if (currentWord) {
+                        this.draggedSourceSlotId = slotId;
+                        this.engine.isDragging = true;
+                        e.dataTransfer.setData("text/plain", currentWord);
+                        e.dataTransfer.setData("application/x-docket-slot", slotId);
+                        e.dataTransfer.effectAllowed = "move";
+                    } else {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            document.addEventListener("dragover", (e) => {
+                const slot = e.target.closest?.(".slot, .num-slot");
+                if (slot) {
+                    e.preventDefault();
+                    slot.classList.add("drag-over");
+                    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+                } else if (this.draggedSourceSlotId || this.engine.isDragging) {
+                    e.preventDefault();
+                    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+                }
+            });
+
+            document.addEventListener("dragleave", (e) => {
+                const slot = e.target.closest?.(".slot, .num-slot");
+                if (slot) {
+                    slot.classList.remove("drag-over");
                 }
             });
 
             document.addEventListener("drop", (e) => {
-                if (this.draggedSourceSlotId && !e.target.closest(".slot, .num-slot")) {
-                    e.preventDefault();
-                    const sourceEl = document.querySelector(`[data-id="${this.draggedSourceSlotId}"]`);
-                    if (sourceEl && !sourceEl.classList.contains("num-slot")) {
-                        this.engine.updateSlotAppearance(sourceEl, null);
-                        delete this.engine.docketSlots[this.draggedSourceSlotId];
-                        window.sfx?.playPop?.() || window.sfx?.playSnap?.();
-                        this.engine.updateProgress();
-                        this.engine.saveProgress();
-                    }
-                    this.draggedSourceSlotId = null;
-                }
-            });
-        }
+                const slot = e.target.closest?.(".slot, .num-slot");
 
-        initDesktopDragAndDrop() {
-            const wordSlots = document.querySelectorAll(".slot");
-            const allDropTargets = document.querySelectorAll(".slot, .num-slot");
-
-            wordSlots.forEach(slot => {
-                slot.setAttribute("draggable", "true");
-
-                slot.addEventListener("dragstart", (e) => {
-                    const slotId = slot.getAttribute("data-id");
-                    let currentWord = slot.innerText.trim();
-                    if (currentWord === "[ ? ]") currentWord = "";
-
-                    if (currentWord) {
-                        this.draggedSourceSlotId = slotId;
-                        e.dataTransfer.setData("text/plain", currentWord);
-                        e.dataTransfer.setData("application/x-docket-slot", slotId);
-                    } else {
-                        e.preventDefault();
-                    }
-                });
-
-                slot.addEventListener("dragend", () => {
-                    this.engine.justDragged = true;
-                    setTimeout(() => { this.engine.justDragged = false; }, 150);
-
-                    if (this.draggedSourceSlotId) {
-                        const sourceEl = document.querySelector(`[data-id="${this.draggedSourceSlotId}"]`);
-                        if (sourceEl && !sourceEl.classList.contains("num-slot")) {
-                            this.engine.updateSlotAppearance(sourceEl, null);
-                            delete this.engine.docketSlots[this.draggedSourceSlotId];
-                            window.sfx?.playPop?.() || window.sfx?.playSnap?.();
-                            this.engine.updateProgress();
-                            this.engine.saveProgress();
-                        }
-                        this.draggedSourceSlotId = null;
-                    }
-                });
-            });
-
-            allDropTargets.forEach(slot => {
-                if (slot.classList.contains("num-slot")) {
-                    slot.setAttribute("draggable", "false");
-                    slot.addEventListener("dragstart", (e) => e.preventDefault());
-                }
-
-                slot.addEventListener("dragover", (e) => {
-                    e.preventDefault();
-                    slot.classList.add("drag-over");
-                });
-
-                slot.addEventListener("dragleave", () => {
-                    slot.classList.remove("drag-over");
-                });
-
-                slot.addEventListener("drop", (e) => {
+                if (slot) {
                     e.preventDefault();
                     slot.classList.remove("drag-over");
 
@@ -139,11 +146,44 @@
                     window.sfx?.playSnap();
                     this.engine.updateProgress();
                     this.engine.saveProgress();
-                });
+                } else if (this.draggedSourceSlotId) {
+                    e.preventDefault();
+                    const sourceSlotId = this.draggedSourceSlotId;
+                    this.draggedSourceSlotId = null;
+                    this.clearSlot(sourceSlotId);
+                }
+            });
+
+            document.addEventListener("dragend", () => {
+                this.engine.isDragging = false;
+                this.engine.justDragged = true;
+                setTimeout(() => { this.engine.justDragged = false; }, 300);
+
+                if (this.draggedSourceSlotId) {
+                    const sourceSlotId = this.draggedSourceSlotId;
+                    this.draggedSourceSlotId = null;
+                    this.clearSlot(sourceSlotId);
+                }
+            });
+        }
+
+        initDesktopDragAndDrop() {
+            const wordSlots = document.querySelectorAll(".slot");
+            const numSlots = document.querySelectorAll(".num-slot");
+
+            wordSlots.forEach(slot => {
+                slot.setAttribute("draggable", "true");
+            });
+
+            numSlots.forEach(slot => {
+                slot.setAttribute("draggable", "false");
             });
         }
 
         initTouchDragAndDrop() {
+            if (this._touchBound) return;
+            this._touchBound = true;
+
             const ghost = document.getElementById("touch-drag-ghost");
             let touchDraggedWord = null;
             let touchSourceSlotId = null;
@@ -161,9 +201,8 @@
                 let sourceSlotId = null;
 
                 if (target.classList.contains("slot")) {
-                    word = target.innerText.trim();
                     sourceSlotId = target.getAttribute("data-id");
-                    if (word === "[ ? ]") word = "";
+                    word = this.engine.docketSlots[sourceSlotId] || (target.innerText.trim() !== "[ ? ]" ? target.innerText.trim() : "");
                 } else {
                     word = target.getAttribute("data-word") || target.innerText.trim();
                 }
@@ -222,7 +261,7 @@
 
                 if (touchThresholdPassed) {
                     this.engine.justTouchDragged = true;
-                    setTimeout(() => { this.engine.justTouchDragged = false; }, 100);
+                    setTimeout(() => { this.engine.justTouchDragged = false; }, 300);
 
                     if (currentHoveredSlot && touchDraggedWord) {
                         const targetSlotId = currentHoveredSlot.getAttribute("data-id");
@@ -266,14 +305,7 @@
                         this.engine.updateProgress();
                         this.engine.saveProgress();
                     } else if (touchSourceSlotId) {
-                        const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
-                        if (sourceEl && !sourceEl.classList.contains("num-slot")) {
-                            this.engine.updateSlotAppearance(sourceEl, null);
-                            delete this.engine.docketSlots[touchSourceSlotId];
-                            window.sfx?.playPop?.() || window.sfx?.playSnap?.();
-                            this.engine.updateProgress();
-                            this.engine.saveProgress();
-                        }
+                        this.clearSlot(touchSourceSlotId);
                     }
                 }
 

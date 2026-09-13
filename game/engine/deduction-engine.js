@@ -63,6 +63,8 @@ class DeductionEngine {
         this.activeSlot = null;
         this.pickerHighlightedIndex = -1;
         this.justTouchDragged = false;
+        this.justDragged = false;
+        this.isDragging = false;
 
         // Subsystem Components
         this.slotPicker = (typeof LogosSlotPicker !== "undefined") ? new LogosSlotPicker(this) : null;
@@ -2124,7 +2126,7 @@ class DeductionEngine {
     }
 
     handleSlotClick(el) {
-        if (this.justTouchDragged || this.justDragged) return;
+        if (this.justTouchDragged || this.justDragged || this.isDragging) return;
         this.openSlotPicker(el);
     }
 
