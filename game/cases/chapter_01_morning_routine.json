@@ -750,5 +750,22 @@
         "base": "WSS"
       }
     }
-  }
+  },
+  "hints": [
+    {
+      "stage": 1,
+      "title": "Stage 1: Orientation",
+      "text": "Are you unsure where or when this case takes place? Which clues in the scene show a calendar date, an anniversary announcement, or navigation coordinates?"
+    },
+    {
+      "stage": 2,
+      "title": "Stage 2: Chronology & Timeframe",
+      "text": "How do the dates stamped on the used medical bottles compare to the date shown on the morning phone screen? How much time has elapsed between the first bottle and today?"
+    },
+    {
+      "stage": 3,
+      "title": "Stage 3: Motive & Route",
+      "text": "Look at the phone messages and the outgoing voicemail. If the protagonist called in sick to his workplace, why is his navigation leading him in a completely different direction, and what made him reconsider his condition?"
+    }
+  ]
 }

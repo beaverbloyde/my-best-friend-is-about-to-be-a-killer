@@ -458,5 +458,22 @@
         "continuous": "fleeing"
       }
     }
-  }
+  },
+  "hints": [
+    {
+      "stage": 1,
+      "title": "Stage 1: Background & Institution",
+      "text": "Which broadcast segment links the suspect's educational background and area of expertise to an automated audit of transport ledgers?"
+    },
+    {
+      "stage": 2,
+      "title": "Stage 2: Financial Irregularity",
+      "text": "What unusual personal maintenance expense caused public outrage, and how was it financed?"
+    },
+    {
+      "stage": 3,
+      "title": "Stage 3: Timeline & Movement",
+      "text": "When comparing the official police statement to the current broadcast date, on which day did the disappearance occur, and what perimeter was placed on high alert?"
+    }
+  ]
 }

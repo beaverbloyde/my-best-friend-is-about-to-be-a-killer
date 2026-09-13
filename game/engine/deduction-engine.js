@@ -50,6 +50,7 @@ class DeductionEngine {
         this.collectedWords = new Set();
         this.unlockedLore = new Set();
         this.newlyUnlockedLore = new Set();
+        this.unlockedHintStages = new Set();
         this.selectedWord = null;
         this.docketSlots = {};
         this.draggedSourceSlotId = null;
@@ -106,10 +107,15 @@ class DeductionEngine {
                     }
                 }
             }
+            if ((e.code === "KeyH" || e.key === "h" || e.key === "H") && !e.target.matches("input, textarea, select") && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                e.preventDefault();
+                this.toggleHintModal();
+            }
             if (e.code === "Escape") {
                 this.closeVictoryModal();
                 this.closeSlotPicker();
                 this.closeTutorial();
+                this.closeHintModal();
                 this.closeDocket();
                 this.closeLoreModal();
                 this.closeSettings();
@@ -123,6 +129,15 @@ class DeductionEngine {
             tutModal.addEventListener("click", (e) => {
                 if (e.target === tutModal) {
                     this.closeTutorial();
+                }
+            });
+        }
+
+        const hintModal = document.getElementById("hint-modal");
+        if (hintModal) {
+            hintModal.addEventListener("click", (e) => {
+                if (e.target === hintModal) {
+                    this.closeHintModal();
                 }
             });
         }
@@ -1321,6 +1336,7 @@ class DeductionEngine {
         this.syncCaseSelector(this.currentCaseUrl, caseData);
         this.collectedWords = new Set();
         this.unlockedLore = new Set();
+        this.unlockedHintStages = new Set();
         this.selectedWord = null;
         this.docketSlots = {};
         this.savedTimelineKey = null;
@@ -2208,6 +2224,131 @@ class DeductionEngine {
         }
     }
 
+    // --- Case Hint Advisory Modal ---
+
+    openHintModal() {
+        const modal = document.getElementById("hint-modal");
+        if (!modal) return;
+        try { window.sfx?.playClick(); } catch (e) {}
+        this.renderHintModal();
+        modal.classList.remove("hidden");
+    }
+
+    closeHintModal() {
+        const modal = document.getElementById("hint-modal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
+    }
+
+    toggleHintModal() {
+        const modal = document.getElementById("hint-modal");
+        if (modal) {
+            if (modal.classList.contains("hidden")) {
+                this.openHintModal();
+            } else {
+                this.closeHintModal();
+            }
+        }
+    }
+
+    unlockHintStage(stageNum) {
+        this.unlockedHintStages.add(Number(stageNum));
+        try { window.sfx?.playSuccess(); } catch (e) {}
+        this.saveProgress();
+        this.renderHintModal();
+    }
+
+    renderHintModal() {
+        const container = document.getElementById("hint-body-content");
+        if (!container) return;
+
+        // 1. Universal General Deduction Reminders
+        const universalHtml = `
+            <div class="hint-universal-card">
+                <div class="hint-section-header">
+                    <span class="hint-section-icon">🧭</span>
+                    <span class="hint-section-title">GENERAL DEDUCTION REMINDERS</span>
+                </div>
+                <div class="hint-section-subtitle">Universal investigative principles applicable to all cases:</div>
+                <ol class="hint-universal-list">
+                    <li><strong>Reexamine Preassumptions:</strong> Perhaps what you believe is correct is actually not.</li>
+                    <li><strong>Verify Calculations:</strong> Check your math; use a calculator if needed. Let the machine be the tool to your deduction.</li>
+                    <li><strong>Scrutinize Fine-Print:</strong> Inspect every detail in the clues and lore codices. Breakthroughs are often hidden in footnotes, stamps, and records.</li>
+                    <li><strong>Cross-Reference Timeline:</strong> Compare timestamps, dispatches, and navigation coordinates against personal claims.</li>
+                </ol>
+            </div>
+        `;
+
+        // 2. Case-Specific Progressive 3-Stage Hints
+        const stages = Array.isArray(this.currentCase?.hints)
+            ? this.currentCase.hints
+            : (this.currentCase?.hints?.stages || []);
+
+        let stagesHtml = "";
+        if (stages.length > 0) {
+            const stageCards = stages.map((st, idx) => {
+                const stageNum = st.stage || (idx + 1);
+                const isUnlocked = this.unlockedHintStages.has(stageNum);
+                const stageTitle = st.title || `Stage ${stageNum}`;
+                const stageText = this.escapeHtml(st.text || st.hint || "");
+
+                if (isUnlocked) {
+                    return `
+                        <div class="hint-stage-card unlocked">
+                            <div class="hint-stage-header">
+                                <div class="hint-stage-header-left">
+                                    <span class="hint-stage-badge">STAGE ${stageNum}</span>
+                                    <span class="hint-stage-name">${this.escapeHtml(stageTitle)}</span>
+                                </div>
+                                <span class="hint-stage-status">✓ REVEALED</span>
+                            </div>
+                            <div class="hint-stage-content">
+                                ${stageText}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="hint-stage-card locked">
+                            <div class="hint-stage-header">
+                                <div class="hint-stage-header-left">
+                                    <span class="hint-stage-badge">STAGE ${stageNum}</span>
+                                    <span class="hint-stage-name">${this.escapeHtml(stageTitle)}</span>
+                                </div>
+                                <span class="hint-stage-status">🔒 CONCEALED</span>
+                            </div>
+                            <div class="hint-stage-locked-body">
+                                <div class="hint-stage-desc">Progressive leading question to guide your deduction without spoiling the answer.</div>
+                                <button type="button" class="hint-reveal-btn" onclick="window.gameEngine.unlockHintStage(${stageNum})">
+                                    👁️ Reveal ${this.escapeHtml(stageTitle)} ↵
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join("");
+
+            stagesHtml = `
+                <div class="hint-stages-container">
+                    <div class="hint-section-header">
+                        <span class="hint-section-icon">💡</span>
+                        <span class="hint-section-title">CASE LEADING QUESTIONS (3 STAGES)</span>
+                    </div>
+                    <div class="hint-section-subtitle">Progressive guidance tailored for <em>${this.escapeHtml(this.currentCase?.meta?.title || "this case")}</em>:</div>
+                    <div class="hint-stages-list">
+                        ${stageCards}
+                    </div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = `
+            ${universalHtml}
+            ${stagesHtml}
+        `;
+    }
+
     escapeHtml(str) {
         if (str === null || str === undefined) return "";
         return String(str)
@@ -2575,6 +2716,7 @@ class DeductionEngine {
                 solved: isSolved,
                 collectedWords: Array.from(this.collectedWords),
                 unlockedLore: Array.from(this.unlockedLore),
+                unlockedHintStages: Array.from(this.unlockedHintStages),
                 docketSlots: this.docketSlots,
                 currentTimelineKey: this.currentTimelineKey,
                 currentFilter: this.currentFilter,
@@ -2611,6 +2753,9 @@ class DeductionEngine {
                         this.unlockedLore.add(l);
                     }
                 });
+            }
+            if (Array.isArray(data.unlockedHintStages)) {
+                this.unlockedHintStages = new Set(data.unlockedHintStages.map(Number));
             }
             if (data.docketSlots && typeof data.docketSlots === "object") {
                 this.docketSlots = {};
@@ -2654,6 +2799,7 @@ class DeductionEngine {
                 localStorage.removeItem(`deduction_engine_save_${this.currentCase.id}`);
                 localStorage.removeItem(`case_solved_${this.currentCase.id}`);
             } catch (e) {}
+            this.unlockedHintStages = new Set();
             this.loadCase(this.currentCase, false);
             this.showToast("Case progress reset & Chapter 1 locked.");
         }

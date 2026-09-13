@@ -2984,6 +2984,232 @@ body.crt-scanlines.crt-static::after {
     cursor: pointer;
 }
 
+/* ==========================================================================
+   Case Hint Advisory Modal
+   ========================================================================== */
+#hint-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 8, 4, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#hint-modal.hidden {
+    display: none;
+}
+
+.hint-paper {
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.95), 0 0 24px var(--accent-glow);
+    width: 780px;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInModal 0.2s ease-out;
+}
+
+.hint-header {
+    padding: 12px 18px;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-tertiary);
+}
+
+.hint-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hint-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.hint-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-tertiary);
+}
+
+.hint-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.hint-section-icon {
+    font-size: 14px;
+}
+
+.hint-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+}
+
+.hint-section-subtitle {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+}
+
+.hint-universal-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+}
+
+.hint-universal-list {
+    margin: 0 0 0 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.hint-universal-list li strong {
+    color: var(--accent);
+}
+
+.hint-stages-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.hint-stages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hint-stage-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.hint-stage-card.unlocked {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.1);
+}
+
+.hint-stage-header {
+    padding: 10px 14px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hint-stage-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hint-stage-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-radius: 2px;
+}
+
+.hint-stage-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.hint-stage-status {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-tertiary);
+}
+
+.hint-stage-card.unlocked .hint-stage-status {
+    color: var(--success);
+}
+
+.hint-stage-content {
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    background: rgba(255, 153, 0, 0.03);
+}
+
+.hint-stage-locked-body {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg-secondary);
+}
+
+.hint-stage-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+}
+
+.hint-reveal-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    letter-spacing: 0.5px;
+}
+
+.hint-reveal-btn:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
 /* Settings Modal Footer */
 .game-settings-footer {
     background: var(--bg-tertiary);

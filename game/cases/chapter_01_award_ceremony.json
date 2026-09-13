@@ -377,5 +377,22 @@
         "base": "USSR"
       }
     }
-  }
+  },
+  "hints": [
+    {
+      "stage": 1,
+      "title": "Stage 1: Hierarchy Reconstruction",
+      "text": "Look closely at the conferral table. Can you link the starting and advanced designations across candidates to assemble the complete hierarchy from lowest to highest?"
+    },
+    {
+      "stage": 2,
+      "title": "Stage 2: Insignia Transition",
+      "text": "The candidate receiving the honor is transitioning across multiple ranks on her insignia. Which individuals on the list exhibit an accelerated leap in rank?"
+    },
+    {
+      "stage": 3,
+      "title": "Stage 3: Candidate Disambiguation",
+      "text": "Only one candidate on the document matches both the honoree's gender and this specific rank leap. Have you inspected the top entries on the roster?"
+    }
+  ]
 }

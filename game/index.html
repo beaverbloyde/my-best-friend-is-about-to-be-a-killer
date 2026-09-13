@@ -37,6 +37,10 @@
                     📂 Load Case JSON
                 </label>
 
+                <button class="engine-btn" id="hint-btn" onclick="window.gameEngine.openHintModal()" title="Case Hints & Deduction Guidance (H)">
+                    💡 Hints
+                </button>
+
                 <button class="engine-btn" id="tutorial-btn" onclick="window.gameEngine.openTutorial()" title="Open Investigator Field Manual & Tutorial">
                     ❓ How to Play
                 </button>
@@ -229,12 +233,34 @@
             </div>
             <div class="docket-footer">
                 <div class="docket-footer-left">
+                    <button onclick="window.gameEngine.openHintModal()" id="docket-hint-btn" class="time-btn" title="Open Case Hints (H)" style="border-color: var(--accent); color: var(--accent);">💡 Hint</button>
                     <button onclick="window.gameEngine.clearDocket()" class="time-btn" title="Clear only docket slots">Clear Slots</button>
                     <button onclick="window.gameEngine.resetCaseProgress()" class="time-btn" title="Reset all keywords, lore dossiers, and progress for this case">Restart Case ↺</button>
                 </div>
                 <button onclick="window.gameEngine.verifyDocket()" class="open-docket-btn docket-verify-btn" style="background: var(--success); color: var(--bg-primary);">Verify Deduction ↵</button>
             </div>
             <div class="docket-resize-handle" title="Drag to resize docket"></div>
+        </div>
+    </div>
+
+    <!-- Case Hint Advisory Modal -->
+    <div id="hint-modal" class="hidden">
+        <div class="hint-paper">
+            <div class="hint-header">
+                <div class="hint-title">💡 FIELD INVESTIGATOR ADVISORY // CASE HINT PROTOCOL</div>
+                <button onclick="window.gameEngine.closeHintModal()" class="modal-close-btn" title="Close hint advisory">✕</button>
+            </div>
+            <div class="hint-body" id="hint-body-content">
+                <!-- Dynamically populated by DeductionEngine -->
+            </div>
+            <div class="hint-footer">
+                <div style="font-size: 11px; color: var(--text-tertiary);">
+                    Hints reveal leading questions progressively to guide your deduction without spoiling the solution.
+                </div>
+                <button onclick="window.gameEngine.closeHintModal()" class="open-docket-btn" style="background: var(--accent); color: var(--bg-primary); font-weight: 700; padding: 6px 14px; font-size: 11px;">
+                    Close Advisory (Esc) ↵
+                </button>
+            </div>
         </div>
     </div>
 
