@@ -146,14 +146,15 @@
       "id": "lore-mvd",
       "tag": "USSR STATE DIRECTORY // LAW ENFORCEMENT & INSTITUTIONS",
       "title": "Ministry of Internal Affairs (MVD)",
-      "facility": "[vladivostok] Higher School of the [mvd]",
-      "location": "[vladivostok], [primorsky_krai], Russian SFSR",
-      "diagnosticCode": "MVD-STRUCT-2118 // REGIONAL INSTITUTIONS",
-      "etiology": "Civil Order, Forensic Inquiries, and Frontier Security",
+      "fullName": "Министерство внутренних дел (Ministry of Internal Affairs)",
+      "cyrillic": "Министерство внутренних дел [IPA_ru:mʲɪnʲɪˈsʲtʲɛrstvə vnʉtrʲɪnʲɪx dʲel] (МВД [IPA_ru:ˈɛm ˈvɛ ˈdɛ])",
+      "jurisdiction": "All-Union & Republican Level // [ussr], Russian SFSR",
+      "diagnosticCode": "MVD-STRUCT-2118 // CENTRAL & REGIONAL APPARATUS",
+      "etiology": "Civil Order, Forensic Inquiries, and State Security",
       "requiredWords": [
         "mvd"
       ],
-      "body": "The **Ministry of Internal Affairs ([mvd])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [ussr].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([rovd]). In the Far East, the **[vladivostok] Higher School of the [mvd]** serves as the primary regional academy for officer training, procedural jurisprudence, and forensic education."
+      "body": "The **Ministry of Internal Affairs ([mvd])** is the state apparatus responsible for maintaining civic order, legal compliance, and criminal investigations across the Russian SFSR and the [ussr].\n\n**Operational Organization:**\nLocal municipal operations are administered through District Departments of Internal Affairs ([rovd]), while specialized academies and command institutes provide advanced officer training, procedural jurisprudence, and forensic education across the union."
     }
   },
   "categories": {

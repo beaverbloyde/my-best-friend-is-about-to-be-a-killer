@@ -180,10 +180,11 @@ class DeductionEngine {
             const btn = e.target.closest('.pronounce-btn');
             if (btn) {
                 e.stopPropagation();
-                const word = btn.getAttribute('data-speak') || btn.innerText;
+                const word = btn.getAttribute('data-speak') || btn.dataset?.speak || btn.getAttribute('data-word') || btn.dataset?.word || btn.innerText;
+                const lang = btn.getAttribute('data-lang') || btn.dataset?.lang || '';
                 btn.classList.add('speaking');
                 window.sfx?.playClick();
-                this.speakRussian(word);
+                this.speakRussian(word, lang);
                 setTimeout(() => {
                     btn.classList.remove('speaking');
                 }, 1200);
@@ -990,9 +991,9 @@ class DeductionEngine {
         }
     }
 
-    speakRussian(text) {
+    speakRussian(text, lang = null) {
         if (typeof LogosPhonetics !== "undefined") {
-            LogosPhonetics.speakRussian(text);
+            LogosPhonetics.speakRussian(text, null, lang);
         }
     }
 
@@ -1002,14 +1003,35 @@ class DeductionEngine {
         if (!str) return "";
         let text = String(str);
 
-        // Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [ˈvalʲɪnkʲɪ]) or (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])
-        text = text.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, (match, word, ipa) => {
+        // 1. Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [IPA_ru:ˈvalʲɪnkʲɪ])
+        text = text.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[IPA[_-]ru:([^\]]+)\]/g, (match, word, ipa) => {
             const cleanWord = word.trim();
             const cleanIpa = ipa.trim();
-            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-word="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-word="${cleanWord}" data-lang="ru-RU" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
         });
 
-        // Convert [[Keyword]] syntax
+        // 2. Parse Chinese Hanzi + Pinyin + IPA pronunciation buttons: e.g. (东北 / _Dōngběi_ [IPA_zh:tʊ́ŋ.pèi])
+        text = text.replace(/([一-龥]+)\s*\/\s*(?:<[^>]+>|_|\*)*([A-Za-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s\-]+)(?:<[^>]+>|_|\*)*\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, pinyin, ipa) => {
+            const cleanHanzi = hanzi.trim();
+            const cleanPinyin = pinyin.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanHanzi} / <em>${cleanPinyin}</em> <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-word="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi} (${cleanPinyin})">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
+        // 3. Parse Chinese Hanzi + IPA without pinyin: e.g. (东北 [IPA_zh:tʊ́ŋ.pèi])
+        text = text.replace(/([一-龥]+)\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, ipa) => {
+            const cleanHanzi = hanzi.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanHanzi} <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-word="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi}">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
+        // 4. Generic fallback for any [IPA_lang:ipa] tags
+        text = text.replace(/\[IPA[_-]([a-zA-Z0-9\-_]+):([^\]]+)\]/g, (match, lang, ipa) => {
+            const cleanIpa = ipa.trim();
+            return `<span class="ipa-text">&#91;${cleanIpa}&#93;</span>`;
+        });
+
+        // 5. Convert [[Keyword]] syntax
         text = text.replace(/\[\[([^\]]+)\]\]/g, (match, raw) => {
             const parts = raw.split(":").map(p => p.trim());
             const rawId = parts[0];
@@ -1034,8 +1056,8 @@ class DeductionEngine {
             return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
         });
 
-        // Convert [Keyword] or [keyword_id:variation] or [keyword_id:case] or [keyword_id:variation:case] into .kw element (ignore system tags, slot:, and num:)
-        text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, (match, raw) => {
+        // 6. Convert [Keyword] or [keyword_id:variation] or [keyword_id:case] into .kw element (ignore system tags, slot:, num:, and IPA tags)
+        text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|IPA[_-][a-zA-Z0-9\-_]+:|slot:|num:)([^\]]+)\]/g, (match, raw) => {
             const parts = raw.split(":").map(p => p.trim());
             const rawId = parts[0];
             let variation = "base";

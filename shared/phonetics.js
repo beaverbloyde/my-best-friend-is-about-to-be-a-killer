@@ -1,6 +1,6 @@
 /**
- * LOGOS-3 RUSSIAN PHONETICS & PRONUNCIATION ENGINE
- * Transliteration, Cyrillic slugification, pre-recorded audio playback & Web Speech fallback.
+ * LOGOS-3 MULTILINGUAL PHONETICS & PRONUNCIATION ENGINE
+ * Russian transliteration, Chinese pinyin slugification, pre-recorded audio playback & Web Speech fallback.
  */
 (function (global) {
     'use strict';
@@ -26,6 +26,12 @@
                 if (/[a-z0-9\-_]/.test(c)) return c;
                 return '';
             }).join('');
+        },
+
+        pinyinToSlug(text) {
+            if (!text) return '';
+            const normalized = text.normalize ? text.normalize("NFKD") : text;
+            return normalized.replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "").toLowerCase();
         },
 
         cyrillicToTranslit(text) {
@@ -63,7 +69,7 @@
             return pronunciationIndex;
         },
 
-        fallbackSpeech(text) {
+        fallbackSpeech(text, lang = null) {
             if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
             try {
                 window.speechSynthesis.cancel();
@@ -71,17 +77,21 @@
                 const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
                 if (!cleanText) return;
 
+                const isChinese = lang === 'zh-CN' || /[\u4e00-\u9fa5]/.test(cleanText);
+                const targetLang = isChinese ? 'zh-CN' : 'ru-RU';
+
                 const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'ru-RU';
+                utterance.lang = targetLang;
                 utterance.rate = 0.85;
                 utterance.pitch = 1.0;
                 utterance.volume = 1.0;
 
                 const voices = window.speechSynthesis.getVoices();
                 if (voices && voices.length > 0) {
-                    const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru') || v.lang.includes('ru')));
-                    if (ruVoice) {
-                        utterance.voice = ruVoice;
+                    const langPrefix = isChinese ? 'zh' : 'ru';
+                    const matchVoice = voices.find(v => v.lang && (v.lang === targetLang || v.lang.startsWith(langPrefix) || v.lang.toLowerCase().includes(langPrefix)));
+                    if (matchVoice) {
+                        utterance.voice = matchVoice;
                     }
                 }
 
@@ -91,7 +101,7 @@
             }
         },
 
-        speakRussian(text, basePath = null) {
+        speakRussian(text, basePath = null, lang = null) {
             const cleanWord = String(text)
                 .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
                 .trim();
@@ -106,14 +116,21 @@
 
             const key = cleanWord.toLowerCase();
             const slug = this.cyrillicToSlug(key);
+            const pSlug = this.pinyinToSlug(key);
             const prefix = basePath !== null ? basePath : ((typeof window !== 'undefined' && (window.location.pathname.includes('/reader') || window.location.pathname.includes('/game'))) ? '../' : '');
 
             let audioSrc = null;
             if (pronunciationIndex && pronunciationIndex[key]) {
                 const raw = pronunciationIndex[key];
                 audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
+            } else if (pronunciationIndex && pronunciationIndex[cleanWord]) {
+                const raw = pronunciationIndex[cleanWord];
+                audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
             } else if (pronunciationIndex && pronunciationIndex[slug]) {
                 const raw = pronunciationIndex[slug];
+                audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
+            } else if (pronunciationIndex && pronunciationIndex[pSlug]) {
+                const raw = pronunciationIndex[pSlug];
                 audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
             }
 
@@ -126,7 +143,7 @@
                 const triggerFallback = () => {
                     if (!hasFallenBack) {
                         hasFallenBack = true;
-                        this.fallbackSpeech(cleanWord);
+                        this.fallbackSpeech(cleanWord, lang);
                     }
                 };
 
@@ -137,7 +154,7 @@
                     playPromise.catch(() => triggerFallback());
                 }
             } else {
-                this.fallbackSpeech(cleanWord);
+                this.fallbackSpeech(cleanWord, lang);
             }
         },
 
@@ -150,12 +167,13 @@
                 if (!btn) return;
                 e.stopPropagation();
                 const word = btn.getAttribute('data-speak') || btn.dataset?.speak || btn.getAttribute('data-word') || btn.dataset?.word || btn.innerText;
+                const lang = btn.getAttribute('data-lang') || btn.dataset?.lang || null;
                 btn.classList.add('speaking');
                 if (typeof window !== 'undefined' && window.sfx?.playClick) {
                     try { window.sfx.playClick(); } catch (err) {}
                 }
                 if (word) {
-                    this.speakRussian(word);
+                    this.speakRussian(word, null, lang);
                 }
                 setTimeout(() => {
                     btn.classList.remove('speaking');

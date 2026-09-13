@@ -256,9 +256,9 @@
     "PIRM": {
       "id": "lore-pirm",
       "tag": "FEBRAS ACADEMY ARCHIVE // CLASSIFICATION: SOVIET SCIENCE (DEPT-4)",
-      "title": "Pogranichny Institute of Relativistic Mechanics (PIRMGD)",
+      "title": "Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics (PIRMGD)",
       "fullName": "Пограничный институт релятивистской механики и геокосмической динамики (Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics)",
-      "cyrillic": "Пограничный институт релятивистской механики [pəgrɐˈnʲit͡ɕnɨj ɪnstʲɪˈtut rʲɪlʲɪtʲɪˈvʲisːkəj mʲɪˈxanʲɪkʲɪ] (ПИРМ [pʲiːrm])",
+      "cyrillic": "Пограничный институт релятивистской механики и геокосмической динамики [IPA_ru:pəgrɐˈnʲit͡ɕnɨj ɪnstʲɪˈtut rʲɪlʲɪtʲɪˈvʲisːkəj mʲɪˈxanʲɪkʲɪ i ˌɡʲeəkɐsˈmʲit͡ɕɪskəj dʲɪˈnamʲɪkʲɪ] (ПИРМ [IPA_ru:pʲiːrm] / ПИРМГД [IPA_ru:pʲiːrm-ɡɛ-ˈdɛ])",
       "registration": "Far East Branch, [ussr] Academy of Sciences (FEBRAS)",
       "jurisdiction": "[pogranichny] Special Scientific District, [primorsky_krai], [russia_sfsr], [ussr]",
       "requiredWords": [
@@ -283,7 +283,7 @@
       "tag": "USSR STATE DIRECTORY // LAW ENFORCEMENT & PUBLIC SECURITY",
       "title": "District Department of Internal Affairs (ROVD)",
       "fullName": "Районный отдел внутренних дел (District Department of Internal Affairs)",
-      "cyrillic": "Районный отдел внутренних дел [rɐˈjonːɨj ɐdˈdʲel vnʉtrʲɪnʲɪx dʲel] (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])",
+      "cyrillic": "Районный отдел внутренних дел [IPA_ru:rɐˈjonːɨj ɐdˈdʲel vnʉtrʲɪnʲɪx dʲel] (РОВД [IPA_ru:ˈɛr ˈo ˈvɛ ˈdɛ])",
       "facility": "Territorial Militsiya Precinct ([rovd])",
       "jurisdiction": "Municipal & District Level // Ministry of Internal Affairs (MVD)",
       "requiredWords": [

@@ -21,7 +21,35 @@
             const { totalKeywordsSet = new Set(), isScene = false } = options;
             let formatted = text;
 
-            // Bold **text**
+            // 1. Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [IPA_ru:ˈvalʲɪnkʲɪ])
+            formatted = formatted.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[IPA[_-]ru:([^\]]+)\]/g, (match, word, ipa) => {
+                const cleanWord = word.trim();
+                const cleanIpa = ipa.trim();
+                return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-lang="ru-RU" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+            });
+
+            // 2. Chinese Hanzi + Pinyin + IPA pronunciation buttons: e.g. (东北 / _Dōngběi_ [IPA_zh:tʊ́ŋ.pèi])
+            formatted = formatted.replace(/([一-龥]+)\s*\/\s*(?:_|\*)*([A-Za-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s\-]+)(?:_|\*)*\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, pinyin, ipa) => {
+                const cleanHanzi = hanzi.trim();
+                const cleanPinyin = pinyin.trim();
+                const cleanIpa = ipa.trim();
+                return `${cleanHanzi} / <em>${cleanPinyin}</em> <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi} (${cleanPinyin})">🔊 &#91;${cleanIpa}&#93;</button>`;
+            });
+
+            // 3. Parse Chinese Hanzi + IPA without pinyin: e.g. (东北 [IPA_zh:tʊ́ŋ.pèi])
+            formatted = formatted.replace(/([一-龥]+)\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, ipa) => {
+                const cleanHanzi = hanzi.trim();
+                const cleanIpa = ipa.trim();
+                return `${cleanHanzi} <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi}">🔊 &#91;${cleanIpa}&#93;</button>`;
+            });
+
+            // 4. Generic fallback for any [IPA_lang:ipa] tags
+            formatted = formatted.replace(/\[IPA[_-]([a-zA-Z0-9\-_]+):([^\]]+)\]/g, (match, lang, ipa) => {
+                const cleanIpa = ipa.trim();
+                return `<span class="ipa-text">&#91;${cleanIpa}&#93;</span>`;
+            });
+
+            // 5. Bold **text**
             formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
             // Italic *text* or _text_
@@ -31,8 +59,8 @@
             // Strikethrough ~~text~~
             formatted = formatted.replace(/~~([^~]+)~~/g, '<del>$1</del>');
 
-            // Collectible Keywords / Character Mentions: [Word]
-            formatted = formatted.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, (match, word) => {
+            // 6. Collectible Keywords / Character Mentions: [Word]
+            formatted = formatted.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|IPA[_-][a-zA-Z0-9\-_]+:|slot:|num:)([^\]]+)\]/g, (match, word) => {
                 const cleanWord = word.trim();
                 if (!cleanWord || cleanWord.startsWith('%%') || cleanWord.startsWith('@')) {
                     return match;

@@ -63,7 +63,20 @@
       ]
     }
   },
-  "lore": {},
+  "lore": {
+    "Khabarovsk": {
+      "id": "lore-khabarovsk",
+      "tag": "USSR STATE GEOGRAPHIC DIRECTORY // FAR EASTERN ECONOMIC REGION",
+      "title": "Khabarovsk (Khabarovsk Krai)",
+      "fullName": "Хабаровск (Khabarovsk)",
+      "cyrillic": "Хабаровск [IPA_ru:xɐˈbarəfsk]",
+      "jurisdiction": "Administrative Center // Khabarovsk Krai, Russian SFSR, USSR",
+      "requiredWords": [
+        "khabarovsk"
+      ],
+      "body": "**[khabarovsk]** is the largest administrative, economic, and cultural center in the Soviet Far East, situated along the Amur River near the Sino-Soviet border.\n\nOriginally founded in 1858 as a military post named after 17th-century explorer Yerofey Khabarov, the city developed into a major transport hub connecting the Trans-Siberian Railway with regional freight routes, heavy industrial facilities, and specialized planning institutes.\n\nAs a crucial frontier metropolis, Khabarovsk coordinates cross-border commerce, freight transit, and diplomatic exchanges between [china] and the Russian SFSR."
+    }
+  },
   "categories": {
     "name": {
       "hex": "#38bdf8",

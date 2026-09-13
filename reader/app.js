@@ -2047,7 +2047,38 @@
 
     function applyInlineFormatting(text) {
         if (!text) return '';
-        let res = text
+        let res = text;
+
+        // 1. Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [IPA_ru:ˈvalʲɪnkʲɪ])
+        res = res.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[IPA[_-]ru:([^\]]+)\]/g, (match, word, ipa) => {
+            const cleanWord = word.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-lang="ru-RU" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
+        // 2. Parse Chinese Hanzi + Pinyin + IPA pronunciation buttons: e.g. (东北 / _Dōngběi_ [IPA_zh:tʊ́ŋ.pèi])
+        res = res.replace(/([一-龥]+)\s*\/\s*(?:_|\*)*([A-Za-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s\-]+)(?:_|\*)*\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, pinyin, ipa) => {
+            const cleanHanzi = hanzi.trim();
+            const cleanPinyin = pinyin.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanHanzi} / <em>${cleanPinyin}</em> <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi} (${cleanPinyin})">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
+        // 3. Parse Chinese Hanzi + IPA without pinyin: e.g. (东北 [IPA_zh:tʊ́ŋ.pèi])
+        res = res.replace(/([一-龥]+)\s*\[IPA[_-]zh:([^\]]+)\]/g, (match, hanzi, ipa) => {
+            const cleanHanzi = hanzi.trim();
+            const cleanIpa = ipa.trim();
+            return `${cleanHanzi} <button type="button" class="pronounce-btn" data-speak="${cleanHanzi}" data-lang="zh-CN" title="Click to hear Chinese pronunciation: ${cleanHanzi}">🔊 &#91;${cleanIpa}&#93;</button>`;
+        });
+
+        // 4. Generic fallback for any [IPA_lang:ipa] tags
+        res = res.replace(/\[IPA[_-]([a-zA-Z0-9\-_]+):([^\]]+)\]/g, (match, lang, ipa) => {
+            const cleanIpa = ipa.trim();
+            return `<span class="ipa-text">&#91;${cleanIpa}&#93;</span>`;
+        });
+
+        // 5. Standard Markdown inline styles
+        res = res
             .replace(/\*\*([^\s\*](?:[^\*]*?[^\s\*])?)\*\*/g, '<strong>$1</strong>')
             .replace(/__([^\s_](?:[^_]*?[^\s_])?)__/g, '<strong>$1</strong>')
             .replace(/\[b\](.*?)\[\/b\]/g, '<strong>$1</strong>')
@@ -2057,16 +2088,9 @@
             .replace(/~~(.*?)~~/g, '<del>$1</del>')
             .replace(/==(.*?)==/g, '<mark>$1</mark>');
 
-        // Parse Russian Cyrillic + IPA phonetic pronunciation buttons: e.g. (Валенки [ˈvalʲɪnkʲɪ])
-        res = res.replace(/([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[([^\]]+)\]/g, (match, word, ipa) => {
-            const cleanWord = word.trim();
-            const cleanIpa = ipa.trim();
-            return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
-        });
-
-        // Parse collectible [Keywords] (avoiding system tags like [br], [vspace], [field:], [footnote:], [img:], [b], [/b], [i], [/i])
+        // 6. Parse collectible [Keywords] (avoiding system tags like [br], [vspace], [field:], [footnote:], [img:], [b], [/b], [i], [/i], [IPA_...:])
         res = res.replace(/\[\[([^\]]+)\]\]/g, '<span class="reader-kw" data-word="$1" tabindex="0" role="button" title="Click to collect keyword for case investigations">$1</span>');
-        res = res.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b)([^\]]+)\]/g, '<span class="reader-kw" data-word="$1" tabindex="0" role="button" title="Click to collect keyword for case investigations">$1</span>');
+        res = res.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|IPA[_-][a-zA-Z0-9\-_]+:|slot:|num:)([^\]]+)\]/g, '<span class="reader-kw" data-word="$1" tabindex="0" role="button" title="Click to collect keyword for case investigations">$1</span>');
 
         return res;
     }
@@ -2471,7 +2495,7 @@
         }
     }
 
-    // 11. Russian Term Pronunciation Player (Hybrid: Auto-Indexed Audio Files + Dynamic Transliteration + Web Speech Fallback)
+    // 11. Multilingual Pronunciation Player (Russian & Chinese: Auto-Indexed Audio Files + Slugs + Web Speech Fallback)
     const CYRILLIC_TO_LATIN = {
         'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
         'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
@@ -2488,6 +2512,12 @@
         }).join('');
     }
 
+    function pinyinToSlug(text) {
+        if (!text) return '';
+        const normalized = text.normalize ? text.normalize("NFKD") : text;
+        return normalized.replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "").toLowerCase();
+    }
+
     let pronunciationIndex = {};
     fetch(`${basePath}audio/pronunciations/index.json`)
         .then(r => r.ok ? r.json() : {})
@@ -2496,7 +2526,7 @@
 
     let currentPronounceAudio = null;
 
-    function fallbackSpeech(text) {
+    function fallbackSpeech(text, lang) {
         if (!('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
@@ -2504,17 +2534,21 @@
             const cleanText = String(text).replace(/[\[\]\(\)\{\}\/_🔊]/g, '').trim();
             if (!cleanText) return;
 
+            const isChinese = lang === 'zh-CN' || /[\u4e00-\u9fa5]/.test(cleanText);
+            const targetLang = isChinese ? 'zh-CN' : 'ru-RU';
+
             const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'ru-RU';
+            utterance.lang = targetLang;
             utterance.rate = 0.85; // Natural measured pacing for vocabulary learning
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
 
             const voices = window.speechSynthesis.getVoices();
             if (voices && voices.length > 0) {
-                const ruVoice = voices.find(v => v.lang && (v.lang === 'ru-RU' || v.lang.startsWith('ru') || v.lang.includes('ru')));
-                if (ruVoice) {
-                    utterance.voice = ruVoice;
+                const langPrefix = isChinese ? 'zh' : 'ru';
+                const matchVoice = voices.find(v => v.lang && (v.lang === targetLang || v.lang.startsWith(langPrefix) || v.lang.toLowerCase().includes(langPrefix)));
+                if (matchVoice) {
+                    utterance.voice = matchVoice;
                 }
             }
 
@@ -2524,7 +2558,7 @@
         }
     }
 
-    function speakRussian(text) {
+    function speakRussian(text, lang) {
         const cleanWord = String(text)
             .replace(/[\[\]\(\)\{\}\/_🔊\.,!?:;'"]/g, '')
             .trim();
@@ -2539,14 +2573,21 @@
 
         const key = cleanWord.toLowerCase();
         const slug = cyrillicToSlug(key);
+        const pSlug = pinyinToSlug(key);
         const prefix = basePath;
 
         let audioSrc = null;
         if (pronunciationIndex && pronunciationIndex[key]) {
             const raw = pronunciationIndex[key];
             audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
+        } else if (pronunciationIndex && pronunciationIndex[cleanWord]) {
+            const raw = pronunciationIndex[cleanWord];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         } else if (pronunciationIndex && pronunciationIndex[slug]) {
             const raw = pronunciationIndex[slug];
+            audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
+        } else if (pronunciationIndex && pronunciationIndex[pSlug]) {
+            const raw = pronunciationIndex[pSlug];
             audioSrc = (raw.startsWith('http') || raw.startsWith('/')) ? raw : prefix + raw.replace(/^\.\.\//, '');
         }
 
@@ -2559,7 +2600,7 @@
             const triggerFallback = () => {
                 if (!hasFallenBack) {
                     hasFallenBack = true;
-                    fallbackSpeech(cleanWord);
+                    fallbackSpeech(cleanWord, lang);
                 }
             };
 
@@ -2570,7 +2611,7 @@
                 playPromise.catch(() => triggerFallback());
             }
         } else {
-            fallbackSpeech(cleanWord);
+            fallbackSpeech(cleanWord, lang);
         }
     }
 
@@ -2580,8 +2621,9 @@
         if (btn) {
             e.stopPropagation();
             const word = btn.getAttribute('data-speak') || btn.innerText;
+            const lang = btn.getAttribute('data-lang') || '';
             btn.classList.add('speaking');
-            speakRussian(word);
+            speakRussian(word, lang);
             setTimeout(() => {
                 btn.classList.remove('speaking');
             }, 1200);
