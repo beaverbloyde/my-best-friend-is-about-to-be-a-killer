@@ -61,7 +61,7 @@
           "badge": {
             "avatar": "\ud83d\udc64",
             "dept": "FEBRAS Hardware Division",
-            "name": "[Aleksey] [Volkov]",
+            "name": "[Aleksey Volkov]",
             "role": "Hardware Engineer"
           }
         },
@@ -157,7 +157,7 @@
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
-                "text": "This is Professor [Stanislav] [Krotov], Director of Relativistic Field Topology at [PIRM]. I\u2019m currently not available, please leave your message.",
+                "text": "This is Professor [Stanislav Krotov], Director of Relativistic Field Topology at [PIRM]. I\u2019m currently not available, please leave your message.",
                 "type": "system"
               },
               {
@@ -187,7 +187,7 @@
           "badge": {
             "avatar": "\ud83d\udc64",
             "dept": "FEBRAS PIRM Institute",
-            "name": "[Luka] [Huo]",
+            "name": "[Luka Huo]",
             "role": "Theoretical Physics Department"
           }
         },
@@ -243,8 +243,8 @@
             "date": "[Sunday] 10 [April] (Jubilee Plenary)",
             "venue": "[Vladivostok] Central Plenary Hall",
             "agenda": [
-              "**What's Next After Time Ripple?** \u2014 Dr. [Stanislav] [Krotov]",
-              "**Spacetime Paradigm** \u2014 Jr. Researcher [Luka] [Huo]",
+              "**What's Next After Time Ripple?** \u2014 Dr. [Stanislav Krotov]",
+              "**Spacetime Paradigm** \u2014 Jr. Researcher [Luka Huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
           }
@@ -265,7 +265,7 @@
         "PIRM",
         "PIRMGD"
       ],
-      "body": "The **Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [PIRM] or [PIRMGD]) is a flagship joint Sino-Soviet research institution located on the frontier border in Pogranichny.\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of Professor [Stanislav] [Krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
+      "body": "The **[Pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [PIRM] or [PIRMGD]) is a flagship joint Sino-Soviet research institution located on the frontier border in [Pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of Professor [Stanislav Krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
     },
     "Ripple Sickness": {
       "id": "lore-ripple",
@@ -285,11 +285,11 @@
       "fullName": "Районный отдел внутренних дел (District Department of Internal Affairs)",
       "cyrillic": "Районный отдел внутренних дел [rɐˈjonːɨj ɐdˈdʲel vnʉtrʲɪnʲɪx dʲel] (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])",
       "facility": "Territorial Militsiya Precinct ([ROVD])",
-      "jurisdiction": "Municipal & District Level // Ministry of Internal Affairs ([MVD])",
+      "jurisdiction": "Municipal & District Level // Ministry of Internal Affairs (MVD)",
       "requiredWords": [
         "ROVD"
       ],
-      "body": "A **District Department of Internal Affairs** ([ROVD]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs ([MVD]).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
+      "body": "A **District Department of Internal Affairs** ([ROVD]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs (MVD).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
     },
     "WSS": {
       "id": "lore-wss",
@@ -341,22 +341,13 @@
     }
   },
   "keywordTags": {
-    "Luka": [
+    "Luka Huo": [
       "name"
     ],
-    "Huo": [
+    "Aleksey Volkov": [
       "name"
     ],
-    "Aleksey": [
-      "name"
-    ],
-    "Volkov": [
-      "name"
-    ],
-    "Stanislav": [
-      "name"
-    ],
-    "Krotov": [
+    "Stanislav Krotov": [
       "name"
     ],
     "Pogranichny": [
@@ -505,7 +496,7 @@
     }
   ],
   "docket": {
-    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_first:name] [slot:p1_last:name] started seeing a [slot:vision_noun:temporal,noun] for over [num:months_num:1:#] months since the [slot:ripple_noun:temporal,noun].\n\nIn the [slot:vision_noun2:temporal,noun], [slot:p2_first:name] [slot:p2_last:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe [slot:med_noun:medical,name] thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal].\n\nHowever, today, [slot:p1_first2:name] [slot:p1_last2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his [slot:vision_noun3:temporal,noun] was a [slot:power_noun:temporal,noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
+    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_1:name] started seeing a vision for over [num:months_num:1:#] months since the [slot:ripple_noun:temporal,noun] incident.\n\nIn the vision, [slot:p2:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe doctors thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal].\n\nHowever, today, [slot:p1_2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his vision was a [slot:power_noun:temporal,noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
   },
   "solution": {
     "date": "14",
@@ -522,23 +513,16 @@
     ],
     "region": "Primorsky Krai",
     "city": "Pogranichny",
-    "p1_first": "Luka",
-    "p1_last": "Huo",
-    "vision_noun": "vision",
-    "vision_noun2": "vision",
-    "vision_noun3": "vision",
+    "p1_1": "Luka Huo",
     "months_num": "3",
     "ripple_noun": "Time Ripple",
-    "p2_first": "Aleksey",
-    "p2_last": "Volkov",
+    "p2": "Aleksey Volkov",
     "rel_noun": "best friend",
     "weapon_noun": "metal rod",
     "action_verb": "stab",
-    "med_noun": "doctors",
     "symptom_noun": "neural pathways",
     "sick_noun": "Ripple Sickness",
-    "p1_first2": "Luka",
-    "p1_last2": "Huo",
+    "p1_2": "Luka Huo",
     "treat_noun": "medication",
     "power_noun": "premonition",
     "dest_rovd": "ROVD",
