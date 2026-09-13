@@ -3,7 +3,7 @@
   "meta": {
     "title": "CASE 1: MORNING ROUTINE",
     "subtitle": "",
-    "docketTitle": "\ud83d\udccb MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
+    "docketTitle": "📋 MVD FORM 0-A // MORNING COGNITIVE EVALUATION",
     "author": "Beaver Bloyde",
     "version": "1.0",
     "successMessage": "☭ DEDUCTION VERIFIED! Case 1: Morning Routine Confirmed. Chapter 1.1: Crime in the Future Unlocked!",
@@ -29,16 +29,16 @@
           "type": "Observation",
           "title": "Framed Photo",
           "text": "A framed photo of a young man holding an award.",
-          "quote": "Taken by your [best friend] - A. V."
+          "quote": "Taken by your [best_friend] - A. V."
         },
         {
           "type": "Environment",
           "title": "Alarm Clock & Calendar",
           "clock": {
             "title": "BEDSIDE TELEMETRY",
-            "temperature": "24\u00b0C",
+            "temperature": "24°C",
             "time": "07:02",
-            "date": "[Thursday]"
+            "date": "[thursday]"
           }
         }
       ]
@@ -59,16 +59,16 @@
           "type": "Evidence",
           "title": "Name plate",
           "badge": {
-            "avatar": "\ud83d\udc64",
+            "avatar": "👤",
             "dept": "FEBRAS Hardware Division",
-            "name": "[Aleksey Volkov]",
+            "name": "[aleksey_volkov]",
             "role": "Hardware Engineer"
           }
         },
         {
           "type": "Evidence",
           "title": "Metal rod",
-          "text": "A bloody-tip ~2m [metal rod], possibly a high-voltage grounding [lance]."
+          "text": "A bloody-tip ~2m [metal_rod], possibly a high-voltage grounding [lance]."
         }
       ]
     },
@@ -84,7 +84,7 @@
             "dispensary": "Polyclinic Dispensary #4",
             "status": "DEPLETED",
             "drug": "anti-hallucination sedatives",
-            "date": "12 [January]",
+            "date": "12 [january]",
             "doctor": ""
           }
         },
@@ -95,7 +95,7 @@
             "dispensary": "Polyclinic Dispensary #4",
             "status": "DEPLETED",
             "drug": "Sedative neuro-stabilizer compound",
-            "date": "20 [February]",
+            "date": "20 [february]",
             "doctor": ""
           }
         },
@@ -107,7 +107,7 @@
             "status": "PARTIAL",
             "active": true,
             "drug": "Prescribed daily [medication] bottle with some pills left.",
-            "date": "21 [March]",
+            "date": "21 [march]",
             "doctor": ""
           }
         },
@@ -128,10 +128,10 @@
           "type": "Terminal",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET // ROAMING",
+            "network": "☭ SOV-NET // ROAMING",
             "battery": "88%",
             "time": "07:25",
-            "date": "14th [April]",
+            "date": "14th [april]",
             "messages": [
               {
                 "app": "MESSAGING APP",
@@ -142,7 +142,7 @@
               {
                 "app": "MESSAGING APP",
                 "time": "07:15",
-                "sender": "[Mom]",
+                "sender": "[mom]",
                 "text": "I had a [premonition] last night about you... I'm not spiritual but it was pretty wild (and funny!). I'll [call] you later."
               }
             ]
@@ -152,17 +152,17 @@
           "type": "Audio Log",
           "title": "Phone Call Log",
           "audio": {
-            "label": "\u23fa COMM-REC // OUTGOING VOICEMAIL",
+            "label": "⏺ COMM-REC // OUTGOING VOICEMAIL",
             "time": "00:00 / 00:45",
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
-                "text": "This is [Professor] [Stanislav Krotov], Director of Relativistic Field Topology at [PIRM]. I\u2019m currently not available, please leave your message.",
+                "text": "This is [professor] [stanislav_krotov], Director of Relativistic Field Topology at [pirm]. I’m currently not available, please leave your message.",
                 "type": "system"
               },
               {
                 "speaker": "Young Man",
-                "text": "Professor, I need to [call] in sick today. My\u2026 um\u2026 head got a bit dizzy. Probably from the [Ripple Sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
+                "text": "Professor, I need to [call] in sick today. My… um… head got a bit dizzy. Probably from the [ripple_sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
                 "type": "user"
               }
             ]
@@ -185,9 +185,9 @@
           "type": "ID Card",
           "title": "Name plate",
           "badge": {
-            "avatar": "\ud83d\udc64",
+            "avatar": "👤",
             "dept": "FEBRAS PIRM Institute",
-            "name": "[Luka Huo]",
+            "name": "[luka_huo]",
             "role": "Theoretical Physics Department"
           }
         },
@@ -195,22 +195,22 @@
           "type": "Smart Device",
           "title": "Phone",
           "phone": {
-            "network": "\u262d SOV-NET // ROAMING",
+            "network": "☭ SOV-NET // ROAMING",
             "battery": "86%",
             "time": "07:50",
-            "date": "14th [April]",
+            "date": "14th [april]",
             "nav": {
-              "arrow": "\u21b1",
+              "arrow": "↱",
               "subtitle": "GLONASS ACTIVE GUIDANCE (350m)",
               "instruction": "Turn right at the next crossroad",
-              "destination": "Destination: 1.6 km from [ROVD]"
+              "destination": "Destination: 1.6 km from [rovd]"
             },
             "messages": [
               {
                 "app": "MESSAGING APP",
                 "time": "07:50",
                 "sender": "Alex",
-                "text": "Well... I took a [stab] at it anyway. Next time you have to be [free]!"
+                "text": "Well... I took a [stab:present_plural] at it anyway. Next time you have to be [free]!"
               }
             ]
           }
@@ -230,21 +230,21 @@
         {
           "type": "Signpost",
           "title": "Street sign",
-          "text": "A street sign pointing left: Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics ([PIRMGD])."
+          "text": "A street sign pointing left: Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics ([pirmgd])."
         },
         {
           "type": "Public Notice",
           "title": "Poster",
           "poster": {
-            "logo": "[WSS]",
+            "logo": "[wss]",
             "established": "EST. 2050",
             "badge": "68th JUBILEE",
-            "headline": "Commemorate the 68th Anniversary of [WSS] Together!",
-            "date": "[Sunday] 10 [April] (Jubilee Plenary)",
-            "venue": "[Vladivostok] Central Plenary Hall",
+            "headline": "Commemorate the 68th Anniversary of [wss] Together!",
+            "date": "[sunday] 10 [april] (Jubilee Plenary)",
+            "venue": "[vladivostok] Central Plenary Hall",
             "agenda": [
-              "**What's Next After Time Ripple?** \u2014 Dr. [Stanislav Krotov]",
-              "**Spacetime Paradigm** \u2014 Jr. [Researcher] [Luka Huo]",
+              "**What's Next After Time Ripple?** — Dr. [stanislav_krotov]",
+              "**Spacetime Paradigm** — Jr. [researcher] [luka_huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
           }
@@ -260,23 +260,23 @@
       "fullName": "Пограничный институт релятивистской механики и геокосмической динамики (Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics)",
       "cyrillic": "Пограничный институт релятивистской механики [pəgrɐˈnʲit͡ɕnɨj ɪnstʲɪˈtut rʲɪlʲɪtʲɪˈvʲisːkəj mʲɪˈxanʲɪkʲɪ] (ПИРМ [pʲiːrm])",
       "registration": "Far East Branch, USSR Academy of Sciences (FEBRAS)",
-      "jurisdiction": "[Pogranichny] Special Scientific District, [Primorsky Krai], [Russia SFSR], [USSR]",
+      "jurisdiction": "[pogranichny] Special Scientific District, [primorsky_krai], [russia_sfsr], [ussr]",
       "requiredWords": [
-        "PIRM",
-        "PIRMGD"
+        "pirm",
+        "pirmgd"
       ],
-      "body": "The **[Pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [PIRM] or [PIRMGD]) is a flagship joint Sino-Soviet research institution located on the frontier border in [Pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of Professor [Stanislav Krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
+      "body": "The **[pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [pirm] or [pirmgd]) is a flagship joint Sino-Soviet research institution located on the frontier border in [pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of Professor [stanislav_krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
     },
     "Ripple Sickness": {
       "id": "lore-ripple",
       "tag": "USSR MINISTRY OF HEALTH // CLINICAL BULLETIN NO. 88-B",
       "title": "Pathology of Post-Ripple Neuropathy (Ripple Sickness)",
       "diagnosticCode": "N-2118-RS // NEURO-TEMPORAL TRAUMA",
-      "etiology": "Exposure to acute spacetime rupture ([Time Ripple])",
+      "etiology": "Exposure to acute spacetime rupture ([time_ripple])",
       "requiredWords": [
-        "Ripple Sickness"
+        "ripple_sickness"
       ],
-      "body": "**Clinical Manifestations:** Following the [Time Ripple] incident this year, affected individuals demonstrate sensory desynchronization, severe episodic migraines, and intrusive cognitive flashes commonly referred to as [Ripple Sickness].\n\nState polyclinic [doctors] evaluate these anomalies as micro-structural degradation along synaptic [neural pathways], resulting in chronological perceptual delay.\n\n**Therapeutic Directives:** Standard medical dispensaries issue scheduled sedatives and anti-hallucination [medication]. Patient response is frequently refractory, prompting ongoing pharmacological reviews across regional medical commissions."
+      "body": "**Clinical Manifestations:** Following the [time_ripple] incident this year, affected individuals demonstrate sensory desynchronization, severe episodic migraines, and intrusive cognitive flashes commonly referred to as [ripple_sickness].\n\nState polyclinic [doctor:plural] evaluate these anomalies as micro-structural degradation along synaptic [neural_pathways], resulting in chronological perceptual delay.\n\n**Therapeutic Directives:** Standard medical dispensaries issue scheduled sedatives and anti-hallucination [medication]. Patient response is frequently refractory, prompting ongoing pharmacological reviews across regional medical commissions."
     },
     "ROVD": {
       "id": "lore-rovd",
@@ -284,12 +284,12 @@
       "title": "District Department of Internal Affairs (ROVD)",
       "fullName": "Районный отдел внутренних дел (District Department of Internal Affairs)",
       "cyrillic": "Районный отдел внутренних дел [rɐˈjonːɨj ɐdˈdʲel vnʉtrʲɪnʲɪx dʲel] (РОВД [ˈɛr ˈo ˈvɛ ˈdɛ])",
-      "facility": "Territorial Militsiya Precinct ([ROVD])",
+      "facility": "Territorial Militsiya Precinct ([rovd])",
       "jurisdiction": "Municipal & District Level // Ministry of Internal Affairs (MVD)",
       "requiredWords": [
-        "ROVD"
+        "rovd"
       ],
-      "body": "A **District Department of Internal Affairs** ([ROVD]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs (MVD).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
+      "body": "A **District Department of Internal Affairs** ([rovd]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs (MVD).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
     },
     "WSS": {
       "id": "lore-wss",
@@ -298,9 +298,9 @@
       "organization": "International Collective Council of Socialist Nations",
       "established": "EST. 2050 // Global Post-Scarcity Accord",
       "requiredWords": [
-        "WSS"
+        "wss"
       ],
-      "body": "The **World Socialist Society** ([WSS]) is the premier international collective body representing unified socialist nations across Earth. Founded in **2050** following the global realization of post-scarcity basic necessities, the organization functions as a worldwide cooperative forum to coordinate international diplomacy, scientific cooperation, and shared planetary resources.\n\nRather than acting as a direct governing state, the [WSS] [helps] facilitate multilateral accords, standardizes global technological infrastructure, and oversees collaborative development between sovereign member nations."
+      "body": "The **World Socialist Society** ([wss]) is the premier international collective body representing unified socialist nations across Earth. Founded in **2050** following the global realization of post-scarcity basic necessities, the organization functions as a worldwide cooperative forum to coordinate international diplomacy, scientific cooperation, and shared planetary resources.\n\nRather than acting as a direct governing state, the [wss] [help:present_singular] facilitate multilateral accords, standardizes global technological infrastructure, and oversees collaborative development between sovereign member nations."
     }
   },
   "categories": {
@@ -340,168 +340,40 @@
       "label": "Noun"
     }
   },
-  "keywordTags": {
-    "Luka Huo": [
-      "name"
-    ],
-    "Aleksey Volkov": [
-      "name"
-    ],
-    "Stanislav Krotov": [
-      "name"
-    ],
-    "Pogranichny": [
-      "location"
-    ],
-    "Primorsky Krai": [
-      "location"
-    ],
-    "Russia SFSR": [
-      "location"
-    ],
-    "USSR": [
-      "location"
-    ],
-    "ROVD": [
-      "location"
-    ],
-    "PIRM": [
-      "location"
-    ],
-    "PIRMGD": [
-      "location"
-    ],
-    "Vladivostok": [
-      "location"
-    ],
-    "stab": [
-      "verb"
-    ],
-    "drink": [
-      "verb"
-    ],
-    "free": [
-      "verb"
-    ],
-    "call": [
-      "verb"
-    ],
-    "helps": [
-      "verb"
-    ],
-    "medication": [
-      "medical",
-      "noun"
-    ],
-    "neural pathways": [
-      "medical",
-      "noun"
-    ],
-    "Ripple Sickness": [
-      "medical",
-      "temporal",
-      "noun"
-    ],
-    "vision": [
-      "temporal",
-      "noun"
-    ],
-    "Time Ripple": [
-      "temporal",
-      "noun"
-    ],
-    "premonition": [
-      "temporal",
-      "noun"
-    ],
-    "wormhole": [
-      "temporal",
-      "noun"
-    ],
-    "April": [
-      "calendar",
-      "noun"
-    ],
-    "January": [
-      "calendar",
-      "noun"
-    ],
-    "February": [
-      "calendar",
-      "noun"
-    ],
-    "March": [
-      "calendar",
-      "noun"
-    ],
-    "Thursday": [
-      "calendar",
-      "noun"
-    ],
-    "Sunday": [
-      "calendar",
-      "noun"
-    ],
-    "best friend": [
-      "noun"
-    ],
-    "Mom": [
-      "noun"
-    ],
-    "Professor": [
-      "noun"
-    ],
-    "Researcher": [
-      "noun"
-    ],
-    "metal rod": [
-      "noun"
-    ],
-    "lance": [
-      "noun"
-    ],
-    "valenki": [
-      "noun"
-    ],
-    "WSS": [
-      "location",
-      "noun"
-    ]
-  },
   "customCategories": [
     {
       "id": "names",
-      "label": "\ud83d\udc64 Names & People",
+      "label": "👤 Names & People",
       "tag": "name"
     },
     {
       "id": "locations",
-      "label": "\ud83d\udccd Locations & Facilities",
+      "label": "📍 Locations & Facilities",
       "tag": "location"
     },
     {
       "id": "verbs",
-      "label": "\u26a1 Actions & Verbs",
+      "label": "⚡ Actions & Verbs",
       "tag": "verb"
     },
     {
       "id": "medical",
-      "label": "\ud83d\udc8a Medical & Pathology",
+      "label": "💊 Medical & Pathology",
       "tag": "medical"
     },
     {
       "id": "temporal",
-      "label": "\ud83c\udf00 Temporal & Anomalies",
+      "label": "🌀 Temporal & Anomalies",
       "tag": "temporal"
     },
     {
       "id": "calendar",
-      "label": "\ud83d\udcc5 Calendar & Dates",
+      "label": "📅 Calendar & Dates",
       "tag": "calendar"
     },
     {
       "id": "nouns",
-      "label": "\ud83d\udce6 General Items",
+      "label": "📦 General Items",
       "tag": "noun"
     }
   ],
@@ -510,35 +382,372 @@
   },
   "solution": {
     "date": "14",
-    "day": "Thursday",
-    "month": "April",
+    "day": "thursday",
+    "month": "april",
     "year": "2118",
     "country1": [
-      "Russia SFSR",
-      "USSR"
+      "russia_sfsr",
+      "ussr"
     ],
     "country2": [
-      "USSR",
-      "Russia SFSR"
+      "ussr",
+      "russia_sfsr"
     ],
-    "region": "Primorsky Krai",
-    "city": "Pogranichny",
-    "p1_1": "Luka Huo",
+    "region": "primorsky_krai",
+    "city": "pogranichny",
+    "p1_1": "luka_huo",
     "months_num": "3",
-    "ripple_noun": "Time Ripple",
-    "p2": "Aleksey Volkov",
-    "rel_noun": "best friend",
-    "weapon_noun": "metal rod",
+    "ripple_noun": "time_ripple",
+    "p2": "aleksey_volkov",
+    "rel_noun": "best_friend",
+    "weapon_noun": "metal_rod",
     "action_verb": "stab",
-    "symptom_noun": "neural pathways",
-    "sick_noun": "Ripple Sickness",
-    "p1_2": "Luka Huo",
+    "symptom_noun": "neural_pathways",
+    "sick_noun": "ripple_sickness",
+    "p1_2": "luka_huo",
     "treat_noun": "medication",
     "power_noun": "premonition",
-    "dest_rovd": "ROVD",
+    "dest_rovd": "rovd",
     "dest_pirm": [
-      "PIRM",
-      "PIRMGD"
+      "pirm",
+      "pirmgd"
     ]
+  },
+  "keywords": {
+    "luka_huo": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Luka Huo"
+      }
+    },
+    "aleksey_volkov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Aleksey Volkov"
+      }
+    },
+    "stanislav_krotov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Stanislav Krotov"
+      }
+    },
+    "pogranichny": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Pogranichny"
+      }
+    },
+    "primorsky_krai": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Primorsky Krai"
+      }
+    },
+    "russia_sfsr": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Russia SFSR"
+      }
+    },
+    "ussr": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "USSR"
+      }
+    },
+    "rovd": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "ROVD"
+      }
+    },
+    "pirm": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "PIRM"
+      }
+    },
+    "pirmgd": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "PIRMGD"
+      }
+    },
+    "vladivostok": {
+      "category": [
+        "location"
+      ],
+      "variations": {
+        "base": "Vladivostok"
+      }
+    },
+    "stab": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "stab",
+        "past": "stabbed",
+        "present_singular": "stabs",
+        "present_plural": "stab",
+        "continuous": "stabbing"
+      }
+    },
+    "drink": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "drink",
+        "past": "drank",
+        "present_singular": "drinks",
+        "continuous": "drinking"
+      }
+    },
+    "free": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "free"
+      }
+    },
+    "call": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "call",
+        "past": "called",
+        "present_singular": "calls",
+        "continuous": "calling"
+      }
+    },
+    "help": {
+      "category": [
+        "verb"
+      ],
+      "variations": {
+        "base": "help",
+        "past": "helped",
+        "present_singular": "helps",
+        "continuous": "helping"
+      }
+    },
+    "medication": {
+      "category": [
+        "medical",
+        "noun"
+      ],
+      "variations": {
+        "base": "medication"
+      }
+    },
+    "neural_pathways": {
+      "category": [
+        "medical",
+        "noun"
+      ],
+      "variations": {
+        "base": "neural pathways"
+      }
+    },
+    "doctor": {
+      "category": [
+        "medical",
+        "name"
+      ],
+      "variations": {
+        "base": "doctor",
+        "plural": "doctors"
+      }
+    },
+    "ripple_sickness": {
+      "category": [
+        "medical",
+        "temporal",
+        "noun"
+      ],
+      "variations": {
+        "base": "Ripple Sickness"
+      }
+    },
+    "vision": {
+      "category": [
+        "temporal",
+        "noun"
+      ],
+      "variations": {
+        "base": "vision",
+        "plural": "visions"
+      }
+    },
+    "time_ripple": {
+      "category": [
+        "temporal",
+        "noun"
+      ],
+      "variations": {
+        "base": "Time Ripple"
+      }
+    },
+    "premonition": {
+      "category": [
+        "temporal",
+        "noun"
+      ],
+      "variations": {
+        "base": "premonition"
+      }
+    },
+    "wormhole": {
+      "category": [
+        "temporal",
+        "noun"
+      ],
+      "variations": {
+        "base": "wormhole"
+      }
+    },
+    "april": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "April"
+      }
+    },
+    "january": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "January"
+      }
+    },
+    "february": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "February"
+      }
+    },
+    "march": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "March"
+      }
+    },
+    "thursday": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "Thursday"
+      }
+    },
+    "sunday": {
+      "category": [
+        "calendar",
+        "noun"
+      ],
+      "variations": {
+        "base": "Sunday"
+      }
+    },
+    "best_friend": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "best friend"
+      }
+    },
+    "mom": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "Mom"
+      }
+    },
+    "professor": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "Professor"
+      }
+    },
+    "researcher": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "Researcher"
+      }
+    },
+    "metal_rod": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "metal rod"
+      }
+    },
+    "lance": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "lance"
+      }
+    },
+    "valenki": {
+      "category": [
+        "noun"
+      ],
+      "variations": {
+        "base": "valenki"
+      }
+    },
+    "wss": {
+      "category": [
+        "location",
+        "noun"
+      ],
+      "variations": {
+        "base": "WSS"
+      }
+    }
   }
 }
