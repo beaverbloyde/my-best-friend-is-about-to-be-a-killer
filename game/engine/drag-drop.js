@@ -33,6 +33,20 @@
                         e.preventDefault();
                     }
                 });
+
+                slot.addEventListener("dragend", () => {
+                    if (this.draggedSourceSlotId) {
+                        const sourceEl = document.querySelector(`[data-id="${this.draggedSourceSlotId}"]`);
+                        if (sourceEl && !sourceEl.classList.contains("num-slot")) {
+                            this.engine.updateSlotAppearance(sourceEl, null);
+                            delete this.engine.docketSlots[this.draggedSourceSlotId];
+                            window.sfx?.playPop?.() || window.sfx?.playSnap?.();
+                            this.engine.updateProgress();
+                            this.engine.saveProgress();
+                        }
+                        this.draggedSourceSlotId = null;
+                    }
+                });
             });
 
             allDropTargets.forEach(slot => {
@@ -211,33 +225,12 @@
 
                         if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
                             const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
-                            if (sourceEl) {
-                                const isSourceNum = sourceEl.classList.contains("num-slot");
+                            if (sourceEl && !sourceEl.classList.contains("num-slot")) {
                                 if (existingTargetWord) {
-                                    if (isSourceNum) {
-                                        const digits = existingTargetWord.replace(/[^0-9]/g, "");
-                                        if (digits.length > 0) {
-                                            const maxLen = parseInt(sourceEl.getAttribute("maxlength") || "4", 10);
-                                            sourceEl.value = digits.slice(0, maxLen);
-                                            sourceEl.classList.add("filled");
-                                            sourceEl.classList.remove("wrong", "correct");
-                                            this.engine.docketSlots[touchSourceSlotId] = sourceEl.value;
-                                        } else {
-                                            sourceEl.value = "";
-                                            sourceEl.classList.remove("filled", "wrong", "correct");
-                                            delete this.engine.docketSlots[touchSourceSlotId];
-                                        }
-                                    } else {
-                                        this.engine.docketSlots[touchSourceSlotId] = existingTargetWord;
-                                        this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
-                                    }
+                                    this.engine.docketSlots[touchSourceSlotId] = existingTargetWord;
+                                    this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
                                 } else {
-                                    if (isSourceNum) {
-                                        sourceEl.value = "";
-                                        sourceEl.classList.remove("filled", "wrong", "correct");
-                                    } else {
-                                        this.engine.updateSlotAppearance(sourceEl, null);
-                                    }
+                                    this.engine.updateSlotAppearance(sourceEl, null);
                                     delete this.engine.docketSlots[touchSourceSlotId];
                                 }
                             }
@@ -245,6 +238,15 @@
                         window.sfx?.playSnap();
                         this.engine.updateProgress();
                         this.engine.saveProgress();
+                    } else if (touchSourceSlotId) {
+                        const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
+                        if (sourceEl && !sourceEl.classList.contains("num-slot")) {
+                            this.engine.updateSlotAppearance(sourceEl, null);
+                            delete this.engine.docketSlots[touchSourceSlotId];
+                            window.sfx?.playPop?.() || window.sfx?.playSnap?.();
+                            this.engine.updateProgress();
+                            this.engine.saveProgress();
+                        }
                     }
                 }
 
