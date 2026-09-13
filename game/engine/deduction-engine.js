@@ -749,15 +749,17 @@ class DeductionEngine {
         const def = this.getKeywordDefinition(wordOrId);
         let text = "";
         if (def && def.variations) {
-            text = def.variations[variation] || def.variations.base || def.baseWord || wordOrId;
+            text = def.variations[variation] || def.variations.base || def.baseWord || def.id || wordOrId;
         } else {
             text = String(wordOrId);
         }
-        if (capitalize === true || capitalize === "true" || capitalize === "capitalize" || capitalize === "title") {
+
+        const capStr = String(capitalize || "").toLowerCase().trim();
+        if (capStr === "upper" || capStr === "cap" || capStr === "capitalize" || capStr === "title" || capitalize === true || capStr === "true") {
             text = text.charAt(0).toUpperCase() + text.slice(1);
-        } else if (capitalize === "upper" || capitalize === "all") {
+        } else if (capStr === "all_upper" || capStr === "all" || capStr === "caps" || capStr === "uppercase") {
             text = text.toUpperCase();
-        } else if (capitalize === "lower") {
+        } else if (capStr === "lower" || capStr === "all_lower" || capStr === "lowercase") {
             text = text.toLowerCase();
         }
         return text;
@@ -978,23 +980,51 @@ class DeductionEngine {
 
         // Convert [[Keyword]] syntax
         text = text.replace(/\[\[([^\]]+)\]\]/g, (match, raw) => {
-            const parts = raw.split(":");
-            const rawId = parts[0].trim();
-            const variation = parts[1] ? parts[1].trim() : "base";
+            const parts = raw.split(":").map(p => p.trim());
+            const rawId = parts[0];
+            let variation = "base";
+            let cap = "";
+
+            if (parts.length === 2) {
+                const p1 = parts[1].toLowerCase();
+                if (["upper", "lower", "all_upper", "cap", "capitalize", "title", "caps"].includes(p1)) {
+                    cap = p1;
+                } else {
+                    variation = parts[1];
+                }
+            } else if (parts.length >= 3) {
+                variation = parts[1] || "base";
+                cap = parts[2] || "";
+            }
+
             const def = this.getKeywordDefinition(rawId);
             const id = def ? def.id : rawId;
-            const display = def ? (def.variations?.[variation] || def.variations?.base || def.baseWord || rawId) : rawId;
+            const display = def ? this.getConjugatedKeyword(id, variation, cap) : rawId;
             return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
         });
 
-        // Convert [Keyword] or [keyword_id:variation] into .kw element (ignore system tags, slot:, and num:)
+        // Convert [Keyword] or [keyword_id:variation] or [keyword_id:case] or [keyword_id:variation:case] into .kw element (ignore system tags, slot:, and num:)
         text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, (match, raw) => {
-            const parts = raw.split(":");
-            const rawId = parts[0].trim();
-            const variation = parts[1] ? parts[1].trim() : "base";
+            const parts = raw.split(":").map(p => p.trim());
+            const rawId = parts[0];
+            let variation = "base";
+            let cap = "";
+
+            if (parts.length === 2) {
+                const p1 = parts[1].toLowerCase();
+                if (["upper", "lower", "all_upper", "cap", "capitalize", "title", "caps"].includes(p1)) {
+                    cap = p1;
+                } else {
+                    variation = parts[1];
+                }
+            } else if (parts.length >= 3) {
+                variation = parts[1] || "base";
+                cap = parts[2] || "";
+            }
+
             const def = this.getKeywordDefinition(rawId);
             const id = def ? def.id : rawId;
-            const display = def ? (def.variations?.[variation] || def.variations?.base || def.baseWord || rawId) : (parts[1] || rawId);
+            const display = def ? this.getConjugatedKeyword(id, variation, cap) : (parts[1] || rawId);
             return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
         });
 
@@ -1018,7 +1048,7 @@ class DeductionEngine {
             return `<input type="text" class="num-slot" data-id="${id}" maxlength="${len}" placeholder="${ph}" style="width: ${width};">`;
         });
 
-        // Parse word slots: [slot:slot_id] or [slot:slot_id:tag] or [slot:slot_id:tag:variation] or [slot:slot_id:tag:variation:capitalization]
+        // Parse word slots: [slot:slot_id] or [slot:slot_id:tag] or [slot:slot_id:tag:case] or [slot:slot_id:tag:variation] or [slot:slot_id:tag:variation:case]
         text = text.replace(/\[slot:([a-zA-Z0-9_-]+)(?::([^\]]+))?\]/g, (match, id, rest) => {
             let cleanTag = "";
             let variation = "base";
@@ -1027,8 +1057,17 @@ class DeductionEngine {
             if (rest) {
                 const parts = rest.split(":").map(p => p.trim());
                 cleanTag = parts[0] || "";
-                variation = parts[1] || "base";
-                capitalize = parts[2] || "";
+                if (parts.length === 2) {
+                    const p1 = parts[1].toLowerCase();
+                    if (["upper", "lower", "all_upper", "cap", "capitalize", "title", "caps"].includes(p1)) {
+                        capitalize = p1;
+                    } else {
+                        variation = parts[1];
+                    }
+                } else if (parts.length >= 3) {
+                    variation = parts[1] || "base";
+                    capitalize = parts[2] || "";
+                }
             }
 
             const tagAttr = cleanTag ? ` data-tag="${cleanTag}"` : "";

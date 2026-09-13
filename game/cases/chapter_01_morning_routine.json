@@ -142,7 +142,7 @@
               {
                 "app": "MESSAGING APP",
                 "time": "07:15",
-                "sender": "[mom]",
+                "sender": "[mom:upper]",
                 "text": "I had a [premonition] last night about you... I'm not spiritual but it was pretty wild (and funny!). I'll [call] you later."
               }
             ]
@@ -157,7 +157,7 @@
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
-                "text": "This is [professor] [stanislav_krotov], Director of Relativistic Field Topology at [pirm]. I’m currently not available, please leave your message.",
+                "text": "This is [professor:upper] [stanislav_krotov], Director of Relativistic Field Topology at [pirm]. I’m currently not available, please leave your message.",
                 "type": "system"
               },
               {
@@ -244,7 +244,7 @@
             "venue": "[vladivostok] Central Plenary Hall",
             "agenda": [
               "**What's Next After Time Ripple?** — Dr. [stanislav_krotov]",
-              "**Spacetime Paradigm** — Jr. [researcher] [luka_huo]",
+              "**Spacetime Paradigm** — Jr. [researcher:upper] [luka_huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
           }
@@ -697,7 +697,7 @@
         "noun"
       ],
       "variations": {
-        "base": "Mom"
+        "base": "mom"
       }
     },
     "professor": {
@@ -705,7 +705,7 @@
         "noun"
       ],
       "variations": {
-        "base": "Professor"
+        "base": "professor"
       }
     },
     "researcher": {
@@ -713,7 +713,7 @@
         "noun"
       ],
       "variations": {
-        "base": "Researcher"
+        "base": "researcher"
       }
     },
     "metal_rod": {
