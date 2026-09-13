@@ -1,8 +1,8 @@
 %%~name: Chapter 1.4: Spark into the Flame
 %%~path: e3cd568273a1d/9d0d0bb96c432
 %%~kind: NOVEL/DOCUMENT
-%%~hash: 2dade4a486a36281728534c2738125a935e692fa
-%%~date: 2026-09-06 21:22:18/2026-09-13 17:15:00
+%%~hash: a9c3809d2dc93d666e6407384ab1f5971aa41275
+%%~date: 2026-09-06 21:22:18/2026-09-13 17:35:00
 ## Chapter 1.4: Spark into the Flame
 
 Nadezhda and Luka walked side by side along the snow-covered street, white plumes of mist curling from their lips with every exhaled breath in the biting Siberian morning. Luka broke the silence first.
@@ -11,9 +11,9 @@ Nadezhda and Luka walked side by side along the snow-covered street, white plume
 
 “Oh, this?” She pulled out the flexible cylinder and handed it to him. “Take a look for yourself.”
 
-Luka unrolled the display and read through its contents. The heading read: *Vehicle Registration Dossier*, detailing exhaustive technical data about a _Russo-Balt Burevestnik-GT/DVS_[footnote:fhj2d]. Swiping across the surface brought up a full-resolution image: a muscular yellow sports car with an x-ray infographic showing its custom internal combustion engine, twin-scroll turbocharger, and bespoke mechanical linkages.
+Luka unrolled the display and read through its contents. The heading read: *Vehicle Registration Dossier*, detailing exhaustive technical data about a _Russo-Balt[footnote:fhj2d] Burevestnik-GT/DVS_. Swiping across the surface brought up a full-resolution image: a muscular yellow sports car with an x-ray infographic showing its custom internal combustion engine, twin-scroll turbocharger, and bespoke mechanical linkages.
 
-%Footnote.fhj2d: 
+%Footnote.fhj2d: _Russo-Balt_ (Руссо-Балт [ˈrusə bəlt]): One of the oldest and most prominent state automotive manufacturers in the Soviet Union. Operating out of the Baltic industrial corridor, the enterprise produces an all-around catalog of vehicles, ranging from reliable daily-commute family transports to specialized, high-performance grand tourers.
 
 Luka had never been a car guy; electric municipal trams, high-speed rail, or a traditional walk through the snow were all he had ever needed. Still, the sleek aerodynamic profile and sheer internal complexity of the vehicle were undeniably captivating. Handing the e-paper back to her, he said, “Wow… Igor really didn’t hold back, huh?”
 
@@ -23,7 +23,7 @@ The scrapyard was still a few blocks away, so Luka ventured another, slightly mo
 
 “Not nearly as expensive as this, of course… But I have a side project,” she hesitated for a moment, then decided to share anyway. “A channel on Spark[footnote:f6m5z].” 
 
-%Footnote.f6m5z: 
+%Footnote.f6m5z: _Spark_: An international, decentralized open-source crowdfunding and video-sharing platform for independent makers and hobbyist innovators. In a post-scarcity society where basic necessities are universally guaranteed, citizens voluntarily pool surplus energy credits to fund eccentric, artistic, or unconventional passion projects that fall outside formal state-planned research grants.
 
 Luka’s eyes lit up. He hadn’t expected an officer of the law to be an active innovator and content creator on Spark. “Oh! That’s great, actually—Alex is on it too. How many followers do you have?” he asked eagerly, a genuine spark of connection forming between them.
 
@@ -31,17 +31,17 @@ Luka’s eyes lit up. He hadn’t expected an officer of the law to be an active
 
 “Let’s exchange channels. I’ll send you Alex’s too,” he offered, pulling out his phone, opening the Spark app, and navigating to Alex’s profile via Touchy[footnote:f6fc1].
 
-%Footnote.f6fc1: Touchy: a feature that allows encrypted data transfer between devices in close proximity (maximum 10 cm). Mostly used to instantly share or exchange app-specific contacts.
+%Footnote.f6fc1: _Touchy_: A short-range, encrypted peer-to-peer data exchange protocol built into personal electronic devices. Requiring physical proximity within 10 centimeters, users initiate an instant transfer by lightly tapping their devices together—commonly used to exchange contact cards, application profiles, and creator handles without routing through public networks.
 
 Nadezhda brought out her own phone, opened her creator page, and tapped the edge of her casing lightly against Luka’s. Within a second, their respective channels popped up on each other's screens. 
 
 “Elektrifinadtsiya…[footnote:f8ls9]” Luka tried sounding out the syllables slowly, wrestling with the unfamiliar rhythm until the linguistic pun clicked in his head. He chuckled warmly. “Ah, clever wordplay! So you do electronic tinkering?” he asked, reading her channel tagline: *“Elektrifinadtsiya, the concept of pushing normal electronics to their absolute limit just for the bit.”*
 
-%Footnote.f8ls9: Elektrifinadtsiya: a wordplay on Elektrifikatsiya which means electrification. Her channel name would roughly be localized as, “Electrifi-Nadya-tion.” Pronounced almost like “Electrifination,” with “na” sounding like “nya.”
+%Footnote.f8ls9: _Elektrifinadtsiya_ (Электрифинадция [ɪlʲɪktrʲɪfʲɪˈnatsɨjə]): A portmanteau blending _Elektrifikatsiya_ (Электрификация: electrification) with _Nadya_. Localized in English as “Electrifi-Nadya-tion” (pronounced like “Electrifination,” with “na” sounding like “Nadya / nya”), the title playfully subverts the historic state industrialization slogan to describe her personal maker philosophy of pushing ordinary household appliances to their   absolute limits.
 
 “Uh-huh. Not a new concept, to be frank, but it’s a lot of fun.” But as she glanced down at her own screen, her eyes went wide at the sheer follower count on Alex’s profile. “Whoa! 100k?! ‘Ob Dynamo[footnote:fhmlh]’?! Wait, I’ve had his videos recommended to me before! I never checked them out because the heavy-industrial stuff felt a bit out of my lane, but wow…” She scrolled down to skim the video grid, then suddenly paused. “Wait… is this you?” 
 
-%Footnote.fhmlh: Ob Dynamo: a name that Alex came up with on a whim while looking out the window at the Ob River in Novosibirsk, where he used to study before being transferred to PIRM.
+%Footnote.fhmlh: _Ob Dynamo_ (Обь-Динамо [ˈopʲ dʲɪˈnamə]): The popular hardware engineering channel run by Aleksey Volkov. The name was coined on a whim during his university days in Novosibirsk, inspired by a glance out his student dormitory window at the frozen Ob River while repairing a salvaged electrical generator. The channel evolved from student garage experiments into a major open-source hub for heavy-duty kinetic hardware, high-voltage physics, and magnetic coil engineering.
 
 Luka glanced at her phone. “Yeah. I feature in his videos sometimes. Usually, I’m his cameraman and chalkboard calculator,” he replied. A quiet, bittersweet pang tightened in his chest. Ever since he developed the visions three months ago, an unspoken wall of dread had lingered between him and Alex. Until this vision matter was resolved, their once-effortless friendship remained stuck in an anxious, stagnant limbo.
 
@@ -77,7 +77,7 @@ Nadya nodded with a grin. Ducking under the striped tape, she crossed into the p
 
 Luka glanced around. Where he was currently standing was the entrance; the weathered, rusty metal sign above the gate read: _Vtorchermet_[footnote:fdw5v]. Beyond that gate lay a sprawling open yard with towering heaps of scrap metal gathered close against the precast concrete walls—primarily scrap from factories, train tracks from the freight line, compacted car frames, and a few vacuum flanges he even recognized from PIRM. The wall opposite the entrance housed a two-story brick office building and a snow-covered truck garage.
 
-%Footnote.fdw5v: 
+%Footnote.fdw5v: _Vtorchermet_ (Вторчермет [ftərtɕɪrˈmʲet]): A Soviet industrial portmanteau for _Vtorichnye Chyornye Metally_ (Вторичные чёрные металлы [vtɐˈrʲitɕnɨjə ˈtɕɵrnɨjə mʲɪˈtalɨ]: Secondary Ferrous Metals). Operating regional processing depots across the union, the state enterprise is tasked with the collection, sorting, and recycling of heavy scrap iron, steel railway tracks, factory infrastructure, and decommissioned vehicle frames.
 
 The star of the show, the sports car, was neatly positioned in the very middle of the yard, away from other piles of metal. It was unclear whether this was a way to intimidate the public or if the perpetrator simply didn’t want to also be labeled an arsonist.
 
@@ -93,15 +93,15 @@ He turned around.
 
 A woman stood in front of him, speaking in Dongbei[footnote:fdzq1] Chinese dialect. She wore round prescription glasses and a stylish winter coat with fur around the collar; on its left chest was the printed symbol of the _Heilongjiang People’s Daily_[footnote:fmzbs]. 
 
-%Footnote.fdzq1: 
+%Footnote.f9vcz: _Little_ (小 / _Xiǎo_ [ɕjɑʊ̯]): In Chinese naming culture, the prefix _Xiǎo_ (Little) is placed before a surname or given name as a warm, affectionate diminutive. Commonly used among close friends, neighbors, and senior colleagues when addressing someone younger, it denotes fond familiarity rather than physical stature.
 
-%Footnote.f9vcz: In Chinese, “Little” prefix means bla bla bla
+%Footnote.fdzq1: _Dongbei_ (东北 / _Dōngběi_ [tʊ́ŋ.pèi]): The geographical and cultural region of Northeastern China (encompassing Heilongjiang, Jilin, and Liaoning provinces), directly bordering the Russian Far East. Known for its harsh sub-zero winters, heavy industrial heritage, and rich Sino-Russian border history, the regional Dongbei dialect is famous for its lively cadence, expressive humor, and warm, direct conversational style.
 
-%Footnote.fmzbs: 
+%Footnote.fmzbs: _Heilongjiang People’s Daily_ (黑龙江日报 / _Hēilóngjiāng Rìbào_ [xeɪ.lʊ̌ŋ.tɕjɑ́ŋ ɻi.pɑ̂ʊ]): The official state newspaper of Heilongjiang Province, headquartered in Harbin. In the integrated Sino-Soviet Far Eastern corridor, the publication maintains active regional bureaus in border towns like Pogranichny, covering cross-border logistics, civic news, and scientific advancements from institutions like PIRM.
 
 “Ah, Sis[footnote:f7f8c], I didn’t expect to see you here either! Not because you’re not a reporter, but because you hadn’t crossed my mind at all,” Luka sarcastically joked back in Dongbei. Aside from Alex, Lin Chen was another close friend of his. They had first met at a science symposium at PIRM about a month after Luka moved here. She had been the representative reporter for the People’s Daily in Pogranichny for almost six years.
 
-%Footnote.f7f8c: In Chinese, “Sis” prefix means bla bla bla
+%Footnote.f7f8c: _Sis_ (姐 / _Jiě_ [tɕjɛ̀]): In Chinese social culture, addressing an older female friend, colleague, or mentor as _Jiě_ (Elder Sister / Sis) is a common honorific that conveys warm affection, mutual respect, and close camaraderie without the stiffness of formal workplace titles.
 
 “Ouch… What did I do to be forgotten by Little Huo? Maybe I'll stop reporting on your work next time~” she jested back, knowing he didn’t mean it.
 
@@ -109,7 +109,7 @@ A woman stood in front of him, speaking in Dongbei[footnote:fdzq1] Chinese diale
 
 “Oh, no, no, I didn’t forget. It’s just that over there is outside my coverage. Unlike you, I always keep you in mind, I’ll have you know,” she raised an eyebrow, a quick comeback to his earlier joke. “Also, if I’m not mistaken, there was a middle-aged guy representing the People’s Daily there, right? He graduated from Tsinghua[footnote:fdktc] too—no joke with that one.”
 
-%Footnote.fdktc: 
+%Footnote.fdktc: _Tsinghua University_ (清华大学 / _Qīnghuá Dàxué_ [tɕʰiŋ.xwa ta.ɕɥe]): Located in Beijing, Tsinghua is widely regarded as one of the most prestigious academic institutions in the world, globally renowned for its elite engineering, advanced physics, and rigorous scientific research standards.
 
 Looking back, there certainly was a serious-looking reporter who had asked him several difficult questions; that must have been him. Compared to Lin, his questions were much more technical, while hers were more casual and approachable.
 

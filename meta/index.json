@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-13 15:57:36"
+    "timestamp": "2026-09-13 17:33:54"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -47,10 +47,10 @@
     },
     "9d0d0bb96c432": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [11467, 2009, 57]}
+        "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12490, 2125, 58]}
       },
       "document": {
-        "footnotes": ["fhmlh", "f8ls9", "f9vcz", "f6fc1", "f7f8c"]
+        "footnotes": ["fhmlh", "fhj2d", "fmzbs", "fdw5v", "f8ls9", "f6m5z", "f9vcz", "f6fc1", "fdktc", "fdzq1", "f7f8c"]
       }
     }
   }
