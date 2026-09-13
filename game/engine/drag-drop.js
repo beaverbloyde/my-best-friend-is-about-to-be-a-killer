@@ -14,19 +14,16 @@
         }
 
         initDesktopDragAndDrop() {
-            const slots = document.querySelectorAll(".slot, .num-slot");
-            slots.forEach(slot => {
+            const wordSlots = document.querySelectorAll(".slot");
+            const allDropTargets = document.querySelectorAll(".slot, .num-slot");
+
+            wordSlots.forEach(slot => {
                 slot.setAttribute("draggable", "true");
 
                 slot.addEventListener("dragstart", (e) => {
                     const slotId = slot.getAttribute("data-id");
-                    let currentWord = "";
-                    if (slot.classList.contains("num-slot")) {
-                        currentWord = slot.value.trim();
-                    } else {
-                        currentWord = slot.innerText.trim();
-                        if (currentWord === "[ ? ]") currentWord = "";
-                    }
+                    let currentWord = slot.innerText.trim();
+                    if (currentWord === "[ ? ]") currentWord = "";
 
                     if (currentWord) {
                         this.draggedSourceSlotId = slotId;
@@ -36,6 +33,13 @@
                         e.preventDefault();
                     }
                 });
+            });
+
+            allDropTargets.forEach(slot => {
+                if (slot.classList.contains("num-slot")) {
+                    slot.setAttribute("draggable", "false");
+                    slot.addEventListener("dragstart", (e) => e.preventDefault());
+                }
 
                 slot.addEventListener("dragover", (e) => {
                     e.preventDefault();
@@ -80,32 +84,12 @@
                         this.engine.updateSlotAppearance(slot, incomingWord);
                     }
 
-                    if (sourceEl && sourceSlotId !== targetSlotId) {
+                    if (sourceEl && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
                         if (existingTargetWord) {
-                            if (sourceEl.classList.contains("num-slot")) {
-                                const digits = existingTargetWord.replace(/[^0-9]/g, "");
-                                if (digits.length > 0) {
-                                    const maxLen = parseInt(sourceEl.getAttribute("maxlength") || "4", 10);
-                                    sourceEl.value = digits.slice(0, maxLen);
-                                    sourceEl.classList.add("filled");
-                                    sourceEl.classList.remove("wrong", "correct");
-                                    this.engine.docketSlots[sourceSlotId] = sourceEl.value;
-                                } else {
-                                    sourceEl.value = "";
-                                    sourceEl.classList.remove("filled", "wrong", "correct");
-                                    delete this.engine.docketSlots[sourceSlotId];
-                                }
-                            } else {
-                                this.engine.docketSlots[sourceSlotId] = existingTargetWord;
-                                this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
-                            }
+                            this.engine.docketSlots[sourceSlotId] = existingTargetWord;
+                            this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
                         } else {
-                            if (sourceEl.classList.contains("num-slot")) {
-                                sourceEl.value = "";
-                                sourceEl.classList.remove("filled", "wrong", "correct");
-                            } else {
-                                this.engine.updateSlotAppearance(sourceEl, null);
-                            }
+                            this.engine.updateSlotAppearance(sourceEl, null);
                             delete this.engine.docketSlots[sourceSlotId];
                         }
                     }
@@ -129,8 +113,8 @@
 
             document.addEventListener("touchstart", (e) => {
                 const touch = e.touches[0];
-                const target = e.target.closest(".kw, .tray-word, .slot, .num-slot");
-                if (!target) return;
+                const target = e.target.closest(".kw, .tray-word, .slot");
+                if (!target || target.classList.contains("num-slot")) return;
 
                 let word = "";
                 let sourceSlotId = null;
@@ -139,9 +123,6 @@
                     word = target.innerText.trim();
                     sourceSlotId = target.getAttribute("data-id");
                     if (word === "[ ? ]") word = "";
-                } else if (target.classList.contains("num-slot")) {
-                    word = target.value.trim();
-                    sourceSlotId = target.getAttribute("data-id");
                 } else {
                     word = target.getAttribute("data-word") || target.innerText.trim();
                 }
