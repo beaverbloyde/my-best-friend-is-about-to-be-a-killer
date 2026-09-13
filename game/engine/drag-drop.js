@@ -127,14 +127,18 @@
                             this.engine.docketSlots[targetSlotId] = slot.value;
                         }
                     } else {
-                        this.engine.docketSlots[targetSlotId] = incomingWord;
-                        this.engine.updateSlotAppearance(slot, incomingWord);
+                        const def = this.engine.getKeywordDefinition(incomingWord);
+                        const canonVal = def ? def.id : incomingWord;
+                        this.engine.docketSlots[targetSlotId] = canonVal;
+                        this.engine.updateSlotAppearance(slot, canonVal);
                     }
 
                     if (sourceEl && sourceSlotId && sourceSlotId !== targetSlotId && !sourceEl.classList.contains("num-slot")) {
                         if (existingTargetWord) {
-                            this.engine.docketSlots[sourceSlotId] = existingTargetWord;
-                            this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
+                            const exDef = this.engine.getKeywordDefinition(existingTargetWord);
+                            const exCanonVal = exDef ? exDef.id : existingTargetWord;
+                            this.engine.docketSlots[sourceSlotId] = exCanonVal;
+                            this.engine.updateSlotAppearance(sourceEl, exCanonVal);
                         } else {
                             delete this.engine.docketSlots[sourceSlotId];
                             this.engine.updateSlotAppearance(sourceEl, null);
@@ -280,16 +284,20 @@
                                 this.engine.docketSlots[targetSlotId] = currentHoveredSlot.value;
                             }
                         } else {
-                            this.engine.docketSlots[targetSlotId] = touchDraggedWord;
-                            this.engine.updateSlotAppearance(currentHoveredSlot, touchDraggedWord);
+                            const def = this.engine.getKeywordDefinition(touchDraggedWord);
+                            const canonVal = def ? def.id : touchDraggedWord;
+                            this.engine.docketSlots[targetSlotId] = canonVal;
+                            this.engine.updateSlotAppearance(currentHoveredSlot, canonVal);
                         }
 
                         if (touchSourceSlotId && touchSourceSlotId !== targetSlotId) {
                             const sourceEl = document.querySelector(`[data-id="${touchSourceSlotId}"]`);
                             if (sourceEl && !sourceEl.classList.contains("num-slot")) {
                                 if (existingTargetWord) {
-                                    this.engine.docketSlots[touchSourceSlotId] = existingTargetWord;
-                                    this.engine.updateSlotAppearance(sourceEl, existingTargetWord);
+                                    const exDef = this.engine.getKeywordDefinition(existingTargetWord);
+                                    const exCanonVal = exDef ? exDef.id : existingTargetWord;
+                                    this.engine.docketSlots[touchSourceSlotId] = exCanonVal;
+                                    this.engine.updateSlotAppearance(sourceEl, exCanonVal);
                                 } else {
                                     delete this.engine.docketSlots[touchSourceSlotId];
                                     this.engine.updateSlotAppearance(sourceEl, null);

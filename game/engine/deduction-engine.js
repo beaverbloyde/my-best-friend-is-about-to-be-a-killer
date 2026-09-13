@@ -702,10 +702,12 @@ class DeductionEngine {
             };
 
             this.keywordRegistry.set(normId, record);
+            this.keywordRegistry.set(String(baseWord).toLowerCase().trim(), record);
             this.keywordTagIndex.set(normId, categories);
             this.keywordTagIndex.set(String(baseWord).toLowerCase().trim(), categories);
             for (const vWord of Object.values(variations)) {
                 if (typeof vWord === "string") {
+                    this.keywordRegistry.set(vWord.toLowerCase().trim(), record);
                     this.keywordTagIndex.set(vWord.toLowerCase().trim(), categories);
                 }
             }
@@ -921,11 +923,12 @@ class DeductionEngine {
 
         if (val && val !== "[ ? ]") {
             const keywordDef = this.getKeywordDefinition(val);
-            const displayText = this.getConjugatedKeyword(val, variation, capitalize);
+            const canonId = keywordDef ? keywordDef.id : val;
+            const displayText = this.getConjugatedKeyword(canonId, variation, capitalize);
             slotElement.innerText = displayText;
             slotElement.classList.add("filled");
             slotElement.classList.remove("wrong", "correct");
-            const canonicalTags = keywordDef?.categories || this.getKeywordTags(val);
+            const canonicalTags = keywordDef?.categories || this.getKeywordTags(canonId);
             this.applyCategoryStyleToElement(slotElement, canonicalTags, { isFilled: true, isSlot: true });
         } else {
             slotElement.innerText = "[ ? ]";
@@ -1590,13 +1593,14 @@ class DeductionEngine {
     }
 
     collectWord(el, wordId) {
-        let isNew = !this.collectedWords.has(wordId);
+        const def = this.getKeywordDefinition(wordId);
+        const canonId = def ? def.id : wordId;
+        let isNew = !this.collectedWords.has(canonId);
         if (isNew) {
-            this.collectedWords.add(wordId);
-            const def = this.getKeywordDefinition(wordId);
-            const display = def?.variations?.base || def?.baseWord || wordId;
+            this.collectedWords.add(canonId);
+            const display = def?.variations?.base || def?.baseWord || canonId;
             this.showToast(`[+] Added Keyword: "${display}"`);
-            this.checkLoreUnlocks(wordId);
+            this.checkLoreUnlocks(canonId);
             this.updateKeywordCounter();
             this.refreshKeywordHighlights();
             this.renderTray();
@@ -1607,9 +1611,10 @@ class DeductionEngine {
     refreshKeywordHighlights() {
         document.querySelectorAll(".kw").forEach(el => {
             const wordId = el.getAttribute("data-word") || el.getAttribute("data-id") || el.innerText.trim();
-            const isCollected = this.collectedWords.has(wordId);
             const def = this.getKeywordDefinition(wordId);
-            const canonicalTags = def?.categories || this.getKeywordTags(wordId);
+            const canonId = def ? def.id : wordId;
+            const isCollected = this.collectedWords.has(canonId) || this.collectedWords.has(wordId);
+            const canonicalTags = def?.categories || this.getKeywordTags(canonId);
             this.applyCategoryStyleToElement(el, canonicalTags, { isCollected });
         });
     }
@@ -2534,7 +2539,10 @@ class DeductionEngine {
             }
 
             if (Array.isArray(data.collectedWords)) {
-                data.collectedWords.forEach(w => this.collectedWords.add(w));
+                data.collectedWords.forEach(w => {
+                    const def = this.getKeywordDefinition(w);
+                    this.collectedWords.add(def ? def.id : w);
+                });
             }
             if (Array.isArray(data.unlockedLore) && this.currentCase?.lore) {
                 data.unlockedLore.forEach(l => {
@@ -2544,16 +2552,18 @@ class DeductionEngine {
                 });
             }
             if (data.docketSlots && typeof data.docketSlots === "object") {
-                this.docketSlots = data.docketSlots;
-                for (let [slotId, val] of Object.entries(this.docketSlots)) {
+                this.docketSlots = {};
+                for (let [slotId, val] of Object.entries(data.docketSlots)) {
                     const el = document.querySelector(`[data-id="${slotId}"]`);
-                    if (el) {
-                        if (el.classList.contains("num-slot")) {
-                            el.value = val;
-                            el.classList.add("filled");
-                        } else {
-                            this.updateSlotAppearance(el, val);
-                        }
+                    if (el && el.classList.contains("num-slot")) {
+                        this.docketSlots[slotId] = val;
+                        el.value = val;
+                        el.classList.add("filled");
+                    } else {
+                        const def = this.getKeywordDefinition(val);
+                        const canonVal = def ? def.id : val;
+                        this.docketSlots[slotId] = canonVal;
+                        if (el) this.updateSlotAppearance(el, canonVal);
                     }
                 }
             }
