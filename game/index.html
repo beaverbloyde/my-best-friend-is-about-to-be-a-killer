@@ -472,7 +472,13 @@
     <script>
         function switchSidebarTab(tab) {
             document.getElementById('tab-words-btn').classList.toggle('active', tab === 'words');
-            document.getElementById('tab-lore-btn').classList.toggle('active', tab === 'lore');
+            const loreBtn = document.getElementById('tab-lore-btn');
+            if (loreBtn) {
+                loreBtn.classList.toggle('active', tab === 'lore');
+                if (tab === 'lore') {
+                    loreBtn.classList.remove('tab-unread-pulse');
+                }
+            }
             document.getElementById('sidebar-words').style.display = tab === 'words' ? 'flex' : 'none';
             document.getElementById('sidebar-lore').style.display = tab === 'lore' ? 'flex' : 'none';
         }

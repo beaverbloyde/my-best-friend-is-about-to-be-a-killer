@@ -1086,12 +1086,52 @@ header {
     gap: 4px;
     border-left: 3px solid var(--accent);
     cursor: pointer;
-    transition: all 0.1s;
+    transition: all 0.15s ease;
 }
 
 .lore-card:hover {
     border-color: var(--accent);
     background: var(--bg-secondary);
+}
+
+.lore-card.just-unlocked {
+    border: 1px solid var(--accent) !important;
+    border-left: 4px solid var(--accent) !important;
+    background: linear-gradient(90deg, rgba(217, 119, 6, 0.16), var(--bg-tertiary)) !important;
+    box-shadow: 0 0 14px var(--accent-glow), inset 0 0 8px rgba(217, 119, 6, 0.1);
+    animation: loreCardGlow 2s infinite ease-in-out;
+}
+
+.lore-card.just-unlocked .lore-tag {
+    color: var(--accent) !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.lore-card.just-unlocked .lore-status {
+    color: #ffffff !important;
+    background: var(--accent);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    width: fit-content;
+    animation: loreTagShimmer 1.5s infinite alternate;
+}
+
+@keyframes loreCardGlow {
+    0%, 100% {
+        box-shadow: 0 0 6px var(--accent-glow);
+    }
+    50% {
+        box-shadow: 0 0 16px var(--accent-glow), 0 0 24px rgba(255, 255, 255, 0.15);
+    }
+}
+
+@keyframes loreTagShimmer {
+    from { opacity: 0.85; filter: brightness(1); }
+    to { opacity: 1; filter: brightness(1.25); }
 }
 
 .lore-card.locked {
@@ -1122,6 +1162,39 @@ header {
     font-size: 9px;
     color: var(--accent);
     text-transform: uppercase;
+}
+
+/* Sidebar Lore Tab Unread Pulse Animation */
+#tab-lore-btn.tab-unread-pulse {
+    position: relative;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    font-weight: 700;
+    animation: tabUnlockPulse 1.4s infinite ease-in-out;
+}
+
+#tab-lore-btn.tab-unread-pulse::after {
+    content: " ✦";
+    color: var(--accent);
+    font-size: 11px;
+    display: inline-block;
+    animation: blinkStar 0.8s infinite alternate;
+}
+
+@keyframes tabUnlockPulse {
+    0%, 100% {
+        box-shadow: 0 0 4px var(--accent-glow);
+        border-color: var(--accent);
+    }
+    50% {
+        box-shadow: 0 0 14px var(--accent-glow), 0 0 20px var(--accent);
+        border-color: #ffffff;
+    }
+}
+
+@keyframes blinkStar {
+    from { opacity: 0.4; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1.2); }
 }
 
 /* Draggable & Resizable Lore Document Pop-up Window */
@@ -1877,6 +1950,24 @@ header {
 }
 
 #toast.show { display: block; animation: fadeIn 0.2s; }
+
+#toast.toast-lore-unlock {
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-tertiary)) !important;
+    border: 1px solid var(--accent) !important;
+    border-left: 4px solid var(--accent) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.95), 0 0 16px var(--accent-glow) !important;
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 10px 20px;
+    border-radius: 3px;
+    animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes toastSlideUp {
+    from { transform: translate(-50%, 20px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
 
 /* Slot Autocomplete Dropdown Popover */
 #slot-picker-popover {

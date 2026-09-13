@@ -49,6 +49,7 @@ class DeductionEngine {
         this.currentCase = null;
         this.collectedWords = new Set();
         this.unlockedLore = new Set();
+        this.newlyUnlockedLore = new Set();
         this.selectedWord = null;
         this.docketSlots = {};
         this.draggedSourceSlotId = null;
@@ -1613,14 +1614,28 @@ class DeductionEngine {
 
     checkLoreUnlocks(newWord) {
         if (!this.currentCase?.lore) return;
+        let unlockedTitles = [];
         for (let [key, lore] of Object.entries(this.currentCase.lore)) {
             const reqWords = lore.requiredWords || [key];
-            if (reqWords.includes(newWord) && !this.unlockedLore.has(lore.id || key)) {
-                this.unlockedLore.add(lore.id || key);
-                this.showToast(`[☭ LOGOS-3] New Archive Dossier Decrypted: ${lore.title}`);
-                this.renderLoreList();
-                this.saveProgress();
+            const loreId = lore.id || key;
+            if (reqWords.includes(newWord) && !this.unlockedLore.has(loreId)) {
+                this.unlockedLore.add(loreId);
+                if (!this.newlyUnlockedLore) this.newlyUnlockedLore = new Set();
+                this.newlyUnlockedLore.add(loreId);
+                unlockedTitles.push(lore.title);
             }
+        }
+        if (unlockedTitles.length > 0) {
+            window.sfx?.playLoreUnlock?.() || window.sfx?.playUnlock?.();
+            const loreTabBtn = document.getElementById("tab-lore-btn");
+            if (loreTabBtn) {
+                loreTabBtn.classList.add("tab-unread-pulse");
+            }
+            unlockedTitles.forEach(title => {
+                this.showToast(`🔓 [LOGOS-3 ARCHIVE DECRYPTED] ${title}`, "lore-unlock");
+            });
+            this.renderLoreList();
+            this.saveProgress();
         }
     }
 
@@ -1645,12 +1660,13 @@ class DeductionEngine {
         for (let [key, lore] of Object.entries(loreObj)) {
             const loreId = lore.id || key;
             const isUnlocked = this.unlockedLore.has(loreId);
+            const isNew = this.newlyUnlockedLore && this.newlyUnlockedLore.has(loreId);
             if (isUnlocked) {
                 container.innerHTML += `
-                    <div class="lore-card" onclick="window.gameEngine.openLoreModal('${loreId}')">
-                        <div class="lore-tag">${lore.tag || "ARCHIVE"}</div>
+                    <div class="lore-card ${isNew ? "just-unlocked" : ""}" onclick="window.gameEngine.openLoreModal('${loreId}')">
+                        <div class="lore-tag">${isNew ? "🔓 DECRYPTED DOSSIER" : (lore.tag || "ARCHIVE")}</div>
                         <div class="lore-title">📄 ${lore.title}</div>
-                        <div class="lore-status">▶ Click to Open File</div>
+                        <div class="lore-status">${isNew ? "✦ UNREAD — CLICK TO VIEW" : "▶ Click to Open File"}</div>
                     </div>
                 `;
             } else {
@@ -1711,6 +1727,15 @@ class DeductionEngine {
     }
 
     openLoreModal(loreId) {
+        if (this.newlyUnlockedLore?.has(loreId)) {
+            this.newlyUnlockedLore.delete(loreId);
+            if (this.newlyUnlockedLore.size === 0) {
+                const loreTabBtn = document.getElementById("tab-lore-btn");
+                if (loreTabBtn) loreTabBtn.classList.remove("tab-unread-pulse");
+            }
+            this.renderLoreList();
+        }
+
         if (!this.currentCase?.lore) return;
         let foundLore = null;
         for (let k in this.currentCase.lore) {
@@ -2285,13 +2310,16 @@ class DeductionEngine {
         if (this.dragDrop) this.dragDrop.initTouchDragAndDrop();
     }
 
-    showToast(msg) {
+    showToast(msg, type = "") {
         const t = document.getElementById("toast");
         if (!t) return;
         t.innerText = msg;
-        t.classList.add("show");
+        t.className = "show";
+        if (type) t.classList.add(`toast-${type}`);
         clearTimeout(this._toastTimeout);
-        this._toastTimeout = setTimeout(() => t.classList.remove("show"), 3000);
+        this._toastTimeout = setTimeout(() => {
+            t.className = "";
+        }, type === "lore-unlock" ? 4500 : 3000);
     }
 
     // --- LocalStorage Persistence Engine ---

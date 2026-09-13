@@ -362,6 +362,85 @@ class SFXEngine {
         });
     }
 
+    // 10. Classified Archive Decryption / Lore Codex Unlock SFX (cryptographic chirps + harmonic arpeggio)
+    playLoreUnlock() {
+        if (!this.enabled || this.volume <= 0) return;
+        const ctx = this.ensureContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(this.volume * 0.5, now);
+        masterGain.connect(ctx.destination);
+
+        // Phase 1: High-speed cryptographic teletype chirp / frequency chatter
+        const cipherNotes = [1200, 1600, 1400, 2100, 1850, 2400];
+        cipherNotes.forEach((freq, i) => {
+            const tStart = now + i * 0.022;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, tStart);
+            osc.frequency.exponentialRampToValueAtTime(freq * 0.7, tStart + 0.02);
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(freq, tStart);
+            filter.Q.setValueAtTime(4.0, tStart);
+
+            gain.gain.setValueAtTime(0.4, tStart);
+            gain.gain.exponentialRampToValueAtTime(0.001, tStart + 0.02);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(tStart);
+            osc.stop(tStart + 0.022);
+        });
+
+        // Phase 2: Rich resonant Soviet intelligence clearance chime
+        const bells = [
+            { freq: 523.25, start: 0.12, dur: 0.4, gain: 0.6 },  // C5
+            { freq: 659.25, start: 0.20, dur: 0.45, gain: 0.65 }, // E5
+            { freq: 783.99, start: 0.28, dur: 0.55, gain: 0.7 },  // G5
+            { freq: 1046.50, start: 0.36, dur: 0.7, gain: 0.8 },  // C6
+            { freq: 1318.51, start: 0.46, dur: 0.9, gain: 0.85 }  // E6
+        ];
+
+        bells.forEach(b => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(b.freq, now + b.start);
+
+            gain.gain.setValueAtTime(b.gain, now + b.start);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + b.start + b.dur);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(now + b.start);
+            osc.stop(now + b.start + b.dur);
+        });
+
+        // Deep sub-bass resonance anchor
+        const subOsc = ctx.createOscillator();
+        const subGain = ctx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(130, now + 0.12);
+        subOsc.frequency.exponentialRampToValueAtTime(55, now + 0.7);
+
+        subGain.gain.setValueAtTime(0.5, now + 0.12);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+        subOsc.connect(subGain);
+        subGain.connect(masterGain);
+
+        subOsc.start(now + 0.12);
+        subOsc.stop(now + 0.75);
+    }
+
     // 10. Negative Verification / Rejection Alert (low muffled warning buzz)
     playError() {
         if (!this.enabled || this.volume <= 0) return;
