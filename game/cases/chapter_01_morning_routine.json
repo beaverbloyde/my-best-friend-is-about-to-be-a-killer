@@ -162,7 +162,7 @@
               },
               {
                 "speaker": "Young Man",
-                "text": "Professor, I need to [call] in sick today. My… um… head got a bit dizzy. Probably from the [ripple_sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
+                "text": "[professor:upper], I need to [call] in sick today. My… um… head got a bit dizzy. Probably from the [ripple_sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
                 "type": "user"
               }
             ]
@@ -186,7 +186,7 @@
           "title": "Name plate",
           "badge": {
             "avatar": "👤",
-            "dept": "FEBRAS PIRM Institute",
+            "dept": "FEBRAS [pirm] Institute",
             "name": "[luka_huo]",
             "role": "Theoretical Physics Department"
           }
@@ -230,7 +230,7 @@
         {
           "type": "Signpost",
           "title": "Street sign",
-          "text": "A street sign pointing left: Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics ([pirmgd])."
+          "text": "A street sign pointing left: [pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics ([pirmgd])."
         },
         {
           "type": "Public Notice",
@@ -243,7 +243,7 @@
             "date": "[sunday] 10 [april] (Jubilee Plenary)",
             "venue": "[vladivostok] Central Plenary Hall",
             "agenda": [
-              "**What's Next After Time Ripple?** — Dr. [stanislav_krotov]",
+              "**What's Next After [time_ripple]?** — Dr. [stanislav_krotov]",
               "**Spacetime Paradigm** — Jr. [researcher:upper] [luka_huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
@@ -259,13 +259,13 @@
       "title": "Pogranichny Institute of Relativistic Mechanics (PIRMGD)",
       "fullName": "Пограничный институт релятивистской механики и геокосмической динамики (Pogranichny Institute of Relativistic Mechanics and Geo-Cosmic Dynamics)",
       "cyrillic": "Пограничный институт релятивистской механики [pəgrɐˈnʲit͡ɕnɨj ɪnstʲɪˈtut rʲɪlʲɪtʲɪˈvʲisːkəj mʲɪˈxanʲɪkʲɪ] (ПИРМ [pʲiːrm])",
-      "registration": "Far East Branch, USSR Academy of Sciences (FEBRAS)",
+      "registration": "Far East Branch, [ussr] Academy of Sciences (FEBRAS)",
       "jurisdiction": "[pogranichny] Special Scientific District, [primorsky_krai], [russia_sfsr], [ussr]",
       "requiredWords": [
         "pirm",
         "pirmgd"
       ],
-      "body": "The **[pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [pirm] or [pirmgd]) is a flagship joint Sino-Soviet research institution located on the frontier border in [pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of Professor [stanislav_krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
+      "body": "The **[pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [pirm] or [pirmgd]) is a flagship joint Sino-Soviet research institution located on the frontier border in [pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of [professor:upper] [stanislav_krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
     },
     "Ripple Sickness": {
       "id": "lore-ripple",
@@ -289,7 +289,7 @@
       "requiredWords": [
         "rovd"
       ],
-      "body": "A **District Department of Internal Affairs** ([rovd]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs (MVD).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the Soviet Union, the ROVD oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
+      "body": "A **District Department of Internal Affairs** ([rovd]) is the standard territorial police precinct and municipal investigative headquarters operating across districts under the Ministry of Internal Affairs (MVD).\n\n**Role & Organization:**\nEstablished across urban and rural administrative districts throughout the [ussr], the [rovd] oversees public safety, municipal order, and criminal investigations. Each precinct houses uniformed *Militsiya* patrol units, criminal detectives, and forensic specialists responsible for local law enforcement.\n\nPrecincts operate continuous 24-hour duty desks to manage citizen reports, emergency dispatches, and public inquiries."
     },
     "WSS": {
       "id": "lore-wss",
