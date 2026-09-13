@@ -9,8 +9,32 @@
         constructor(engine) {
             this.engine = engine;
             this.draggedSourceSlotId = null;
+            this.initGlobalDesktopDrop();
             this.initDesktopDragAndDrop();
             this.initTouchDragAndDrop();
+        }
+
+        initGlobalDesktopDrop() {
+            document.addEventListener("dragover", (e) => {
+                if (this.draggedSourceSlotId) {
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener("drop", (e) => {
+                if (this.draggedSourceSlotId && !e.target.closest(".slot, .num-slot")) {
+                    e.preventDefault();
+                    const sourceEl = document.querySelector(`[data-id="${this.draggedSourceSlotId}"]`);
+                    if (sourceEl && !sourceEl.classList.contains("num-slot")) {
+                        this.engine.updateSlotAppearance(sourceEl, null);
+                        delete this.engine.docketSlots[this.draggedSourceSlotId];
+                        window.sfx?.playPop?.() || window.sfx?.playSnap?.();
+                        this.engine.updateProgress();
+                        this.engine.saveProgress();
+                    }
+                    this.draggedSourceSlotId = null;
+                }
+            });
         }
 
         initDesktopDragAndDrop() {
@@ -35,6 +59,9 @@
                 });
 
                 slot.addEventListener("dragend", () => {
+                    this.engine.justDragged = true;
+                    setTimeout(() => { this.engine.justDragged = false; }, 150);
+
                     if (this.draggedSourceSlotId) {
                         const sourceEl = document.querySelector(`[data-id="${this.draggedSourceSlotId}"]`);
                         if (sourceEl && !sourceEl.classList.contains("num-slot")) {

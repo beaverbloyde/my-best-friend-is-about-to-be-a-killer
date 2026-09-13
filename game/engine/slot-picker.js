@@ -105,7 +105,7 @@
         }
 
         open(slot) {
-            if (this.engine.justTouchDragged) return;
+            if (this.engine.justTouchDragged || this.engine.justDragged) return;
             const popover = document.getElementById("slot-picker-popover");
             const input = document.getElementById("slot-picker-input");
             const clearBtn = document.getElementById("slot-picker-clear-btn");

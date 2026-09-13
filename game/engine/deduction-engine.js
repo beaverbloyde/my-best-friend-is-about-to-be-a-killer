@@ -2124,7 +2124,7 @@ class DeductionEngine {
     }
 
     handleSlotClick(el) {
-        if (this.justTouchDragged) return;
+        if (this.justTouchDragged || this.justDragged) return;
         this.openSlotPicker(el);
     }
 
