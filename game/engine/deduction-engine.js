@@ -1348,9 +1348,11 @@ class DeductionEngine {
                 }
 
                 if (word) {
-                    this.collectedWords.add(word);
-                    if (tags && !this.currentCase.keywordTags[word]) {
-                        this.currentCase.keywordTags[word] = tags;
+                    const def = this.getKeywordDefinition(word);
+                    const canonWord = def ? def.id : word;
+                    this.collectedWords.add(canonWord);
+                    if (tags && !this.currentCase.keywordTags[canonWord]) {
+                        this.currentCase.keywordTags[canonWord] = tags;
                     }
                 }
             });
@@ -1482,7 +1484,10 @@ class DeductionEngine {
                     const parsed = JSON.parse(saved);
                     if (Array.isArray(parsed)) {
                         parsed.forEach(w => {
-                            if (w && typeof w === "string") this.collectedWords.add(w.trim());
+                            if (w && typeof w === "string") {
+                                const def = this.getKeywordDefinition(w.trim());
+                                this.collectedWords.add(def ? def.id : w.trim());
+                            }
                         });
                     }
                 }
@@ -1502,7 +1507,8 @@ class DeductionEngine {
                     matches.forEach(m => {
                         const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
                         if (w && !w.startsWith("%%") && !w.startsWith("@")) {
-                            this.collectedWords.add(w);
+                            const def = this.getKeywordDefinition(w);
+                            this.collectedWords.add(def ? def.id : w);
                         }
                     });
                 }
