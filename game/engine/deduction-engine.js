@@ -2148,6 +2148,14 @@ class DeductionEngine {
     }
 
     clearDocket() {
+        const hasFilledSlots = Object.keys(this.docketSlots).length > 0 || 
+            Array.from(document.querySelectorAll(".num-slot")).some(input => input.value.trim().length > 0);
+        
+        if (hasFilledSlots) {
+            if (!confirm("Are you sure you want to clear all filled slots in the docket?")) {
+                return;
+            }
+        }
         this.closeSlotPicker();
         this.docketSlots = {};
         document.querySelectorAll(".slot").forEach(slot => {
