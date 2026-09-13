@@ -441,7 +441,7 @@ class SFXEngine {
         subOsc.stop(now + 0.75);
     }
 
-    // 10. Negative Verification / Rejection Alert (low muffled warning buzz)
+    // 10. Negative Verification / Rejection Alert (crisp double-pulse warning buzzer)
     playError() {
         if (!this.enabled || this.volume <= 0) return;
         const ctx = this.ensureContext();
@@ -449,28 +449,48 @@ class SFXEngine {
 
         const now = ctx.currentTime;
         const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(this.volume * 0.35, now);
+        masterGain.gain.setValueAtTime(this.volume * 0.65, now);
         masterGain.connect(ctx.destination);
 
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(140, now);
-        osc.frequency.setValueAtTime(120, now + 0.08);
+        // Pulse 1
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(260, now);
+        osc1.frequency.exponentialRampToValueAtTime(180, now + 0.08);
 
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(450, now);
+        const filter1 = ctx.createBiquadFilter();
+        filter1.type = 'lowpass';
+        filter1.frequency.setValueAtTime(1200, now);
 
-        gain.gain.setValueAtTime(0.6, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        gain1.gain.setValueAtTime(0.8, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
+        osc1.connect(filter1);
+        filter1.connect(gain1);
+        gain1.connect(masterGain);
+        osc1.start(now);
+        osc1.stop(now + 0.085);
 
-        osc.start(now);
-        osc.stop(now + 0.2);
+        // Pulse 2 (slightly lower tone)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(200, now + 0.09);
+        osc2.frequency.exponentialRampToValueAtTime(140, now + 0.18);
+
+        const filter2 = ctx.createBiquadFilter();
+        filter2.type = 'lowpass';
+        filter2.frequency.setValueAtTime(1000, now + 0.09);
+
+        gain2.gain.setValueAtTime(0.7, now + 0.09);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc2.connect(filter2);
+        filter2.connect(gain2);
+        gain2.connect(masterGain);
+        osc2.start(now + 0.09);
+        osc2.stop(now + 0.185);
     }
 
     // Global Click Listener for Instant Tactile Feedback on Interactive Elements

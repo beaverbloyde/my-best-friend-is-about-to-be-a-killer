@@ -1854,8 +1854,16 @@ header {
 
 .slot.drag-invalid, .num-slot.drag-invalid {
     border: 2px dashed var(--danger, #ef4444) !important;
-    background: rgba(239, 68, 68, 0.15) !important;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4) !important;
+    border-top: 2px dashed var(--danger, #ef4444) !important;
+    border-bottom: 2px dashed var(--danger, #ef4444) !important;
+    border-left: 2px dashed var(--danger, #ef4444) !important;
+    border-right: 2px dashed var(--danger, #ef4444) !important;
+    border-image: none !important;
+    outline: 2px dashed var(--danger, #ef4444) !important;
+    outline-offset: -1px;
+    background: rgba(239, 68, 68, 0.22) !important;
+    color: var(--danger, #ef4444) !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
 }
 
 .slot.previewing-drag {
