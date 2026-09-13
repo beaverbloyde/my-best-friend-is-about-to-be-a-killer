@@ -660,12 +660,105 @@ class DeductionEngine {
     }
 
     buildKeywordTagIndex() {
+        this.keywordRegistry = new Map();
         this.keywordTagIndex = new Map();
-        const rawTags = this.currentCase?.keywordTags || {};
-        for (const [word, tags] of Object.entries(rawTags)) {
-            const canonical = this.getCanonicalCategories(tags);
-            this.keywordTagIndex.set(String(word).toLowerCase().trim(), canonical);
+
+        const rawKeywords = this.currentCase?.keywords || {};
+        const rawKeywordTags = this.currentCase?.keywordTags || {};
+
+        // 1. Process ID-based keywords object with grammatical variations
+        for (const [id, def] of Object.entries(rawKeywords)) {
+            const normId = String(id).toLowerCase().trim();
+            let categories = [];
+            let variations = {};
+            let baseWord = id;
+
+            if (typeof def === "object" && def !== null) {
+                const cats = def.category || def.categories || def.tags || def.tag;
+                categories = this.getCanonicalCategories(cats || ["noun"]);
+                if (typeof def.variations === "object" && def.variations !== null) {
+                    variations = { ...def.variations };
+                    if (!variations.base && variations.present_plural) variations.base = variations.present_plural;
+                    if (!variations.base && Object.values(variations).length > 0) {
+                        variations.base = Object.values(variations)[0];
+                    }
+                } else if (typeof def.word === "string") {
+                    variations = { base: def.word };
+                } else {
+                    variations = { base: id };
+                }
+                baseWord = variations.base || id;
+            } else if (Array.isArray(def)) {
+                categories = this.getCanonicalCategories(def);
+                variations = { base: id };
+                baseWord = id;
+            }
+
+            const record = {
+                id: id,
+                baseWord: baseWord,
+                categories: categories,
+                variations: variations
+            };
+
+            this.keywordRegistry.set(normId, record);
+            this.keywordTagIndex.set(normId, categories);
+            this.keywordTagIndex.set(String(baseWord).toLowerCase().trim(), categories);
+            for (const vWord of Object.values(variations)) {
+                if (typeof vWord === "string") {
+                    this.keywordTagIndex.set(vWord.toLowerCase().trim(), categories);
+                }
+            }
         }
+
+        // 2. Process legacy keywordTags: { "Captain": ["rank"] }
+        for (const [word, tags] of Object.entries(rawKeywordTags)) {
+            const normWord = String(word).toLowerCase().trim();
+            const categories = this.getCanonicalCategories(tags);
+            if (!this.keywordRegistry.has(normWord)) {
+                this.keywordRegistry.set(normWord, {
+                    id: word,
+                    baseWord: word,
+                    categories: categories,
+                    variations: { base: word }
+                });
+            }
+            this.keywordTagIndex.set(normWord, categories);
+        }
+    }
+
+    getKeywordDefinition(wordOrId) {
+        if (!wordOrId) return null;
+        const key = String(wordOrId).trim();
+        const lower = key.toLowerCase();
+        if (this.keywordRegistry && this.keywordRegistry.has(lower)) {
+            return this.keywordRegistry.get(lower);
+        }
+        return {
+            id: key,
+            baseWord: key,
+            categories: this.getKeywordTags(key),
+            variations: { base: key }
+        };
+    }
+
+    getConjugatedKeyword(wordOrId, variation = "base", capitalize = false) {
+        if (!wordOrId) return "";
+        const def = this.getKeywordDefinition(wordOrId);
+        let text = "";
+        if (def && def.variations) {
+            text = def.variations[variation] || def.variations.base || def.baseWord || wordOrId;
+        } else {
+            text = String(wordOrId);
+        }
+        if (capitalize === true || capitalize === "true" || capitalize === "capitalize" || capitalize === "title") {
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+        } else if (capitalize === "upper" || capitalize === "all") {
+            text = text.toUpperCase();
+        } else if (capitalize === "lower") {
+            text = text.toLowerCase();
+        }
+        return text;
     }
 
     getKeywordTags(word) {
@@ -685,10 +778,17 @@ class DeductionEngine {
         this.baseCaseKeywords = new Set();
         if (!this.currentCase) return;
 
+        // Add all registered keywords from case definition
+        if (this.currentCase.keywords) {
+            for (const k of Object.keys(this.currentCase.keywords)) {
+                this.baseCaseKeywords.add(k);
+            }
+        }
+
         const starterList = this.currentCase.initialKeywords || this.currentCase.starterKeywords || this.currentCase.presetKeywords;
         if (Array.isArray(starterList)) {
             starterList.forEach(item => {
-                const word = typeof item === "object" && item !== null ? (item.word || item.name) : String(item);
+                const word = typeof item === "object" && item !== null ? (item.word || item.id || item.name) : String(item);
                 if (word && word.trim()) this.baseCaseKeywords.add(word.trim());
             });
         }
@@ -702,8 +802,9 @@ class DeductionEngine {
 
             const bracketMatches = str.match(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g) || [];
             bracketMatches.forEach(m => {
-                const w = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
-                if (w && !w.startsWith("%%") && !w.startsWith("@")) this.baseCaseKeywords.add(w);
+                const rawTag = m.replace(/^\[+/, "").replace(/\]+$/, "").trim();
+                const id = rawTag.split(":")[0].trim();
+                if (id && !id.startsWith("%%") && !id.startsWith("@")) this.baseCaseKeywords.add(id);
             });
 
             const htmlMatches = str.match(/<span[^>]*class=['"][^'"]*\bkw\b[^'"]*['"][^>]*>([\s\S]*?)<\/span>/gi) || [];
@@ -759,42 +860,46 @@ class DeductionEngine {
             element.classList.remove("collected");
         }
 
-        const tags = Array.isArray(canonicalTags) && canonicalTags.length > 0 ? canonicalTags : ["noun"];
+        if (!canonicalTags || canonicalTags.length === 0) {
+            canonicalTags = ["noun"];
+        }
 
-        if (tags.length === 1) {
-            const conf = this.getCategoryConfig(tags[0]);
-            element.classList.add(`cat-theme-${tags[0]}`);
+        if (canonicalTags.length === 1) {
+            const cat = canonicalTags[0];
+            const conf = typeof LogosCategoryTheme !== 'undefined'
+                ? LogosCategoryTheme.getCategoryConfig(cat, this.currentCase)
+                : this.getCategoryConfig(cat);
 
-            if (isSlotEmpty) {
-                element.style.borderBottom = `2px dashed ${conf.hex}`;
-                element.style.background = conf.bg;
+            element.classList.add(`cat-theme-${cat}`);
+
+            if (isFilled) {
                 element.style.color = conf.text;
-            } else if (isFilled) {
-                element.style.border = `1px solid ${conf.border}`;
-                element.style.borderBottom = `2px solid ${conf.hex}`;
-                element.style.background = conf.bg;
+                element.style.background = typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(conf.hex, 0.2) : this.hexToRgba(conf.hex, 0.2);
+                element.style.border = `1.5px solid ${conf.hex}`;
+                element.style.boxShadow = `0 0 6px ${typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(conf.hex, 0.35) : this.hexToRgba(conf.hex, 0.35)}`;
+            } else if (isSlotEmpty) {
                 element.style.color = conf.text;
+                element.style.background = typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(conf.hex, 0.12) : this.hexToRgba(conf.hex, 0.12);
+                element.style.borderBottom = `2.5px dashed ${conf.hex}`;
             } else {
-                element.style.border = `1px solid ${conf.border}`;
-                element.style.background = conf.bg;
                 element.style.color = conf.text;
+                element.style.background = typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(conf.hex, 0.15) : this.hexToRgba(conf.hex, 0.15);
+                element.style.border = `1px solid ${typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(conf.hex, 0.75) : this.hexToRgba(conf.hex, 0.75)}`;
             }
         } else {
-            // Multiple categories: render crisp hard-split color stripes
-            const hexes = tags.map(c => this.getCategoryConfig(c).hex);
-            const bgs = tags.map(c => this.getCategoryConfig(c).bg);
+            // Multi-category split gradient
+            const hexes = canonicalTags.map(c => (typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.getCategoryConfig(c, this.currentCase).hex : this.getCategoryConfig(c).hex));
+            const bgs = hexes.map(h => (typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(h, isFilled ? 0.22 : 0.14) : this.hexToRgba(h, isFilled ? 0.22 : 0.14)));
 
-            if (isSlotEmpty) {
-                element.style.borderTop = "none";
-                element.style.borderLeft = "none";
-                element.style.borderRight = "none";
-                element.style.borderBottom = "2.5px solid transparent";
+            if (isFilled) {
+                element.style.border = "1.5px solid transparent";
                 element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
                 element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
                 element.style.color = multiTextColor;
-            } else if (isFilled) {
-                element.style.border = "1.5px solid transparent";
-                element.style.borderImage = `${this.buildSplitGradient(hexes, "90deg")} 1`;
+                element.style.boxShadow = `0 0 8px ${typeof LogosCategoryTheme !== 'undefined' ? LogosCategoryTheme.hexToRgba(hexes[0], 0.3) : this.hexToRgba(hexes[0], 0.3)}`;
+            } else if (isSlotEmpty) {
+                element.style.border = "none";
+                element.style.borderBottom = `2.5px dashed ${hexes[0]}`;
                 element.style.background = `${this.buildSplitGradient(bgs, "90deg")}, var(--bg-tertiary)`;
                 element.style.color = multiTextColor;
             } else {
@@ -806,17 +911,21 @@ class DeductionEngine {
         }
     }
 
-    updateSlotAppearance(slotElement, word = null) {
+    updateSlotAppearance(slotElement, wordOrId = null) {
         if (!slotElement || slotElement.classList.contains("num-slot")) return;
         const slotId = slotElement.getAttribute("data-id");
-        const val = (word !== null && word !== undefined) ? word : (slotId ? this.docketSlots[slotId] : "");
+        const val = (wordOrId !== null && wordOrId !== undefined) ? wordOrId : (slotId ? this.docketSlots[slotId] : "");
         const slotTag = slotElement.getAttribute("data-tag");
+        const variation = slotElement.getAttribute("data-variation") || "base";
+        const capitalize = slotElement.getAttribute("data-capitalize");
 
         if (val && val !== "[ ? ]") {
-            slotElement.innerText = val;
+            const keywordDef = this.getKeywordDefinition(val);
+            const displayText = this.getConjugatedKeyword(val, variation, capitalize);
+            slotElement.innerText = displayText;
             slotElement.classList.add("filled");
             slotElement.classList.remove("wrong", "correct");
-            const canonicalTags = this.getKeywordTags(val);
+            const canonicalTags = keywordDef?.categories || this.getKeywordTags(val);
             this.applyCategoryStyleToElement(slotElement, canonicalTags, { isFilled: true, isSlot: true });
         } else {
             slotElement.innerText = "[ ? ]";
@@ -864,9 +973,27 @@ class DeductionEngine {
             return `${cleanWord} <button type="button" class="pronounce-btn" data-speak="${cleanWord}" data-word="${cleanWord}" title="Click to hear Russian pronunciation: ${cleanWord}">🔊 &#91;${cleanIpa}&#93;</button>`;
         });
 
-        // Convert [Keyword] into .kw element (ignore system tags, slot:, and num:)
-        text = text.replace(/\[\[([^\]]+)\]\]/g, `<span class="kw" data-word="$1">$1</span>`);
-        text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, `<span class="kw" data-word="$1">$1</span>`);
+        // Convert [[Keyword]] syntax
+        text = text.replace(/\[\[([^\]]+)\]\]/g, (match, raw) => {
+            const parts = raw.split(":");
+            const rawId = parts[0].trim();
+            const variation = parts[1] ? parts[1].trim() : "base";
+            const def = this.getKeywordDefinition(rawId);
+            const id = def ? def.id : rawId;
+            const display = def ? (def.variations?.[variation] || def.variations?.base || def.baseWord || rawId) : rawId;
+            return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
+        });
+
+        // Convert [Keyword] or [keyword_id:variation] into .kw element (ignore system tags, slot:, and num:)
+        text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|slot:|num:)([^\]]+)\]/g, (match, raw) => {
+            const parts = raw.split(":");
+            const rawId = parts[0].trim();
+            const variation = parts[1] ? parts[1].trim() : "base";
+            const def = this.getKeywordDefinition(rawId);
+            const id = def ? def.id : rawId;
+            const display = def ? (def.variations?.[variation] || def.variations?.base || def.baseWord || rawId) : (parts[1] || rawId);
+            return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
+        });
 
         // Markdown bold & italics & newlines
         text = text.replace(/\*\*([^\*]+)\*\*/g, `<strong>$1</strong>`);
@@ -888,11 +1015,24 @@ class DeductionEngine {
             return `<input type="text" class="num-slot" data-id="${id}" maxlength="${len}" placeholder="${ph}" style="width: ${width};">`;
         });
 
-        // Parse word slots: [slot:slot_id] or [slot:slot_id:constraint_tag(s)]
-        text = text.replace(/\[slot:([a-zA-Z0-9_-]+)(?::([^\]]+))?\]/g, (match, id, tag) => {
-            const cleanTag = tag ? tag.trim() : "";
+        // Parse word slots: [slot:slot_id] or [slot:slot_id:tag] or [slot:slot_id:tag:variation] or [slot:slot_id:tag:variation:capitalization]
+        text = text.replace(/\[slot:([a-zA-Z0-9_-]+)(?::([^\]]+))?\]/g, (match, id, rest) => {
+            let cleanTag = "";
+            let variation = "base";
+            let capitalize = "";
+
+            if (rest) {
+                const parts = rest.split(":").map(p => p.trim());
+                cleanTag = parts[0] || "";
+                variation = parts[1] || "base";
+                capitalize = parts[2] || "";
+            }
+
             const tagAttr = cleanTag ? ` data-tag="${cleanTag}"` : "";
-            return `<span class="slot" data-id="${id}"${tagAttr}>[ ? ]</span>`;
+            const varAttr = variation && variation !== "base" ? ` data-variation="${variation}"` : "";
+            const capAttr = capitalize ? ` data-capitalize="${capitalize}"` : "";
+
+            return `<span class="slot" data-id="${id}"${tagAttr}${varAttr}${capAttr}>[ ? ]</span>`;
         });
 
         // Parse paragraphs
@@ -1432,28 +1572,31 @@ class DeductionEngine {
         const kws = container.querySelectorAll(".kw");
         kws.forEach(el => {
             el.setAttribute("draggable", "true");
-            const word = el.getAttribute("data-word") || el.innerText.trim();
-            el.setAttribute("data-word", word);
+            const wordId = el.getAttribute("data-word") || el.getAttribute("data-id") || el.innerText.trim();
+            el.setAttribute("data-word", wordId);
 
             el.onclick = (e) => {
                 e.stopPropagation();
-                this.collectWord(el, word);
+                this.collectWord(el, wordId);
             };
 
             el.addEventListener("dragstart", (e) => {
                 this.draggedSourceSlotId = null;
-                e.dataTransfer.setData("text/plain", word);
-                this.collectWord(el, word);
+                e.dataTransfer.setData("text/plain", wordId);
+                e.dataTransfer.setData("application/x-docket-slot", "");
+                this.collectWord(el, wordId);
             });
         });
     }
 
-    collectWord(el, word) {
-        let isNew = !this.collectedWords.has(word);
+    collectWord(el, wordId) {
+        let isNew = !this.collectedWords.has(wordId);
         if (isNew) {
-            this.collectedWords.add(word);
-            this.showToast(`[+] Added Keyword: "${word}"`);
-            this.checkLoreUnlocks(word);
+            this.collectedWords.add(wordId);
+            const def = this.getKeywordDefinition(wordId);
+            const display = def?.variations?.base || def?.baseWord || wordId;
+            this.showToast(`[+] Added Keyword: "${display}"`);
+            this.checkLoreUnlocks(wordId);
             this.updateKeywordCounter();
             this.refreshKeywordHighlights();
             this.renderTray();
@@ -1463,9 +1606,10 @@ class DeductionEngine {
 
     refreshKeywordHighlights() {
         document.querySelectorAll(".kw").forEach(el => {
-            const text = el.getAttribute("data-word") || el.innerText.trim();
-            const isCollected = this.collectedWords.has(text);
-            const canonicalTags = this.getKeywordTags(text);
+            const wordId = el.getAttribute("data-word") || el.getAttribute("data-id") || el.innerText.trim();
+            const isCollected = this.collectedWords.has(wordId);
+            const def = this.getKeywordDefinition(wordId);
+            const canonicalTags = def?.categories || this.getKeywordTags(wordId);
             this.applyCategoryStyleToElement(el, canonicalTags, { isCollected });
         });
     }
@@ -1537,15 +1681,28 @@ class DeductionEngine {
 
         if (this.currentFilter !== "all") {
             wordsArray = wordsArray.filter(w => {
-                const tags = this.getKeywordTags(w);
+                const def = this.getKeywordDefinition(w);
+                const tags = def?.categories || this.getKeywordTags(w);
                 return tags.includes(this.currentFilter);
             });
         }
 
         if (this.currentSort === "alpha-asc") {
-            wordsArray.sort((a, b) => a.localeCompare(b));
+            wordsArray.sort((a, b) => {
+                const defA = this.getKeywordDefinition(a);
+                const defB = this.getKeywordDefinition(b);
+                const nameA = defA?.variations?.base || defA?.baseWord || a;
+                const nameB = defB?.variations?.base || defB?.baseWord || b;
+                return nameA.localeCompare(nameB);
+            });
         } else if (this.currentSort === "alpha-desc") {
-            wordsArray.sort((a, b) => b.localeCompare(a));
+            wordsArray.sort((a, b) => {
+                const defA = this.getKeywordDefinition(a);
+                const defB = this.getKeywordDefinition(b);
+                const nameA = defA?.variations?.base || defA?.baseWord || a;
+                const nameB = defB?.variations?.base || defB?.baseWord || b;
+                return nameB.localeCompare(nameA);
+            });
         }
 
         if (this.currentSort === "category") {
@@ -1562,7 +1719,8 @@ class DeductionEngine {
             let renderedAny = false;
             categoryDefs.forEach(cat => {
                 const wordsInGroup = wordsArray.filter(w => {
-                    const tags = this.getKeywordTags(w);
+                    const def = this.getKeywordDefinition(w);
+                    const tags = def?.categories || this.getKeywordTags(w);
                     return tags.includes(cat.tag || cat.id);
                 });
 
@@ -1594,19 +1752,23 @@ class DeductionEngine {
         }
     }
 
-    createTrayWordElement(word) {
+    createTrayWordElement(wordId) {
         const btn = document.createElement("div");
         btn.className = "tray-word";
-        btn.innerText = word;
+        const def = this.getKeywordDefinition(wordId);
+        const display = def?.variations?.base || def?.baseWord || wordId;
+        btn.innerText = display;
         btn.setAttribute("draggable", "true");
-        btn.setAttribute("data-word", word);
+        btn.setAttribute("data-word", wordId);
+        btn.setAttribute("data-id", wordId);
 
-        const canonicalTags = this.getKeywordTags(word);
+        const canonicalTags = def?.categories || this.getKeywordTags(wordId);
         this.applyCategoryStyleToElement(btn, canonicalTags, { isCollected: false });
 
         btn.addEventListener("dragstart", (e) => {
             this.draggedSourceSlotId = null;
-            e.dataTransfer.setData("text/plain", word);
+            e.dataTransfer.setData("text/plain", wordId);
+            e.dataTransfer.setData("application/x-docket-slot", "");
         });
 
         return btn;
@@ -2215,10 +2377,23 @@ class DeductionEngine {
 
             let isCorrect = false;
             if (userVal !== undefined && userVal !== null && userVal !== "") {
+                const checkMatch = (targetAns) => {
+                    if (userVal === targetAns) return true;
+                    const def = this.getKeywordDefinition(userVal);
+                    if (def) {
+                        if (def.id === targetAns) return true;
+                        if (def.baseWord === targetAns) return true;
+                        if (def.variations && Object.values(def.variations).includes(targetAns)) return true;
+                    }
+                    const targetDef = this.getKeywordDefinition(targetAns);
+                    if (targetDef && targetDef.id === userVal) return true;
+                    return false;
+                };
+
                 if (Array.isArray(correctAns)) {
-                    isCorrect = correctAns.includes(userVal);
+                    isCorrect = correctAns.some(ans => checkMatch(ans));
                 } else {
-                    isCorrect = (userVal === correctAns);
+                    isCorrect = checkMatch(correctAns);
                 }
             }
 

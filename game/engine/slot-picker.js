@@ -176,6 +176,8 @@
 
             const slotId = this.activeSlot?.getAttribute("data-id");
             const slotTag = this.activeSlot?.getAttribute("data-tag");
+            const variation = this.activeSlot?.getAttribute("data-variation") || "base";
+            const capitalize = this.activeSlot?.getAttribute("data-capitalize");
             const currentSlotWord = slotId ? this.engine.docketSlots[slotId] : "";
 
             const q = (query || "").trim().toLowerCase();
@@ -194,10 +196,14 @@
                 return;
             }
 
-            words.sort((a, b) => a.localeCompare(b));
-
+            // Filter against keyword ID, base word, or conjugated form
             if (q) {
-                words = words.filter(w => w.toLowerCase().includes(q));
+                words = words.filter(w => {
+                    const def = this.engine.getKeywordDefinition(w);
+                    const conjugated = this.engine.getConjugatedKeyword(w, variation, capitalize);
+                    const baseWord = def?.variations?.base || def?.baseWord || w;
+                    return w.toLowerCase().includes(q) || baseWord.toLowerCase().includes(q) || conjugated.toLowerCase().includes(q);
+                });
             }
 
             if (words.length === 0) {
@@ -205,8 +211,17 @@
                 return;
             }
 
-            words.forEach((word) => {
-                const canonicalTags = this.engine.getKeywordTags(word);
+            words.sort((a, b) => {
+                const textA = this.engine.getConjugatedKeyword(a, variation, capitalize);
+                const textB = this.engine.getConjugatedKeyword(b, variation, capitalize);
+                return textA.localeCompare(textB);
+            });
+
+            words.forEach((wordId) => {
+                const def = this.engine.getKeywordDefinition(wordId);
+                const canonicalTags = def?.categories || this.engine.getKeywordTags(wordId);
+                const conjugated = this.engine.getConjugatedKeyword(wordId, variation, capitalize);
+                const baseWord = def?.variations?.base || def?.baseWord || wordId;
 
                 let badgesHtml = "";
                 canonicalTags.forEach(cat => {
@@ -217,7 +232,7 @@
                 const item = document.createElement("button");
                 item.type = "button";
                 item.className = "slot-picker-item";
-                if (word === currentSlotWord) {
+                if (wordId === currentSlotWord) {
                     item.classList.add("active-choice");
                 }
 
@@ -230,18 +245,23 @@
                     item.style.borderImage = `${LogosCategoryTheme.buildSplitGradient(hexes, "to bottom")} 1`;
                 }
 
+                const showSubtitle = conjugated.toLowerCase() !== baseWord.toLowerCase();
+                const wordLabelHtml = showSubtitle
+                    ? `<span style="font-weight: 600;">${this.engine.escapeHtml(conjugated)}</span> <span style="font-size: 10px; color: var(--text-tertiary);">(${this.engine.escapeHtml(baseWord)})</span>`
+                    : `<span style="font-weight: 600;">${this.engine.escapeHtml(conjugated)}</span>`;
+
                 item.innerHTML = `
                     <div class="slot-picker-item-left">
                         <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
                             ${badgesHtml}
                         </div>
-                        <span style="font-weight: 600;">${this.engine.escapeHtml(word)}</span>
+                        ${wordLabelHtml}
                     </div>
-                    ${word === currentSlotWord ? '<span style="font-size: 11px; font-weight: 700; color: var(--accent);">✓</span>' : ""}
+                    ${wordId === currentSlotWord ? '<span style="font-size: 11px; font-weight: 700; color: var(--accent);">✓</span>' : ""}
                 `;
 
                 item.addEventListener("click", () => {
-                    this.selectWord(word);
+                    this.selectWord(wordId);
                 });
 
                 list.appendChild(item);
@@ -250,15 +270,17 @@
             this.highlightedIndex = -1;
         }
 
-        selectWord(word) {
+        selectWord(wordId) {
             if (!this.activeSlot) return;
             const slotId = this.activeSlot.getAttribute("data-id");
-            this.engine.docketSlots[slotId] = word;
-            this.engine.updateSlotAppearance(this.activeSlot, word);
+
+            this.engine.docketSlots[slotId] = wordId;
+            this.engine.updateSlotAppearance(this.activeSlot, wordId);
+
             window.sfx?.playSnap();
+            this.close();
             this.engine.updateProgress();
             this.engine.saveProgress();
-            this.close();
         }
 
         clearActiveSlot() {
@@ -266,10 +288,11 @@
             const slotId = this.activeSlot.getAttribute("data-id");
             delete this.engine.docketSlots[slotId];
             this.engine.updateSlotAppearance(this.activeSlot, null);
+
             window.sfx?.playPop();
+            this.close();
             this.engine.updateProgress();
             this.engine.saveProgress();
-            this.close();
         }
 
         close() {
