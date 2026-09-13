@@ -244,12 +244,18 @@
 
     <!-- Slot Autocomplete Suggestion Dropdown Popover -->
     <div id="slot-picker-popover" class="slot-picker-popover hidden">
+        <div class="slot-picker-header">
+            <div class="slot-picker-header-left">
+                <span id="slot-picker-constraint-badge" class="slot-picker-constraint-badge" style="display: none;"></span>
+            </div>
+            <div class="slot-picker-header-right">
+                <button type="button" id="slot-picker-clear-btn" class="slot-picker-clear-btn" onclick="window.gameEngine.clearActiveSlot()" title="Clear this slot">✕ Clear</button>
+                <button type="button" id="slot-picker-close-btn" class="slot-picker-close-btn" onclick="window.gameEngine.closeSlotPicker()" title="Close">✕</button>
+            </div>
+        </div>
         <div class="slot-picker-search-row">
             <span class="slot-picker-icon">🔍</span>
-            <span id="slot-picker-constraint-badge" class="slot-picker-constraint-badge" style="display: none;"></span>
             <input type="text" id="slot-picker-input" class="slot-picker-input" placeholder="Search keywords..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button type="button" id="slot-picker-clear-btn" class="slot-picker-clear-btn" onclick="window.gameEngine.clearActiveSlot()" title="Clear this slot">✕ Clear</button>
-            <button type="button" id="slot-picker-close-btn" class="slot-picker-close-btn" onclick="window.gameEngine.closeSlotPicker()" title="Close">✕</button>
         </div>
         <div class="slot-picker-list" id="slot-picker-list">
             <!-- Dynamically populated -->
