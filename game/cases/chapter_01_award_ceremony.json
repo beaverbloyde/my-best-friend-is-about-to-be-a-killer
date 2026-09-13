@@ -68,56 +68,56 @@
             "rows": [
               [
                 "01",
-                "[Anton] [Belov]",
+                "[Anton Belov]",
                 "Motorized Patrol",
                 "[Junior Lieutenant]",
                 "[Senior Lieutenant]"
               ],
               [
                 "02",
-                "[Elena] [Petrova]",
+                "[Elena Petrova]",
                 "Forensic Pathology",
                 "[Lieutenant]",
                 "[Captain]"
               ],
               [
                 "03",
-                "[Sasha] [Lebedev]",
+                "[Sasha Lebedev]",
                 "Communications",
                 "[Senior Lieutenant]",
                 "[Major]"
               ],
               [
                 "04",
-                "[Nadezhda] [Morozova]",
+                "[Nadezhda Morozova]",
                 "Special Investigation",
                 "[Junior Lieutenant]",
                 "[Senior Lieutenant]"
               ],
               [
                 "05",
-                "[Ksenia] [Pavlova]",
+                "[Ksenia Pavlova]",
                 "Judicial Inquiries",
                 "[Senior Lieutenant]",
                 "[Captain]"
               ],
               [
                 "06",
-                "[Zhenya] [Sokolov]",
+                "[Zhenya Sokolov]",
                 "Technical Records",
                 "[Junior Lieutenant]",
                 "[Lieutenant]"
               ],
               [
                 "07",
-                "[Boris] [Volkov]",
+                "[Boris Volkov]",
                 "Administration",
                 "[Captain]",
                 "[Major]"
               ],
               [
                 "08",
-                "[Viktor] [Smirnov]",
+                "[Viktor Smirnov]",
                 "Highway Division",
                 "[Lieutenant]",
                 "[Senior Lieutenant]"
@@ -189,52 +189,28 @@
     }
   },
   "keywordTags": {
-    "Nadezhda": [
+    "Anton Belov": [
       "name"
     ],
-    "Morozova": [
+    "Elena Petrova": [
       "name"
     ],
-    "Anton": [
+    "Sasha Lebedev": [
       "name"
     ],
-    "Belov": [
+    "Nadezhda Morozova": [
       "name"
     ],
-    "Elena": [
+    "Ksenia Pavlova": [
       "name"
     ],
-    "Petrova": [
+    "Zhenya Sokolov": [
       "name"
     ],
-    "Zhenya": [
+    "Boris Volkov": [
       "name"
     ],
-    "Sokolov": [
-      "name"
-    ],
-    "Sasha": [
-      "name"
-    ],
-    "Lebedev": [
-      "name"
-    ],
-    "Ksenia": [
-      "name"
-    ],
-    "Pavlova": [
-      "name"
-    ],
-    "Viktor": [
-      "name"
-    ],
-    "Smirnov": [
-      "name"
-    ],
-    "Boris": [
-      "name"
-    ],
-    "Volkov": [
+    "Viktor Smirnov": [
       "name"
     ],
     "Junior Lieutenant": [
@@ -291,9 +267,6 @@
     ],
     "Roster": [
       "noun"
-    ],
-    "2118": [
-      "calendar"
     ]
   },
   "customCategories": [
@@ -329,7 +302,7 @@
     }
   ],
   "docket": {
-    "template": "**OFFICER RANK HIERARCHY (From Low to High):**\n[slot:r1:rank] ➔ [slot:r2:rank] ➔ [slot:r3:rank] ➔ [slot:r4:rank] ➔ [slot:r5:rank] ➔ [slot:r6:rank]\n\n**WHAT IS GOING TO HAPPEN:**\nYear: [num:year:4:YYYY]\nCity: [slot:city:location]\nRegion: [slot:region:location]\n\n[slot:p_first:name] [slot:p_last:name], currently holding the rank: [slot:rank_old:rank], will be promoted to rank: [slot:rank_new:rank].\nShe will be awarded by an officer of rank: [slot:awarder_rank:rank]."
+    "template": "**OFFICER RANK HIERARCHY (From Low to High):**\n[slot:r1:rank] ➔ [slot:r2:rank] ➔ [slot:r3:rank] ➔ [slot:r4:rank] ➔ [slot:r5:rank] ➔ [slot:r6:rank]\n\n**WHAT IS GOING TO HAPPEN:**\nYear: [num:year:4:YYYY]\nCity: [slot:city:location]\nRegion: [slot:region:location]\n\n[slot:person:name], currently holding the rank: [slot:rank_old:rank], will be promoted to rank: [slot:rank_new:rank].\nShe will be awarded by an officer of rank: [slot:awarder_rank:rank]."
   },
   "solution": {
     "r1": "Junior Lieutenant",
@@ -341,8 +314,7 @@
     "year": "2118",
     "city": "Vladivostok",
     "region": "Primorsky Krai",
-    "p_first": "Nadezhda",
-    "p_last": "Morozova",
+    "person": "Nadezhda Morozova",
     "rank_old": "Junior Lieutenant",
     "rank_new": "Senior Lieutenant",
     "awarder_rank": "Major General"
