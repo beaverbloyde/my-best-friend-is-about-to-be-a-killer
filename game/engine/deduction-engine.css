@@ -1852,6 +1852,12 @@ header {
     box-shadow: 0 0 8px var(--accent-glow);
 }
 
+.slot.previewing-drag {
+    font-style: italic;
+    opacity: 0.95;
+    color: var(--accent) !important;
+}
+
 .num-slot {
     display: inline-block;
     background: var(--bg-tertiary);

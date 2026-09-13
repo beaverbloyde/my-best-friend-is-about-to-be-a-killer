@@ -60,12 +60,14 @@
                     return;
                 }
 
+                let draggedWord = "";
                 if (target.classList.contains("slot")) {
                     const slotId = target.getAttribute("data-id");
                     const currentWord = this.engine.docketSlots[slotId] || (target.innerText.trim() !== "[ ? ]" ? target.innerText.trim() : "");
 
                     if (currentWord) {
                         this.draggedSourceSlotId = slotId;
+                        draggedWord = currentWord;
                         this.engine.isDragging = true;
                         e.dataTransfer.setData("text/plain", currentWord);
                         e.dataTransfer.setData("application/x-docket-slot", slotId);
@@ -74,9 +76,13 @@
                         e.preventDefault();
                     }
                 } else {
+                    draggedWord = target.getAttribute("data-id") || target.getAttribute("data-word") || target.innerText.trim();
                     this.draggedSourceSlotId = null;
                     this.engine.isDragging = true;
+                    e.dataTransfer.setData("text/plain", draggedWord);
+                    e.dataTransfer.setData("application/x-docket-slot", "");
                 }
+                this.draggedWord = draggedWord;
             });
 
             document.addEventListener("dragover", (e) => {
@@ -85,6 +91,17 @@
                     e.preventDefault();
                     slot.classList.add("drag-over");
                     if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+
+                    if (this.draggedWord && !slot.classList.contains("num-slot")) {
+                        const variation = slot.getAttribute("data-variation") || "base";
+                        const capitalize = slot.getAttribute("data-capitalize");
+                        const conjugated = this.engine.getConjugatedKeyword(this.draggedWord, variation, capitalize);
+                        if (!slot.classList.contains("previewing-drag")) {
+                            slot.classList.add("previewing-drag");
+                            slot.setAttribute("data-prev-text", slot.innerText);
+                        }
+                        slot.innerText = conjugated;
+                    }
                 } else if (this.draggedSourceSlotId || this.engine.isDragging) {
                     e.preventDefault();
                     if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
@@ -95,6 +112,12 @@
                 const slot = e.target.closest?.(".slot, .num-slot");
                 if (slot) {
                     slot.classList.remove("drag-over");
+                    if (slot.classList.contains("previewing-drag")) {
+                        slot.classList.remove("previewing-drag");
+                        const prev = slot.getAttribute("data-prev-text");
+                        if (prev !== null && prev !== undefined) slot.innerText = prev;
+                        slot.removeAttribute("data-prev-text");
+                    }
                 }
             });
 
@@ -104,6 +127,10 @@
                 if (slot) {
                     e.preventDefault();
                     slot.classList.remove("drag-over");
+                    if (slot.classList.contains("previewing-drag")) {
+                        slot.classList.remove("previewing-drag");
+                        slot.removeAttribute("data-prev-text");
+                    }
 
                     const incomingWord = e.dataTransfer.getData("text/plain");
                     if (!incomingWord) return;
@@ -146,6 +173,7 @@
                     }
 
                     this.draggedSourceSlotId = null;
+                    this.draggedWord = null;
                     window.sfx?.playSnap();
                     this.engine.updateProgress();
                     this.engine.saveProgress();
@@ -153,6 +181,7 @@
                     e.preventDefault();
                     const sourceSlotId = this.draggedSourceSlotId;
                     this.draggedSourceSlotId = null;
+                    this.draggedWord = null;
                     this.clearSlot(sourceSlotId);
                 }
             });
@@ -162,11 +191,19 @@
                 this.engine.justDragged = true;
                 setTimeout(() => { this.engine.justDragged = false; }, 300);
 
+                document.querySelectorAll(".previewing-drag").forEach(s => {
+                    s.classList.remove("previewing-drag", "drag-over");
+                    const prev = s.getAttribute("data-prev-text");
+                    if (prev !== null && prev !== undefined) s.innerText = prev;
+                    s.removeAttribute("data-prev-text");
+                });
+
                 if (this.draggedSourceSlotId) {
                     const sourceSlotId = this.draggedSourceSlotId;
                     this.draggedSourceSlotId = null;
                     this.clearSlot(sourceSlotId);
                 }
+                this.draggedWord = null;
             });
         }
 
@@ -243,13 +280,34 @@
 
                     if (currentHoveredSlot && currentHoveredSlot !== slot) {
                         currentHoveredSlot.classList.remove("drag-over");
+                        if (currentHoveredSlot.classList.contains("previewing-drag")) {
+                            currentHoveredSlot.classList.remove("previewing-drag");
+                            const prev = currentHoveredSlot.getAttribute("data-prev-text");
+                            if (prev !== null && prev !== undefined) currentHoveredSlot.innerText = prev;
+                            currentHoveredSlot.removeAttribute("data-prev-text");
+                        }
                     }
 
                     if (slot) {
                         slot.classList.add("drag-over");
                         currentHoveredSlot = slot;
+
+                        if (!slot.classList.contains("num-slot")) {
+                            const variation = slot.getAttribute("data-variation") || "base";
+                            const capitalize = slot.getAttribute("data-capitalize");
+                            const conjugated = this.engine.getConjugatedKeyword(touchDraggedWord, variation, capitalize);
+                            if (ghost) ghost.innerText = conjugated;
+                            if (!slot.classList.contains("previewing-drag")) {
+                                slot.classList.add("previewing-drag");
+                                slot.setAttribute("data-prev-text", slot.innerText);
+                            }
+                            slot.innerText = conjugated;
+                        }
                     } else {
                         currentHoveredSlot = null;
+                        const def = this.engine.getKeywordDefinition(touchDraggedWord);
+                        const baseText = def?.variations?.base || def?.baseWord || touchDraggedWord;
+                        if (ghost) ghost.innerText = baseText;
                     }
 
                     if (e.cancelable) e.preventDefault();
@@ -260,7 +318,13 @@
                 if (!isTouchDragging) return;
 
                 if (ghost) ghost.style.display = "none";
-                if (currentHoveredSlot) currentHoveredSlot.classList.remove("drag-over");
+                if (currentHoveredSlot) {
+                    currentHoveredSlot.classList.remove("drag-over");
+                    if (currentHoveredSlot.classList.contains("previewing-drag")) {
+                        currentHoveredSlot.classList.remove("previewing-drag");
+                        currentHoveredSlot.removeAttribute("data-prev-text");
+                    }
+                }
 
                 if (touchThresholdPassed) {
                     this.engine.justTouchDragged = true;
