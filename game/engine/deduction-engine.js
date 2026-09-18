@@ -1558,8 +1558,43 @@ class DeductionEngine {
             if (kwCount) kwCount.innerText = "LOCKED";
             const loreCount = document.getElementById("lore-count");
             if (loreCount) loreCount.innerText = "LOCKED";
+
+            this.isCurrentCaseLocked = true;
+            const hintBtn = document.getElementById("hint-btn");
+            if (hintBtn) {
+                hintBtn.disabled = true;
+                hintBtn.style.opacity = "0.35";
+                hintBtn.style.cursor = "not-allowed";
+                hintBtn.title = "Case hints are restricted while investigation is locked";
+            }
+            const openDocketBtn = document.querySelector(".docket-toggle-bar .open-docket-btn");
+            if (openDocketBtn) {
+                openDocketBtn.disabled = true;
+                openDocketBtn.style.opacity = "0.35";
+                openDocketBtn.style.cursor = "not-allowed";
+            }
+            const progressText = document.getElementById("progress-text");
+            if (progressText) {
+                progressText.innerText = "Deduction Progress: RESTRICTED";
+            }
             return;
         }
+
+        this.isCurrentCaseLocked = false;
+        const hintBtn = document.getElementById("hint-btn");
+        if (hintBtn) {
+            hintBtn.disabled = false;
+            hintBtn.style.opacity = "";
+            hintBtn.style.cursor = "";
+            hintBtn.title = "Case Hints & Deduction Guidance (H)";
+        }
+        const openDocketBtn = document.querySelector(".docket-toggle-bar .open-docket-btn");
+        if (openDocketBtn) {
+            openDocketBtn.disabled = false;
+            openDocketBtn.style.opacity = "";
+            openDocketBtn.style.cursor = "";
+        }
+
         const docketTitleEl = document.getElementById("docket-title-text");
         if (docketTitleEl) {
             docketTitleEl.innerText = caseData.meta?.docketTitle || "CASE DOCKET";
@@ -2343,6 +2378,11 @@ class DeductionEngine {
     // --- Case Hint Advisory Modal ---
 
     openHintModal() {
+        if (this.isCurrentCaseLocked || (this.currentCase && !this.isCaseUnlocked(this.currentCase.id, this.currentCase.file).unlocked)) {
+            try { window.sfx?.playDeny?.() || window.sfx?.playClick?.(); } catch (e) {}
+            this.showToast("⚠️ ACCESS RESTRICTED // Complete prerequisite case/chapter to unlock hints.");
+            return;
+        }
         const modal = document.getElementById("hint-modal");
         if (!modal) return;
         try { window.sfx?.playClick(); } catch (e) {}
@@ -2596,6 +2636,11 @@ class DeductionEngine {
     }
 
     openDocket() {
+        if (this.isCurrentCaseLocked || (this.currentCase && !this.isCaseUnlocked(this.currentCase.id, this.currentCase.file).unlocked)) {
+            try { window.sfx?.playDeny?.() || window.sfx?.playClick?.(); } catch (e) {}
+            this.showToast("⚠️ ACCESS RESTRICTED // Complete prerequisite case/chapter to access docket.");
+            return;
+        }
         if (!this.docketModal) this.docketModal = document.getElementById("docket-modal");
         if (this.docketModal) {
             this.docketModal.classList.remove("hidden");
