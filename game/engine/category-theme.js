@@ -58,19 +58,28 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         },
 
-        getCanonicalCategories(tagOrTags) {
-            if (!tagOrTags) return ["noun"];
+        getCanonicalCategories(tagOrTags, currentCase = null) {
+            const caseCategories = currentCase?.categories && typeof currentCase.categories === "object"
+                ? Object.keys(currentCase.categories)
+                : [];
+            const defaultFallback = caseCategories.length > 0 ? [caseCategories[0]] : ["noun"];
+
+            if (!tagOrTags) return defaultFallback;
             let tags = [];
             if (Array.isArray(tagOrTags)) {
                 tags = tagOrTags;
             } else if (typeof tagOrTags === "string") {
                 tags = tagOrTags.split(/[,/|]+/).map(t => t.trim()).filter(Boolean);
             }
-            if (tags.length === 0) return ["noun"];
+            if (tags.length === 0) return defaultFallback;
 
             const canonical = [];
             for (const tag of tags) {
                 const t = String(tag).toLowerCase().trim();
+                if (currentCase?.categories?.[t]) {
+                    if (!canonical.includes(t)) canonical.push(t);
+                    continue;
+                }
                 let cat = t;
                 if (["name", "names", "person", "people", "suspect", "victim", "witness", "officer", "character"].includes(t)) cat = "name";
                 else if (["location", "locations", "place", "places", "facility", "venue", "city", "region", "country", "destination"].includes(t)) cat = "location";
@@ -82,18 +91,22 @@
                 else if (["insignia", "star", "stars"].includes(t)) cat = "insignia";
                 else if (["noun", "nouns", "item", "items", "vehicle", "weapon", "object"].includes(t)) cat = "noun";
 
+                if (caseCategories.length > 0 && !caseCategories.includes(cat)) {
+                    continue;
+                }
+
                 if (!canonical.includes(cat)) {
                     canonical.push(cat);
                 }
             }
-            return canonical.length > 0 ? canonical : ["noun"];
+            return canonical.length > 0 ? canonical : defaultFallback;
         },
 
         getCategoryConfig(catKey, currentCase = null) {
-            const canonical = this.getCanonicalCategories(catKey)[0] || "noun";
+            const canonical = this.getCanonicalCategories(catKey, currentCase)[0] || "noun";
             const isGosplan = typeof document !== "undefined" && document.body && document.body.classList.contains("theme-gosplan");
             const defaultPalette = isGosplan ? GOSPLAN_CATEGORY_COLORS : CATEGORY_COLORS;
-            const defaultConf = defaultPalette[canonical] || defaultPalette.noun;
+            const defaultConf = defaultPalette[canonical] || defaultPalette[catKey] || defaultPalette.noun;
 
             const custom = currentCase?.categories?.[catKey] ||
                            currentCase?.categories?.[canonical] ||

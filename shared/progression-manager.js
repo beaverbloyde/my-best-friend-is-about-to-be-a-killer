@@ -75,14 +75,133 @@
     };
 
     let progressionRules = {};
-    Object.entries(DEFAULT_RULES).forEach(([target, ruleObj]) => {
-        progressionRules[target] = ruleObj;
-        const cleanTarget = target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-        progressionRules[cleanTarget] = ruleObj;
-        if (!target.endsWith('.nwd')) {
-            progressionRules[`cases/${cleanTarget}.json`] = ruleObj;
+    let rulesByTarget = {}; // cleanTarget -> Array<ruleObj>
+    let rawRulesList = [];
+
+    function normalizeTargetKey(target) {
+        if (!target) return "";
+        return target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '').replace(/^content\//, '');
+    }
+
+    function checkSingleRequirement(req) {
+        if (!req || !req.id) return true;
+        if (req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'))) {
+            const reqPath = req.id.replace(/^[./]+/, '');
+            const rawReqPath = reqPath.replace(/^content\//, '');
+            return localStorage.getItem(`chapter_read_${req.id}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_${reqPath}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_${rawReqPath}`) === 'true' ||
+                   localStorage.getItem(`chapter_read_content/${rawReqPath}`) === 'true';
+        } else {
+            const reqCaseId = (req.id || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+            return localStorage.getItem(`case_solved_${reqCaseId}`) === 'true' ||
+                   localStorage.getItem(`case_solved_${req.id}`) === 'true' ||
+                   localStorage.getItem(`case_solved_cases/${reqCaseId}.json`) === 'true';
         }
+    }
+
+    function getContextPrefix() {
+        if (typeof window === 'undefined' || !window.location) return { reader: '../reader/', game: '../game/' };
+        const path = window.location.pathname || '';
+        if (path.includes('/reader')) {
+            return { reader: '', game: '../game/' };
+        } else if (path.includes('/game')) {
+            return { reader: '../reader/', game: '' };
+        } else if (path.includes('/editor')) {
+            return { reader: '../reader/', game: '../game/' };
+        }
+        return { reader: 'reader/', game: 'game/' };
+    }
+
+    function formatRequirement(req) {
+        if (!req) return null;
+        const formatted = { ...req };
+        const prefixes = getContextPrefix();
+        if (formatted.type === 'case') {
+            const cleanCaseId = (formatted.id || '').replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+            if (!formatted.url || formatted.url.endsWith('/game/') || formatted.url === '../game/' || formatted.url.startsWith('?case=') || formatted.url.startsWith('../game/?case=')) {
+                formatted.url = `${prefixes.game}?case=cases/${cleanCaseId}.json`;
+            }
+        } else if (formatted.type === 'chapter' && formatted.id) {
+            const cleanChapterId = formatted.id.replace(/^[./]+/, '');
+            if (!formatted.url || formatted.url.startsWith('index.html?file=') || formatted.url.startsWith('?file=') || formatted.url.startsWith('../reader/')) {
+                formatted.url = prefixes.reader 
+                    ? `${prefixes.reader}?file=${encodeURIComponent(cleanChapterId)}`
+                    : `index.html?file=${encodeURIComponent(cleanChapterId)}`;
+            }
+        }
+        return formatted;
+    }
+
+    function indexRules(rulesArray) {
+        progressionRules = {};
+        rulesByTarget = {};
+        rawRulesList = Array.isArray(rulesArray) ? rulesArray : [];
+
+        rawRulesList.forEach(rule => {
+            const target = rule.target || rule.chapter || rule.case;
+            if (!target) return;
+
+            let reqList = [];
+            if (Array.isArray(rule.requires)) {
+                reqList = rule.requires.map(r => formatRequirement(r)).filter(Boolean);
+            } else if (rule.requires && typeof rule.requires === 'object') {
+                reqList = [formatRequirement(rule.requires)].filter(Boolean);
+            } else if (rule.requiresCase) {
+                const cleanCaseId = rule.requiresCase.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                const prefixes = getContextPrefix();
+                reqList = [{
+                    type: 'case',
+                    id: rule.requiresCase,
+                    title: rule.caseTitle || `Case ${rule.requiresCase}`,
+                    url: rule.caseUrl || `${prefixes.game}?case=cases/${cleanCaseId}.json`,
+                    teaser: rule.teaser || 'Solve the preceding case to unlock.'
+                }];
+            } else if (rule.requiresChapter) {
+                const cleanChapterId = rule.requiresChapter.replace(/^[./]+/, '');
+                const prefixes = getContextPrefix();
+                reqList = [{
+                    type: 'chapter',
+                    id: rule.requiresChapter,
+                    title: rule.chapterTitle || 'Previous Chapter',
+                    url: rule.chapterUrl || (prefixes.reader ? `${prefixes.reader}?file=${encodeURIComponent(cleanChapterId)}` : `index.html?file=${encodeURIComponent(cleanChapterId)}`),
+                    teaser: rule.teaser || 'Read the required chapter to unlock.'
+                }];
+            }
+
+            const normKey = normalizeTargetKey(target);
+            if (!rulesByTarget[normKey]) rulesByTarget[normKey] = [];
+
+            reqList.forEach(req => {
+                const ruleObj = {
+                    target: target,
+                    targetType: rule.targetType || (target.endsWith('.nwd') ? 'chapter' : 'case'),
+                    targetTitle: rule.targetTitle || '',
+                    requires: req
+                };
+                rulesByTarget[normKey].push(ruleObj);
+
+                // Backward compatibility dictionary
+                progressionRules[target] = ruleObj;
+                progressionRules[normKey] = ruleObj;
+                if (!target.endsWith('.nwd')) {
+                    progressionRules[`cases/${normKey}.json`] = ruleObj;
+                }
+            });
+        });
+    }
+
+    // Initialize default rules
+    const defaultRulesArray = [];
+    Object.entries(DEFAULT_RULES).forEach(([target, ruleObj]) => {
+        defaultRulesArray.push({
+            target: target,
+            targetType: ruleObj.targetType,
+            targetTitle: ruleObj.targetTitle,
+            requires: ruleObj.requires
+        });
     });
+    indexRules(defaultRulesArray);
 
     let rulesLoaded = false;
     let toastTimeout = null;
@@ -100,55 +219,7 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && Array.isArray(data.rules)) {
-                        progressionRules = {};
-                        data.rules.forEach(rule => {
-                            const target = rule.target || rule.chapter || rule.case;
-                            if (!target) return;
-
-                            let req = rule.requires;
-                            if (!req) {
-                                if (rule.requiresCase) {
-                                    const cleanCaseId = rule.requiresCase.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-                                    req = {
-                                        type: 'case',
-                                        id: rule.requiresCase,
-                                        title: rule.caseTitle || `Case ${rule.requiresCase}`,
-                                        url: rule.caseUrl || `?case=cases/${cleanCaseId}.json`,
-                                        teaser: rule.teaser || 'Solve the preceding case to unlock.'
-                                    };
-                                } else if (rule.requiresChapter) {
-                                    req = {
-                                        type: 'chapter',
-                                        id: rule.requiresChapter,
-                                        title: rule.chapterTitle || 'Previous Chapter',
-                                        url: rule.chapterUrl || `index.html?file=${encodeURIComponent(rule.requiresChapter)}`,
-                                        teaser: rule.teaser || 'Read the required chapter to unlock.'
-                                    };
-                                }
-                            } else {
-                                if (req.type === 'case' && (!req.url || req.url.endsWith('/game/') || req.url === '../game/')) {
-                                    const cleanCaseId = (req.id || '').replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-                                    req.url = `../game/?case=cases/${cleanCaseId}.json`;
-                                } else if (req.type === 'chapter' && !req.url && req.id) {
-                                    req.url = `index.html?file=${encodeURIComponent(req.id)}`;
-                                }
-                            }
-
-                            const ruleObj = {
-                                targetType: rule.targetType || (target.endsWith('.nwd') ? 'chapter' : 'case'),
-                                targetTitle: rule.targetTitle || '',
-                                requires: req
-                            };
-
-                            progressionRules[target] = ruleObj;
-
-                            // Index aliases for robust key matching
-                            const cleanTarget = target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-                            progressionRules[cleanTarget] = ruleObj;
-                            if (!target.endsWith('.nwd')) {
-                                progressionRules[`cases/${cleanTarget}.json`] = ruleObj;
-                            }
-                        });
+                        indexRules(data.rules);
                     } else if (data && typeof data === 'object') {
                         progressionRules = data;
                     }
@@ -164,20 +235,23 @@
             return progressionRules;
         },
 
+        getRulesForTarget(target) {
+            if (!target) return [];
+            const norm = normalizeTargetKey(target);
+            return rulesByTarget[norm] || [];
+        },
+
         getRule(target) {
-            if (!target) return null;
-            const cleanTarget = target.replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-            const rawTarget = cleanTarget.replace(/^content\//, '');
-            return progressionRules[target] || 
-                   progressionRules[cleanTarget] || 
-                   progressionRules[rawTarget] || 
-                   progressionRules[`content/${rawTarget}`] || 
-                   progressionRules[`cases/${cleanTarget}.json`] || 
-                   null;
+            const list = this.getRulesForTarget(target);
+            return list.length > 0 ? list[0] : (progressionRules[target] || null);
         },
 
         setRules(rules) {
-            progressionRules = rules || {};
+            if (Array.isArray(rules)) {
+                indexRules(rules);
+            } else {
+                progressionRules = rules || {};
+            }
             rulesLoaded = true;
         },
 
@@ -194,25 +268,11 @@
                 return true;
             }
 
-            const rule = progressionRules[path] || 
-                         progressionRules[cleanPath] || 
-                         progressionRules[rawPath] || 
-                         progressionRules[`content/${rawPath}`];
-            if (!rule || !rule.requires) return true;
+            const targetRules = this.getRulesForTarget(path);
+            if (!targetRules || targetRules.length === 0) return true;
 
-            const req = rule.requires;
-            if (req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'))) {
-                const reqPath = req.id.replace(/^[./]+/, '');
-                const rawReqPath = reqPath.replace(/^content\//, '');
-                return localStorage.getItem(`chapter_read_${req.id}`) === 'true' ||
-                       localStorage.getItem(`chapter_read_${reqPath}`) === 'true' ||
-                       localStorage.getItem(`chapter_read_${rawReqPath}`) === 'true' ||
-                       localStorage.getItem(`chapter_read_content/${rawReqPath}`) === 'true';
-            }
-            const reqCaseId = (req.id || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-            return localStorage.getItem(`case_solved_${reqCaseId}`) === 'true' ||
-                   localStorage.getItem(`case_solved_${req.id}`) === 'true' ||
-                   localStorage.getItem(`case_solved_cases/${reqCaseId}.json`) === 'true';
+            // Multiple Prerequisites: ALL requirements must be satisfied (AND logic)
+            return targetRules.every(r => checkSingleRequirement(r.requires));
         },
 
         isCaseUnlocked(caseId, caseFile = null, caseRequires = null) {
@@ -226,42 +286,131 @@
                 (cleanFile && localStorage.getItem(`case_unlocked_${cleanFile}`) === 'true') ||
                 (cleanId && localStorage.getItem(`case_unlocked_cases/${cleanId}.json`) === 'true')
             ) {
-                return { unlocked: true, requirement: null };
+                return { unlocked: true, requirement: null, pendingRequirements: [] };
             }
 
-            let req = null;
             if (caseRequires) {
-                req = caseRequires;
-            } else if (progressionRules) {
-                const rule = progressionRules[caseId] || 
-                             progressionRules[caseFile] || 
-                             progressionRules[cleanId] || 
-                             progressionRules[cleanFile] ||
-                             progressionRules[`cases/${cleanId}.json`];
-                if (rule && rule.requires) req = rule.requires;
+                const met = checkSingleRequirement(caseRequires);
+                return {
+                    unlocked: met,
+                    requirement: met ? null : caseRequires,
+                    pendingRequirements: met ? [] : [caseRequires]
+                };
             }
 
-            if (!req || !req.id) return { unlocked: true, requirement: null };
+            const targetRules = this.getRulesForTarget(caseId || caseFile || cleanId);
+            if (!targetRules || targetRules.length === 0) {
+                return { unlocked: true, requirement: null, pendingRequirements: [] };
+            }
 
-            let isUnlocked = false;
-            if (req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'))) {
-                const reqPath = req.id.replace(/^[./]+/, '');
-                const rawReqPath = reqPath.replace(/^content\//, '');
-                isUnlocked = localStorage.getItem(`chapter_read_${req.id}`) === 'true' ||
-                             localStorage.getItem(`chapter_read_${reqPath}`) === 'true' ||
-                             localStorage.getItem(`chapter_read_${rawReqPath}`) === 'true' ||
-                             localStorage.getItem(`chapter_read_content/${rawReqPath}`) === 'true';
+            // Multiple Prerequisites: Collect all unmet requirements
+            const unmetRules = targetRules.filter(r => !checkSingleRequirement(r.requires));
+            if (unmetRules.length === 0) {
+                return { unlocked: true, requirement: null, pendingRequirements: [] };
+            }
+
+            // Build combined teaser message
+            let combinedTeaser = "";
+            if (unmetRules.length === 1) {
+                combinedTeaser = unmetRules[0].requires.teaser || `Complete ${unmetRules[0].requires.title} to unlock.`;
             } else {
-                const reqCaseId = (req.id || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
-                isUnlocked = localStorage.getItem(`case_solved_${reqCaseId}`) === 'true' ||
-                             localStorage.getItem(`case_solved_${req.id}`) === 'true' ||
-                             localStorage.getItem(`case_solved_cases/${reqCaseId}.json`) === 'true';
+                const reqNames = unmetRules.map(r => r.requires.title || r.requires.id).join(' & ');
+                combinedTeaser = `Requires completing multiple leads: ${reqNames}.`;
             }
 
             return {
-                unlocked: isUnlocked,
-                requirement: req
+                unlocked: false,
+                requirement: unmetRules[0].requires,
+                pendingRequirements: unmetRules.map(r => r.requires),
+                combinedTeaser: combinedTeaser
             };
+        },
+
+        // Evaluate all downstream targets unlocked by completing a specific case or chapter
+        getNewlyUnlockedTargets(completedId, completedType = 'case') {
+            const cleanCompletedId = normalizeTargetKey(completedId);
+            const newlyUnlocked = [];
+
+            const visitedTargets = new Set();
+            for (const [normTarget, rules] of Object.entries(rulesByTarget)) {
+                if (visitedTargets.has(normTarget)) continue;
+                const hasMatchingPrereq = (rules || []).some(r => {
+                    const req = r.requires;
+                    if (!req || !req.id) return false;
+                    return normalizeTargetKey(req.id) === cleanCompletedId;
+                });
+                if (!hasMatchingPrereq) continue;
+
+                visitedTargets.add(normTarget);
+                const firstRule = rules[0] || {};
+                const target = firstRule.target || normTarget;
+                const isChapter = firstRule.targetType === 'chapter' || target.endsWith('.nwd');
+                const isNowUnlocked = isChapter ? this.isChapterUnlocked(target) : this.isCaseUnlocked(target).unlocked;
+
+                if (isNowUnlocked) {
+                    newlyUnlocked.push({
+                        target: target,
+                        targetType: firstRule.targetType || (isChapter ? 'chapter' : 'case'),
+                        targetTitle: firstRule.targetTitle || target,
+                        href: isChapter ? `../reader/?file=${encodeURIComponent(target)}` : `?case=cases/${normTarget}.json`
+                    });
+                }
+            }
+
+            return newlyUnlocked;
+        },
+
+        // Detect any circular dependency loops in progression rules
+        findCycles() {
+            const adj = new Map();
+            const allNodes = new Set();
+
+            for (const [normTarget, rules] of Object.entries(rulesByTarget)) {
+                allNodes.add(normTarget);
+                (rules || []).forEach(r => {
+                    const req = r.requires;
+                    if (!req || !req.id) return;
+                    const u = normalizeTargetKey(req.id);
+                    allNodes.add(u);
+                    if (!adj.has(u)) adj.set(u, []);
+                    adj.get(u).push(normTarget);
+                });
+            }
+
+            const state = new Map(); // 0 = unvisited, 1 = visiting, 2 = visited
+            const cycles = [];
+
+            for (const node of allNodes) {
+                state.set(node, 0);
+            }
+
+            function dfs(u, path) {
+                state.set(u, 1);
+                path.push(u);
+
+                const neighbors = adj.get(u) || [];
+                for (const v of neighbors) {
+                    if (state.get(v) === 1) {
+                        const cycleStartIndex = path.indexOf(v);
+                        if (cycleStartIndex !== -1) {
+                            cycles.push(path.slice(cycleStartIndex).concat(v));
+                        }
+                    } else if (state.get(v) === 0) {
+                        dfs(v, path);
+                    }
+                }
+
+                path.pop();
+                state.set(u, 2);
+            }
+
+            for (const node of allNodes) {
+                if (state.get(node) === 0) {
+                    dfs(node, []);
+                }
+            }
+
+            return cycles;
         },
 
         markChapterRead(path) {

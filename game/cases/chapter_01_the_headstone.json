@@ -1,0 +1,261 @@
+{
+  "id": "chapter_01_the_headstone",
+  "meta": {
+    "title": "CASE 4: THE HEADSTONE",
+    "subtitle": "Vision Boundary",
+    "docketTitle": "📋 THE TRUTH // THE TRUE IDENTITY OF THE CHARRED CORPSE",
+    "author": "Beaver Bloyde",
+    "version": "1.0",
+    "successMessage": "☭ DEDUCTION VERIFIED! Case Successfully Solved!"
+  },
+  "timeline": {
+    "Vision": {
+      "time": "Vision",
+      "title": "Vision",
+      "location": "Vision Boundary",
+      "clues": [
+        {
+          "type": "Physical Evidence",
+          "title": "Headstone (Plot 02)",
+          "text": "[voronova:upper]\n[polina]\n[sergeevna]\n\n17.03.2045 – 09.08.2118\n\nREST IN PEACE"
+        },
+        {
+          "type": "Physical Evidence",
+          "title": "Headstone (Plot 06)",
+          "text": "[zakharov:upper]\n[leonid]\n[borisovich]\n\n28.11.2031 – 14.10.2098\n\nREST IN PEACE"
+        },
+        {
+          "type": "Physical Evidence",
+          "title": "Headstone (Plot 09)",
+          "text": "[ruzhin:upper]\n[anatoley]\n[viktorovich]\n\n12.08.2052 – 14.04.2118\n\nREST IN PEACE"
+        },
+        {
+          "type": "Physical Evidence",
+          "title": "Headstone (Plot 11)",
+          "text": "[kuzmina:upper]\n[tatyana]\n[romanovna]\n\n04.05.2059 – 23.01.2115\n\nREST IN PEACE"
+        },
+        {
+          "type": "Physical Evidence",
+          "title": "Headstone (Plot 15)",
+          "text": "[solovyov:upper]\n[matvey]\n[timofeevich]\n\n11.02.2024 – 30.06.2089\n\nREST IN PEACE"
+        }
+      ],
+      "isVision": true
+    }
+  },
+  "lore": {
+    "Headstone Inscription Convention": {
+      "id": "lore-headstone-convention",
+      "tag": "USSR CIVIL RECORD & MEMORIAL STANDARDS // ARCHIVE NO. 44-GR",
+      "title": "Soviet Headstone Inscription & Naming Conventions",
+      "fullName": "Порядок оформления надгробных памятников (Procedure for Gravestone Memorial Inscription)",
+      "cyrillic": "Надгробные памятники и порядок именования [IPA_ru:nədˈgrobnɨjə ˈpamʲɪtʲnʲɪkʲɪ i pɐˈrʲadək ɪmʲɪnɐˈvanʲɪjə] (ФИО [IPA_ru:ˌɛf i ˈo])",
+      "standard": "GOST-USSR Memorial & Civil Registry Standard (FIO Order)",
+      "requiredWords": [
+        "ruzhin",
+        "anatoley",
+        "viktorovich",
+        "voronova",
+        "polina",
+        "sergeevna",
+        "zakharov",
+        "leonid",
+        "borisovich",
+        "kuzmina",
+        "tatyana",
+        "romanovna",
+        "solovyov",
+        "matvey",
+        "timofeevich"
+      ],
+      "body": "In Soviet civil documentation, registry archives, and memorial headstones, an individual's official identity historically follows the **Tripartite Naming Structure (ФИО [IPA_ru:ˌɛf i ˈo] — Familiya, Imya, Otchestvo)**:\n\n1. **Surname (Фамилия [IPA_ru:fɐˈmʲilʲɪjə] / Familiya):** The hereditary family name. On traditional Soviet memorial stones and plaques, the surname is prominently engraved in **ALL-CAPS block lettering on the top line** (e.g. **RUZHIN**, **VORONOVA**).\n2. **Given Name (Имя [IPA_ru:ˈimʲə] / Imya):** The individual's personal first name, inscribed directly beneath the surname (e.g. **Anatoley**, **Polina**).\n3. **Patronymic / Matronymic Lineage Designation (Отчество [IPA_ru:ˈottɕɪstvə] / Otchestvo):** The ancestral lineage name, traditionally ending in *-ovich / -evich* for male lineages or *-ovna / -evna* for female lineages (e.g. **Viktorovich**, **Sergeevna**).\n\n**Progressive Civil Registry Standards:**\nUnder modern Soviet egalitarian civil code, lineage designations have long been progressive: citizens may derive their middle lineage name from either paternal (patronymic) or maternal (matronymic) forebears, choose combined family designations, or omit lineage designations altogether in their civil registry.\n\n**Memorial vs. Spoken Syntax:**\nDespite contemporary civil flexibility, classical stone-carving conventions remain steadfast: while standard spoken address orders an individual's full name as **Given Name + Lineage Name + Surname**, official gravestones and state death registers invert this layout into **Surname ➔ Given Name ➔ Lineage Name**."
+    }
+  },
+  "categories": {
+    "name": {
+      "hex": "#38bdf8",
+      "icon": "👤",
+      "label": "Name"
+    }
+  },
+  "keywords": {
+    "ruzhin": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Ruzhin"
+      }
+    },
+    "anatoley": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Anatoley"
+      }
+    },
+    "viktorovich": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Viktorovich"
+      }
+    },
+    "voronova": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Voronova"
+      }
+    },
+    "polina": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Polina"
+      }
+    },
+    "sergeevna": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Sergeevna"
+      }
+    },
+    "zakharov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Zakharov"
+      }
+    },
+    "leonid": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Leonid"
+      }
+    },
+    "borisovich": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Borisovich"
+      }
+    },
+    "kuzmina": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Kuzmina"
+      }
+    },
+    "tatyana": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Tatyana"
+      }
+    },
+    "romanovna": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Romanovna"
+      }
+    },
+    "solovyov": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Solovyov"
+      }
+    },
+    "matvey": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Matvey"
+      }
+    },
+    "timofeevich": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Timofeevich"
+      }
+    },
+    "igor": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Igor"
+      }
+    },
+    "valentinovich": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Valentinovich"
+      }
+    },
+    "romashin": {
+      "category": [
+        "name"
+      ],
+      "variations": {
+        "base": "Romashin"
+      }
+    }
+  },
+  "initialKeywords": [
+    "igor",
+    "valentinovich",
+    "romashin"
+  ],
+  "docket": {
+    "template": "The corpse wasn't [slot:igor_1:name] [slot:igor_2:name] [slot:igor_3:name] but [slot:anatoley_1:name] [slot:anatoley_2:name] [slot:anatoley_3:name], instead.\n"
+  },
+  "solution": {
+    "igor_1": "igor",
+    "igor_2": "valentinovich",
+    "igor_3": "romashin",
+    "anatoley_1": "anatoley",
+    "anatoley_2": "viktorovich",
+    "anatoley_3": "ruzhin"
+  },
+  "hints": [
+    {
+      "stage": 1,
+      "title": "Stage 1: A Question of Identity",
+      "text": "The docket compares the individual everyone believed died with the true identity revealed at this burial site. Have you collected the inscriptions from the stones and checked the dossier to understand the premise?"
+    },
+    {
+      "stage": 2,
+      "title": "Stage 2: Cross-Referencing the Timeline",
+      "text": "Several gravestones stand across the cemetery grounds with different dates of passing. Which date directly ties one of these burial plots to the tragic incident of today?"
+    },
+    {
+      "stage": 3,
+      "title": "Stage 3: Translating the Epitaph",
+      "text": "Once you have isolated the correct headstone, examine the top-to-bottom layout of the engraved lines. How does your memorial lore archive help you identify which line corresponds to the first name, lineage, and family surname?"
+    }
+  ],
+  "keywordTags": {}
+}

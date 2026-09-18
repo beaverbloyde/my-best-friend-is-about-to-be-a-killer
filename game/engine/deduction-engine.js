@@ -482,6 +482,72 @@ class DeductionEngine {
 
         const discoveredCases = new Map(); // id -> { id, title, file }
 
+        // 1. Try dynamic case discovery via dev server API
+        let apiDiscovered = false;
+        try {
+            const apiRes = await fetch(`/api/list-cases?t=${Date.now()}`);
+            if (apiRes.ok) {
+                const apiCases = await apiRes.json();
+                if (Array.isArray(apiCases) && apiCases.length > 0) {
+                    apiCases.forEach(c => {
+                        if (c && c.path) {
+                            const cleanId = (c.id || c.path).replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                            discoveredCases.set(cleanId, {
+                                id: cleanId,
+                                title: c.title || cleanId,
+                                file: c.path.startsWith('cases/') ? c.path : `cases/${c.path}`
+                            });
+                        }
+                    });
+                    apiDiscovered = true;
+                }
+            }
+        } catch (e) {
+            // Static server fallback
+        }
+
+        // 2. Fallback when API not available: verify candidates via fetch
+        if (!apiDiscovered) {
+            const candidates = new Set();
+            try {
+                const localReg = JSON.parse(localStorage.getItem('logos_case_registry') || '[]');
+                if (Array.isArray(localReg)) {
+                    localReg.forEach(item => {
+                        if (item && item.path) candidates.add(item.path);
+                        else if (item && item.id) candidates.add(`cases/${item.id}.json`);
+                    });
+                }
+            } catch (e) {}
+
+            const fallbackNames = [
+                "cases/chapter_01_morning_routine.json",
+                "cases/chapter_01_award_ceremony.json",
+                "cases/chapter_01_the_man_on_the_news.json",
+                "cases/chapter_01_the_headstone.json",
+                "cases/case_template.json"
+            ];
+            fallbackNames.forEach(fn => candidates.add(fn));
+
+            await Promise.all(Array.from(candidates).map(async (candPath) => {
+                try {
+                    const clean = candPath.replace(/^[./]+/, '');
+                    const res = await fetch(`${clean}?t=${Date.now()}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const cleanId = (data.id || clean).replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                        if (!discoveredCases.has(cleanId)) {
+                            discoveredCases.set(cleanId, {
+                                id: cleanId,
+                                title: data.meta?.title || data.title || cleanId,
+                                file: clean.startsWith('cases/') ? clean : `cases/${clean}`
+                            });
+                        }
+                    }
+                } catch (e) {}
+            }));
+        }
+
+        // 3. Scan progression rules
         try {
             const cacheBustUrl = progressionUrl.includes('?') ? `${progressionUrl}&t=${Date.now()}` : `${progressionUrl}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl);
@@ -567,7 +633,15 @@ class DeductionEngine {
         const selector = document.getElementById("case-selector");
         if (selector && Array.isArray(this.registry)) {
             selector.innerHTML = "";
-            this.registry.forEach(c => {
+
+            // Sort cases alphabetically with natural numeric ordering
+            const sorted = [...this.registry].sort((a, b) => {
+                const titleA = (a.title || a.id || "").toLowerCase();
+                const titleB = (b.title || b.id || "").toLowerCase();
+                return titleA.localeCompare(titleB, undefined, { numeric: true, sensitivity: 'base' });
+            });
+
+            sorted.forEach(c => {
                 const opt = document.createElement("option");
                 opt.value = c.file;
                 const check = this.isCaseUnlocked(c.id, c.file);
@@ -671,7 +745,7 @@ class DeductionEngine {
 
     getCanonicalCategories(tagOrTags) {
         return typeof LogosCategoryTheme !== 'undefined'
-            ? LogosCategoryTheme.getCanonicalCategories(tagOrTags)
+            ? LogosCategoryTheme.getCanonicalCategories(tagOrTags, this.currentCase)
             : ["noun"];
     }
 
@@ -771,12 +845,12 @@ class DeductionEngine {
         }
 
         const capStr = String(capitalize || "").toLowerCase().trim();
-        if (capStr === "upper" || capStr === "cap" || capStr === "capitalize" || capStr === "title" || capitalize === true || capStr === "true") {
-            text = text.charAt(0).toUpperCase() + text.slice(1);
-        } else if (capStr === "all_upper" || capStr === "all" || capStr === "caps" || capStr === "uppercase") {
+        if (capStr === "upper" || capStr === "all_upper" || capStr === "all" || capStr === "caps" || capStr === "uppercase") {
             text = text.toUpperCase();
         } else if (capStr === "lower" || capStr === "all_lower" || capStr === "lowercase") {
             text = text.toLowerCase();
+        } else if (capStr === "title" || capStr === "cap" || capStr === "capitalize" || capitalize === true || capStr === "true") {
+            text = text.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
         }
         return text;
     }
@@ -1060,6 +1134,7 @@ class DeductionEngine {
         text = text.replace(/\[(?!br\b|vspace\b|field:|footnote:|img:|b\b|\/b\b|i\b|\/i\b|IPA[_-][a-zA-Z0-9\-_]+:|slot:|num:)([^\]]+)\]/g, (match, raw) => {
             const parts = raw.split(":").map(p => p.trim());
             const rawId = parts[0];
+            const cleanId = rawId.toLowerCase().replace(/[^a-z0-9_]/g, "_");
             let variation = "base";
             let cap = "";
 
@@ -1075,8 +1150,8 @@ class DeductionEngine {
                 cap = parts[2] || "";
             }
 
-            const def = this.getKeywordDefinition(rawId);
-            const id = def ? def.id : rawId;
+            const def = this.getKeywordDefinition(cleanId) || this.getKeywordDefinition(rawId);
+            const id = def ? def.id : cleanId;
             const display = def ? this.getConjugatedKeyword(id, variation, cap) : (parts[1] || rawId);
             return `<span class="kw" data-id="${id}" data-word="${id}">${display}</span>`;
         });
@@ -1415,8 +1490,17 @@ class DeductionEngine {
         if (!check.unlocked) {
             const container = document.getElementById("scene-container");
             if (container) {
-                const req = check.requirement;
-                const isChapterReq = req.type === 'chapter' || (req.id && req.id.endsWith('.nwd'));
+                const req = check.requirement || {};
+                const isChapterReq = req.type === 'chapter' || (req.id && String(req.id).endsWith('.nwd'));
+                let targetUrl = '';
+                if (isChapterReq) {
+                    const cleanChapterId = (req.id || '').replace(/^[./]+/, '');
+                    targetUrl = `../reader/?file=${encodeURIComponent(cleanChapterId)}`;
+                } else {
+                    const cleanCaseId = (req.id || '').replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
+                    targetUrl = req.url && !req.url.startsWith('index.html?file=') ? req.url : `?case=cases/${cleanCaseId}.json`;
+                }
+
                 container.innerHTML = `
                     <div class="case-locked-screen">
                         <div class="case-locked-badge">
@@ -1432,7 +1516,7 @@ class DeductionEngine {
                             <span class="case-locked-req-label">REQUIRED PREREQUISITE</span>
                             <span class="case-locked-req-title">${req.title || (isChapterReq ? "Previous Chapter" : "Previous Case")}</span>
                             <p style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 10px 0;">${req.teaser || "Complete the required content to unlock this investigation."}</p>
-                            <a href="${req.url || (isChapterReq ? `../reader/?file=${encodeURIComponent(req.id)}` : `?case=cases/${req.id}.json`)}" class="case-locked-action-btn">
+                            <a href="${targetUrl}" class="case-locked-action-btn">
                                 ${isChapterReq ? "📖 Open Chapter in Novel Reader ↵" : "🚀 Launch Prerequisite Case ↵"}
                             </a>
                         </div>
@@ -1589,7 +1673,7 @@ class DeductionEngine {
             const btn = document.createElement("button");
             btn.className = "time-btn";
             if (scene.isVision) btn.classList.add("vision-btn");
-            btn.innerText = scene.time || key;
+            btn.innerText = scene.time || scene.title || key;
             btn.onclick = () => this.selectTime(key);
             btn.id = `btn-time-${key.replace(/[^a-zA-Z0-9]/g, "_")}`;
             container.appendChild(btn);
@@ -1730,22 +1814,34 @@ class DeductionEngine {
         }
     }
 
+    getCaseCategoryList() {
+        if (this.currentCase?.categories && typeof this.currentCase.categories === "object" && Object.keys(this.currentCase.categories).length > 0) {
+            return Object.entries(this.currentCase.categories).map(([key, cat]) => ({
+                id: key,
+                tag: key,
+                label: `${cat.icon ? cat.icon + ' ' : ''}${cat.label || key}`,
+                hex: cat.hex
+            }));
+        }
+        if (Array.isArray(this.currentCase?.customCategories)) {
+            return this.currentCase.customCategories;
+        }
+        return [
+            { id: "name", tag: "name", label: "👤 Names" },
+            { id: "location", tag: "location", label: "📍 Locations" },
+            { id: "verb", tag: "verb", label: "⚡ Actions" },
+            { id: "medical", tag: "medical", label: "💊 Medical" },
+            { id: "temporal", tag: "temporal", label: "🌀 Temporal" },
+            { id: "calendar", tag: "calendar", label: "📅 Dates" },
+            { id: "noun", tag: "noun", label: "📦 Nouns" }
+        ];
+    }
+
     renderFilterChips() {
         const filterContainer = document.getElementById("filter-chips-bar");
         if (!filterContainer) return;
 
-        const defaultCategories = [
-            { id: "all", label: "All" },
-            { id: "name", label: "👤 Names" },
-            { id: "location", label: "📍 Locations" },
-            { id: "verb", label: "⚡ Actions" },
-            { id: "medical", label: "💊 Medical" },
-            { id: "temporal", label: "🌀 Temporal" },
-            { id: "calendar", label: "📅 Dates" },
-            { id: "noun", label: "📦 Nouns" }
-        ];
-
-        const customCategories = this.currentCase?.customCategories || defaultCategories;
+        const categoryDefs = this.getCaseCategoryList();
         filterContainer.innerHTML = "";
 
         const allBtn = document.createElement("button");
@@ -1754,7 +1850,7 @@ class DeductionEngine {
         allBtn.onclick = () => this.setKeywordFilter("all", allBtn);
         filterContainer.appendChild(allBtn);
 
-        customCategories.forEach(cat => {
+        categoryDefs.forEach(cat => {
             if (cat.id === "all") return;
             const btn = document.createElement("button");
             btn.className = "filter-chip";
@@ -1815,15 +1911,7 @@ class DeductionEngine {
         }
 
         if (this.currentSort === "category") {
-            const categoryDefs = this.currentCase?.customCategories || [
-                { id: "names", label: "👤 Names & People", tag: "name" },
-                { id: "locations", label: "📍 Locations & Facilities", tag: "location" },
-                { id: "verbs", label: "⚡ Actions & Verbs", tag: "verb" },
-                { id: "medical", label: "💊 Medical & Pathology", tag: "medical" },
-                { id: "temporal", label: "🌀 Temporal & Anomalies", tag: "temporal" },
-                { id: "calendar", label: "📅 Calendar & Dates", tag: "calendar" },
-                { id: "nouns", label: "📦 General Items", tag: "noun" }
-            ];
+            const categoryDefs = this.getCaseCategoryList();
 
             let renderedAny = false;
             categoryDefs.forEach(cat => {
@@ -2597,16 +2685,32 @@ class DeductionEngine {
             return;
         }
 
-        const solution = this.currentCase.solution;
+        const solution = this.currentCase.solution || {};
+        const template = this.currentCase.docket?.template || "";
+        const activeSlotIds = new Set();
+        const wordSlotRegex = /\[slot:([a-zA-Z0-9_-]+)(?::([^\]]+))?\]/g;
+        const numSlotRegex = /\[num:([a-zA-Z0-9_-]+):([0-9]+):([^\]]+)\]/g;
+        let sm;
+        while ((sm = wordSlotRegex.exec(template)) !== null) activeSlotIds.add(sm[1]);
+        while ((sm = numSlotRegex.exec(template)) !== null) activeSlotIds.add(sm[1]);
+
+        // Filter solution object to only include slots that exist in the active template
+        const activeSolution = {};
+        for (const [slotId, correctAns] of Object.entries(solution)) {
+            if (activeSlotIds.size === 0 || activeSlotIds.has(slotId)) {
+                activeSolution[slotId] = correctAns;
+            }
+        }
+
         let correctCount = 0;
-        const total = Object.keys(solution).length;
+        const total = Object.keys(activeSolution).length;
 
         // Remove any previous highlight classes to avoid revealing specific slot correctness
         document.querySelectorAll(".slot, .num-slot").forEach(slot => {
             slot.classList.remove("wrong", "correct");
         });
 
-        for (let [slotId, correctAns] of Object.entries(solution)) {
+        for (let [slotId, correctAns] of Object.entries(activeSolution)) {
             const userVal = this.docketSlots[slotId];
 
             let isCorrect = false;
@@ -2639,9 +2743,12 @@ class DeductionEngine {
         const incorrectCount = total - correctCount;
 
         if (incorrectCount === 0) {
-            // 1. Correct (All correct) - Mark case as solved in localStorage
+            // 1. Correct (All correct) - Mark case as solved in localStorage & Progression Manager
             const caseId = this.currentCase?.id || "chapter_01_morning_routine";
             localStorage.setItem(`case_solved_${caseId}`, "true");
+            if (typeof LogosProgression !== "undefined") {
+                LogosProgression.markCaseSolved(caseId);
+            }
             this.saveProgress();
 
             window.sfx?.playSuccess();
@@ -2668,23 +2775,107 @@ class DeductionEngine {
             msgEl.innerText = this.currentCase?.meta?.successMessage || "All case parameters have been verified!";
         }
 
-        const unlockInfo = this.currentCase?.meta?.unlocks || this.currentCase?.meta?.unlocksChapter;
-        const unlockCard = modal.querySelector(".victory-unlocked-card");
-        const readBtn = modal.querySelector("#victory-read-btn") || modal.querySelector(".victory-read-btn");
+        const currentCaseId = this.currentCase?.id || "";
+        const cleanCaseId = currentCaseId.replace(/^cases\//, '').replace(/\.json$/, '');
 
-        if (unlockInfo && (unlockInfo.chapter || unlockInfo.file)) {
-            const targetFile = unlockInfo.chapter || unlockInfo.file;
+        // Check if LogosProgression has multiple newly unlocked targets
+        let newlyUnlockedList = [];
+        if (typeof LogosProgression !== "undefined") {
+            newlyUnlockedList = LogosProgression.getNewlyUnlockedTargets(cleanCaseId, 'case') || [];
+        }
+
+        const container = modal.querySelector(".victory-body");
+        let unlockCardsContainer = modal.querySelector(".victory-unlocked-container");
+        const defaultUnlockCard = modal.querySelector(".victory-unlocked-card");
+        const defaultReadBtn = modal.querySelector("#victory-read-btn") || modal.querySelector(".victory-read-btn");
+
+        if (newlyUnlockedList.length > 0) {
+            if (defaultUnlockCard) defaultUnlockCard.style.display = "none";
+            if (defaultReadBtn) defaultReadBtn.style.display = "none";
+
+            // Clean up any previously dynamically rendered multi-unlock containers
+            if (unlockCardsContainer) {
+                unlockCardsContainer.innerHTML = "";
+            } else {
+                unlockCardsContainer = document.createElement("div");
+                unlockCardsContainer.className = "victory-unlocked-container";
+                unlockCardsContainer.style.display = "flex";
+                unlockCardsContainer.style.flexDirection = "column";
+                unlockCardsContainer.style.gap = "10px";
+                unlockCardsContainer.style.marginTop = "14px";
+                if (container) container.appendChild(unlockCardsContainer);
+            }
+
+            newlyUnlockedList.forEach(item => {
+                const isChapter = item.targetType === 'chapter' || item.target.endsWith('.nwd');
+                const card = document.createElement("div");
+                card.className = "victory-unlocked-card";
+                card.style.display = "flex";
+                card.style.flexDirection = "column";
+                card.style.gap = "6px";
+
+                card.innerHTML = `
+                    <div class="unlocked-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700; font-size:12px; color:var(--accent);">${isChapter ? '📖 NOVEL CHAPTER UNLOCKED' : '🎮 NEXT CASE UNLOCKED'}</span>
+                        <span class="unlocked-badge" style="font-size:10px; padding:2px 6px; background:rgba(39,201,63,0.2); color:var(--success); border-radius:3px;">READY</span>
+                    </div>
+                    <div class="unlocked-card-title" style="font-weight:700; font-size:14px;">${item.targetTitle || item.target}</div>
+                    <p class="unlocked-card-desc" style="margin:0; font-size:12px; opacity:0.8;">${isChapter ? 'Proceed to the Novel Reader to continue reading.' : 'Proceed to the next investigation case.'}</p>
+                    <div style="margin-top:4px;">
+                        <a href="${item.href}" class="open-docket-btn" style="background:var(--success); color:var(--bg-primary); text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:12px; padding:6px 12px; border-radius:4px;">
+                            ${isChapter ? '📖 Read in Novel Reader ↵' : '🎮 Start Case ↵'}
+                        </a>
+                    </div>
+                `;
+                unlockCardsContainer.appendChild(card);
+            });
+            return;
+        }
+
+        // Fallback for single unlock or legacy unlockInfo in case meta
+        if (unlockCardsContainer) {
+            unlockCardsContainer.innerHTML = "";
+        }
+
+        let unlockInfo = this.currentCase?.meta?.unlocks || this.currentCase?.meta?.unlocksChapter;
+        if (!unlockInfo && this.progressionRules) {
+            for (const [target, rule] of Object.entries(this.progressionRules)) {
+                const req = rule?.requires;
+                if (!req) continue;
+                const reqId = (req.id || "").replace(/^cases\//, '').replace(/\.json$/, '');
+                if (req.type === 'case' && (reqId === cleanCaseId || req.id === currentCaseId)) {
+                    const isChapter = rule.targetType === 'chapter' || target.endsWith('.nwd');
+                    unlockInfo = {
+                        target: target,
+                        chapter: isChapter ? target : null,
+                        case: !isChapter ? target : null,
+                        title: rule.targetTitle || (isChapter ? "Novel Chapter Unlocked" : "Next Case Unlocked"),
+                        description: isChapter ? "Proceed to the Novel Reader to continue reading the story." : "Proceed to the next investigation case.",
+                        buttonText: isChapter ? "📖 Read in Novel Reader ↵" : "🎮 Proceed to Next Case ↵",
+                        href: isChapter ? `../reader/?file=${encodeURIComponent(target)}` : `?case=cases/${target.replace(/^cases\//, '').replace(/\.json$/, '')}.json`
+                    };
+                    break;
+                }
+            }
+        }
+
+        const unlockCard = defaultUnlockCard;
+        const readBtn = defaultReadBtn;
+
+        if (unlockInfo && (unlockInfo.target || unlockInfo.chapter || unlockInfo.file || unlockInfo.case)) {
+            const targetFile = unlockInfo.chapter || unlockInfo.file || unlockInfo.target;
+            const targetHref = unlockInfo.href || (unlockInfo.case ? `?case=cases/${unlockInfo.case.replace(/\.json$/, '')}.json` : `../reader/?file=${encodeURIComponent(targetFile)}`);
             if (unlockCard) {
                 unlockCard.style.display = "flex";
                 const titleEl = unlockCard.querySelector(".unlocked-card-title");
                 const descEl = unlockCard.querySelector(".unlocked-card-desc");
-                if (titleEl) titleEl.innerText = unlockInfo.title || "Novel Chapter Unlocked";
-                if (descEl) descEl.innerText = unlockInfo.description || unlockInfo.desc || "Proceed to the Novel Reader to continue reading.";
+                if (titleEl) titleEl.innerText = unlockInfo.title || "Next Progression Unlocked";
+                if (descEl) descEl.innerText = unlockInfo.description || unlockInfo.desc || "Proceed to continue your investigation.";
             }
             if (readBtn) {
                 readBtn.style.display = "inline-flex";
-                readBtn.href = `../reader/?file=${encodeURIComponent(targetFile)}`;
-                readBtn.innerText = unlockInfo.buttonText || "📖 Read in Novel Reader ↵";
+                readBtn.href = targetHref;
+                readBtn.innerText = unlockInfo.buttonText || "📖 Proceed ↵";
             }
         } else {
             if (unlockCard) unlockCard.style.display = "none";

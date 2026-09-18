@@ -1549,23 +1549,37 @@
     // URL State Routing
     function handleRoute() {
         const params = new URLSearchParams(window.location.search);
-        const pathParam = params.get('file') || params.get('doc');
+        let rawParam = params.get('file') || params.get('doc');
 
-        if (pathParam && docList.some(item => item.path === pathParam)) {
-            loadDocument(pathParam);
-        } else {
-            // Try loading from bookmark first if no explicit URL file param is set
-            const savedPath = localStorage.getItem('chronos_bookmark_path');
-            if (savedPath && docList.some(item => item.path === savedPath)) {
-                navigateToDocument(savedPath);
-            } else if (docList.length > 0) {
-                // Load the first NOVEL chapter by default
-                const firstNovel = docList.find(item => item.class === 'NOVEL');
-                if (firstNovel) {
-                    navigateToDocument(firstNovel.path);
-                } else {
-                    loadDocument(docList[0].path);
-                }
+        if (rawParam) {
+            let pathParam = rawParam;
+            try { pathParam = decodeURIComponent(rawParam); } catch (e) {}
+            const clean = pathParam.replace(/^[./]+/, '');
+            const rawHash = clean.replace(/^content\//, '').replace(/\.nwd$/, '');
+            const match = docList.find(item => 
+                item.path === pathParam || 
+                item.path === clean || 
+                item.path === `content/${clean}` || 
+                item.hash === rawHash ||
+                item.path === `content/${rawHash}.nwd`
+            );
+            if (match) {
+                loadDocument(match.path);
+                return;
+            }
+        }
+
+        // Try loading from bookmark first if no explicit URL file param is set
+        const savedPath = localStorage.getItem('chronos_bookmark_path');
+        if (savedPath && docList.some(item => item.path === savedPath)) {
+            navigateToDocument(savedPath);
+        } else if (docList.length > 0) {
+            // Load the first NOVEL chapter by default
+            const firstNovel = docList.find(item => item.class === 'NOVEL');
+            if (firstNovel) {
+                navigateToDocument(firstNovel.path);
+            } else {
+                loadDocument(docList[0].path);
             }
         }
     }

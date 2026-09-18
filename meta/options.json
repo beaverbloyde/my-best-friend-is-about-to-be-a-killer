@@ -15,6 +15,28 @@
     "GuiNovelView": {
       "lastCol": "HIDDEN",
       "lastColSize": 25
+    },
+    "GuiManuscriptBuild": {
+      "winWidth": 620,
+      "winHeight": 360,
+      "fmtWidth": 360,
+      "sumWidth": 222
+    },
+    "GuiManuscript": {
+      "winWidth": 900,
+      "winHeight": 600,
+      "optsWidth": 225,
+      "viewWidth": 649,
+      "listHeight": 187,
+      "detailsHeight": 289,
+      "detailsWidth": 100,
+      "detailsExpanded": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "showNewPage": true
     }
   }
 }

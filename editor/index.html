@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS-3 | Case Authoring Terminal & Maker</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        // Gate check: Case Authoring Terminal is restricted strictly to local developer workstations
+        (function() {
+            var host = window.location.hostname;
+            var isLocal = !host || 
+                          host === 'localhost' || 
+                          host === '127.0.0.1' || 
+                          host === '0.0.0.0' || 
+                          host.startsWith('192.168.') || 
+                          host.startsWith('10.') || 
+                          host.endsWith('.local') || 
+                          window.location.protocol === 'file:';
+            
+            if (!isLocal) {
+                // Redirect remote/hosted visitors back to the player hub
+                window.location.replace('../index.html');
+            }
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="editor.css?v=1.0">
+</head>
+<body class="theme-soviet-amber">
+
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="header-brand">
+            <span>☭</span>
+            <span>LOGOS-3 CASE AUTHORING TERMINAL</span>
+        </div>
+
+        <div class="header-actions">
+            <!-- Preset Case Selector -->
+            <select id="preset-case-select" title="Load an existing case to edit or create a blank one">
+                <option value="">-- Load Case Preset --</option>
+                <option value="new">✨ Create New Blank Case</option>
+            </select>
+
+            <!-- Load JSON File Button -->
+            <label class="btn btn-sm" title="Upload case .json from your computer">
+                <input type="file" id="file-input" accept=".json" style="display: none;">
+                📂 Load JSON
+            </label>
+
+            <!-- Copy JSON -->
+            <button class="btn btn-sm" id="btn-copy-json" title="Copy raw formatted JSON to clipboard">
+                📋 Copy JSON
+            </button>
+
+            <!-- Save Direct to File -->
+            <button class="btn btn-sm btn-primary" id="btn-save-json" onclick="window.caseEditor.saveCurrentCaseToFile()" title="Save case directly to game/cases/*.json">
+                💾 Save Case
+            </button>
+
+            <!-- Download JSON Button -->
+            <button class="btn btn-sm" id="btn-export-json" title="Download case .json file">
+                ⤓ Export JSON
+            </button>
+
+            <a href="../game/" class="btn btn-sm" style="text-decoration: none;" title="Return to Case Player">
+                🎮 Play Game
+            </a>
+        </div>
+    </header>
+
+    <!-- Main 3-Pane Container -->
+    <div class="app-container">
+        
+        <!-- Left Sidebar: Module Navigation Tabs -->
+        <nav class="editor-sidebar">
+            <ul class="nav-tab-list">
+                <!-- Category 1: Story Campaign & Multi-Case Progression -->
+                <li class="nav-tab-category">
+                    <span>🗺️ CAMPAIGN & PROGRESSION</span>
+                </li>
+                <li class="nav-tab-item" data-tab="progression">
+                    <span>🗺️</span>
+                    <span>Story Progression Graph</span>
+                    <span class="nav-tab-badge" id="badge-progression">0</span>
+                </li>
+
+                <!-- Category 2: Active Investigation Case Authoring -->
+                <li class="nav-tab-category">
+                    <span>📂 CASE AUTHORING</span>
+                </li>
+                <li class="nav-tab-item active" data-tab="metadata">
+                    <span>⚙️</span>
+                    <span>1. Metadata & Identity</span>
+                </li>
+                <li class="nav-tab-item" data-tab="timeline">
+                    <span>🕒</span>
+                    <span>2. Timeline & Evidence</span>
+                    <span class="nav-tab-badge" id="badge-timeline">0</span>
+                </li>
+                <li class="nav-tab-item" data-tab="categories">
+                    <span>🏷️</span>
+                    <span>3. Categories & Tags</span>
+                    <span class="nav-tab-badge" id="badge-categories">0</span>
+                </li>
+                <li class="nav-tab-item" data-tab="keywords">
+                    <span>📦</span>
+                    <span>4. Keywords & Grammar</span>
+                    <span class="nav-tab-badge" id="badge-keywords">0</span>
+                </li>
+                <li class="nav-tab-item" data-tab="docket">
+                    <span>📋</span>
+                    <span>5. Docket & Solutions</span>
+                </li>
+                <li class="nav-tab-item" data-tab="lore">
+                    <span>📖</span>
+                    <span>6. Lore Codex</span>
+                    <span class="nav-tab-badge" id="badge-lore">0</span>
+                </li>
+                <li class="nav-tab-item" data-tab="hints">
+                    <span>💡</span>
+                    <span>7. Hint Advisory</span>
+                    <span class="nav-tab-badge" id="badge-hints">0</span>
+                </li>
+
+                <!-- Category 3: Testing, Diagnostics & Sandbox -->
+                <li class="nav-tab-category">
+                    <span>🧪 TEST & VALIDATION</span>
+                </li>
+                <li class="nav-tab-item" data-tab="diagnostics">
+                    <span>🩺</span>
+                    <span>8. Case Diagnostics</span>
+                </li>
+                <li class="nav-tab-item" data-tab="sandbox">
+                    <span>🎮</span>
+                    <span>9. Playtest Sandbox</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Center Workspace: Active Form Module -->
+        <main class="editor-workspace" id="tab-workspace">
+            <!-- Dynamically populated by editor.js -->
+        </main>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">Notification message</div>
+
+    <!-- Modular Editor Modules -->
+    <script src="modules/constants.js?v=2.0"></script>
+    <script src="modules/tab-metadata.js?v=2.0"></script>
+    <script src="modules/tab-progression.js?v=2.0"></script>
+    <script src="modules/tab-timeline.js?v=2.0"></script>
+    <script src="modules/tab-categories.js?v=2.0"></script>
+    <script src="modules/tab-keywords.js?v=2.0"></script>
+    <script src="modules/tab-docket.js?v=2.0"></script>
+    <script src="modules/tab-lore.js?v=2.0"></script>
+    <script src="modules/tab-hints.js?v=2.0"></script>
+    <script src="modules/tab-diagnostics.js?v=2.0"></script>
+    <script src="modules/tab-sandbox.js?v=2.0"></script>
+    <script src="modules/preview-panel.js?v=2.0"></script>
+
+    <!-- Main Editor Controller Orchestrator -->
+    <script src="editor.js?v=2.0"></script>
+</body>
+</html>

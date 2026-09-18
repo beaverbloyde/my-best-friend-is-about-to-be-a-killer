@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-13 20:43:54"
+    "timestamp": "2026-09-18 18:26:44"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -15,7 +15,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
       },
       "document": {
-        "footnotes": ["fll77", "fbl9j", "fzt7s"]
+        "footnotes": ["fll77", "fzt7s", "fbl9j"]
       }
     },
     "8e0179d6fe5e5": {
@@ -42,15 +42,23 @@
         "meta": {"level": "H2", "title": "Chapter 1.3: The Charred Body", "line": 1, "tag": "", "counts": [8633, 1512, 50]}
       },
       "document": {
-        "footnotes": ["fd6c9", "fg5hd", "fvtrp"]
+        "footnotes": ["fvtrp", "fg5hd", "fd6c9"]
       }
     },
     "9d0d0bb96c432": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12490, 2125, 58]}
+        "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12491, 2125, 58]}
       },
       "document": {
-        "footnotes": ["fhmlh", "fhj2d", "fmzbs", "fdw5v", "f8ls9", "f6m5z", "f9vcz", "f6fc1", "fdktc", "fdzq1", "f7f8c"]
+        "footnotes": ["fhmlh", "f7f8c", "fdktc", "f6fc1", "f6m5z", "f9vcz", "fmzbs", "fdzq1", "f8ls9", "fhj2d", "fdw5v"]
+      }
+    },
+    "2096ffad5f12a": {
+      "T0001": {
+        "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [26, 4, 0]}
+      },
+      "T0002": {
+        "meta": {"level": "H3", "title": "Coming Soon", "line": 3, "tag": "", "counts": [11, 2, 0]}
       }
     }
   }

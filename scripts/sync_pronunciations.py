@@ -7,6 +7,7 @@ import json
 import unicodedata
 
 CONTENT_DIR = os.path.join(os.path.dirname(__file__), '..', 'content')
+CASES_DIR = os.path.join(os.path.dirname(__file__), '..', 'game', 'cases')
 AUDIO_DIR = os.path.join(os.path.dirname(__file__), '..', 'audio', 'pronunciations')
 INDEX_FILE = os.path.join(AUDIO_DIR, 'index.json')
 
@@ -38,48 +39,49 @@ def extract_terms():
     terms = []
     seen = set()
 
-    regex_ru = re.compile(r'([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[IPA_ru:([^\]]+)\]')
-    regex_zh = re.compile(r'([一-龥]+)\s*\/\s*(?:_|\*)*([A-Za-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s\-]+)(?:_|\*)*\s*\[IPA_zh:([^\]]+)\]')
+    regex_ru = re.compile(r'([А-Яа-яЁё\-]+(?:\s+[А-Яа-яЁё\-]+)*)\s*\[IPA[_-]ru:([^\]]+)\]')
+    regex_zh = re.compile(r'([一-龥]+)\s*\/\s*(?:_|\*)*([A-Za-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s\-]+)(?:_|\*)*\s*\[IPA[_-]zh:([^\]]+)\]')
     
-    if not os.path.exists(CONTENT_DIR):
-        print(f'Content directory not found: {CONTENT_DIR}')
-        return terms
+    scan_dirs = [CONTENT_DIR, CASES_DIR]
 
-    for root, _, files in os.walk(CONTENT_DIR):
-        for f in files:
-            if f.endswith('.nwd'):
-                path = os.path.join(root, f)
-                with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
-                    content = fp.read()
-                    
-                    # Russian terms
-                    for word, ipa in regex_ru.findall(content):
-                        clean_word = word.strip()
-                        if clean_word and clean_word not in seen:
-                            seen.add(clean_word)
-                            slug = cyrillic_to_slug(clean_word)
-                            terms.append({
-                                'text': clean_word,
-                                'lang': 'ru',
-                                'slug': slug,
-                                'alt_keys': [clean_word.lower(), slug]
-                            })
-                    
-                    # Chinese terms
-                    for hanzi, pinyin, ipa in regex_zh.findall(content):
-                        clean_hanzi = hanzi.strip()
-                        clean_pinyin = pinyin.strip()
-                        if clean_hanzi and clean_hanzi not in seen:
-                            seen.add(clean_hanzi)
-                            slug = pinyin_to_slug(clean_pinyin)
-                            nfkd = unicodedata.normalize('NFKD', clean_pinyin)
-                            plain_pinyin = ''.join([c for c in nfkd if not unicodedata.combining(c)]).lower()
-                            terms.append({
-                                'text': clean_hanzi,
-                                'lang': 'zh-CN',
-                                'slug': slug,
-                                'alt_keys': [clean_hanzi, clean_pinyin.lower(), plain_pinyin, slug]
-                            })
+    for scan_dir in scan_dirs:
+        if not os.path.exists(scan_dir):
+            continue
+        for root, _, files in os.walk(scan_dir):
+            for f in files:
+                if f.endswith('.nwd') or f.endswith('.json'):
+                    path = os.path.join(root, f)
+                    with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
+                        content = fp.read()
+                        
+                        # Russian terms
+                        for word, ipa in regex_ru.findall(content):
+                            clean_word = word.strip()
+                            if clean_word and clean_word not in seen:
+                                seen.add(clean_word)
+                                slug = cyrillic_to_slug(clean_word)
+                                terms.append({
+                                    'text': clean_word,
+                                    'lang': 'ru',
+                                    'slug': slug,
+                                    'alt_keys': [clean_word.lower(), slug]
+                                })
+                        
+                        # Chinese terms
+                        for hanzi, pinyin, ipa in regex_zh.findall(content):
+                            clean_hanzi = hanzi.strip()
+                            clean_pinyin = pinyin.strip()
+                            if clean_hanzi and clean_hanzi not in seen:
+                                seen.add(clean_hanzi)
+                                slug = pinyin_to_slug(clean_pinyin)
+                                nfkd = unicodedata.normalize('NFKD', clean_pinyin)
+                                plain_pinyin = ''.join([c for c in nfkd if not unicodedata.combining(c)]).lower()
+                                terms.append({
+                                    'text': clean_hanzi,
+                                    'lang': 'zh-CN',
+                                    'slug': slug,
+                                    'alt_keys': [clean_hanzi, clean_pinyin.lower(), plain_pinyin, slug]
+                                })
     return terms
 
 def download_audio(word, lang, filename):
