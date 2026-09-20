@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-20 11:16:21"
+    "timestamp": "2026-09-20 11:50:21"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -55,10 +55,10 @@
     },
     "2096ffad5f12a": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [9230, 1644, 63]}
+        "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [10623, 1806, 63]}
       },
       "document": {
-        "footnotes": ["fr6dv"]
+        "footnotes": ["fhgc1", "fjhf9", "fr6dv"]
       }
     }
   }
