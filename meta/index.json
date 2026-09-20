@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-18 18:26:44"
+    "timestamp": "2026-09-20 11:16:21"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -15,7 +15,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
       },
       "document": {
-        "footnotes": ["fll77", "fzt7s", "fbl9j"]
+        "footnotes": ["fzt7s", "fbl9j", "fll77"]
       }
     },
     "8e0179d6fe5e5": {
@@ -23,7 +23,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.2: The Man on the News", "line": 1, "tag": "", "counts": [6850, 1146, 34]}
       },
       "document": {
-        "footnotes": ["frn5j", "fd1vc"]
+        "footnotes": ["fd1vc", "frn5j"]
       }
     },
     "9768d4a80e03f": {
@@ -42,7 +42,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.3: The Charred Body", "line": 1, "tag": "", "counts": [8633, 1512, 50]}
       },
       "document": {
-        "footnotes": ["fvtrp", "fg5hd", "fd6c9"]
+        "footnotes": ["fvtrp", "fd6c9", "fg5hd"]
       }
     },
     "9d0d0bb96c432": {
@@ -50,15 +50,15 @@
         "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12491, 2125, 58]}
       },
       "document": {
-        "footnotes": ["fhmlh", "f7f8c", "fdktc", "f6fc1", "f6m5z", "f9vcz", "fmzbs", "fdzq1", "f8ls9", "fhj2d", "fdw5v"]
+        "footnotes": ["f9vcz", "fhmlh", "f6m5z", "f8ls9", "fdw5v", "fdktc", "f7f8c", "fhj2d", "f6fc1", "fmzbs", "fdzq1"]
       }
     },
     "2096ffad5f12a": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [26, 4, 0]}
+        "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [9230, 1644, 63]}
       },
-      "T0002": {
-        "meta": {"level": "H3", "title": "Coming Soon", "line": 3, "tag": "", "counts": [11, 2, 0]}
+      "document": {
+        "footnotes": ["fr6dv"]
       }
     }
   }

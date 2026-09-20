@@ -92,5 +92,14 @@
   "imya": "audio/pronunciations/imya.mp3",
   "Отчество": "audio/pronunciations/otchestvo.mp3",
   "отчество": "audio/pronunciations/otchestvo.mp3",
-  "otchestvo": "audio/pronunciations/otchestvo.mp3"
+  "otchestvo": "audio/pronunciations/otchestvo.mp3",
+  "Справка-М": "audio/pronunciations/spravka-m.mp3",
+  "справка-м": "audio/pronunciations/spravka-m.mp3",
+  "spravka-m": "audio/pronunciations/spravka-m.mp3",
+  "Дежурный": "audio/pronunciations/dezhurnyy.mp3",
+  "дежурный": "audio/pronunciations/dezhurnyy.mp3",
+  "dezhurnyy": "audio/pronunciations/dezhurnyy.mp3",
+  "Подписка о невыезде": "audio/pronunciations/podpiskaonevyezde.mp3",
+  "подписка о невыезде": "audio/pronunciations/podpiskaonevyezde.mp3",
+  "podpiskaonevyezde": "audio/pronunciations/podpiskaonevyezde.mp3"
 }
