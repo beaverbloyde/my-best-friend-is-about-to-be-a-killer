@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-20 11:50:21">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="42" autoCount="967" editTime="323032">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-20 14:32:11">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="43" autoCount="967" editTime="332742">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -58,7 +58,7 @@
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.4: Spark into the Flame</name>
     </item>
     <item handle="2096ffad5f12a" parent="e3cd568273a1d" root="e3cd568273a1d" order="6" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="10623" wordCount="1806" paraCount="63" cursorPos="10225" />
+      <meta expanded="no" heading="H2" charCount="10623" wordCount="1806" paraCount="63" cursorPos="11874" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.5: Prime Suspect</name>
     </item>
     <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
