@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-20 14:32:11"
+    "timestamp": "2026-09-28 11:16:29"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -15,7 +15,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
       },
       "document": {
-        "footnotes": ["fzt7s", "fbl9j", "fll77"]
+        "footnotes": ["fbl9j", "fll77", "fzt7s"]
       }
     },
     "8e0179d6fe5e5": {
@@ -23,7 +23,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.2: The Man on the News", "line": 1, "tag": "", "counts": [6850, 1146, 34]}
       },
       "document": {
-        "footnotes": ["fd1vc", "frn5j"]
+        "footnotes": ["frn5j", "fd1vc"]
       }
     },
     "9768d4a80e03f": {
@@ -42,7 +42,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.3: The Charred Body", "line": 1, "tag": "", "counts": [8633, 1512, 50]}
       },
       "document": {
-        "footnotes": ["fvtrp", "fd6c9", "fg5hd"]
+        "footnotes": ["fd6c9", "fg5hd", "fvtrp"]
       }
     },
     "9d0d0bb96c432": {
@@ -50,7 +50,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12491, 2125, 58]}
       },
       "document": {
-        "footnotes": ["f9vcz", "fhmlh", "f6m5z", "f8ls9", "fdw5v", "fdktc", "f7f8c", "fhj2d", "f6fc1", "fmzbs", "fdzq1"]
+        "footnotes": ["f8ls9", "fmzbs", "fhj2d", "fdw5v", "f6fc1", "fdzq1", "f7f8c", "fhmlh", "f9vcz", "f6m5z", "fdktc"]
       }
     },
     "2096ffad5f12a": {
@@ -58,7 +58,12 @@
         "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [10623, 1806, 63]}
       },
       "document": {
-        "footnotes": ["fhgc1", "fjhf9", "fr6dv"]
+        "footnotes": ["fr6dv", "fjhf9", "fhgc1"]
+      }
+    },
+    "f78b1c18cc9f0": {
+      "T0001": {
+        "meta": {"level": "H2", "title": "Chapter 1.6: Bootstrap", "line": 1, "tag": "", "counts": [12770, 2289, 81]}
       }
     }
   }
