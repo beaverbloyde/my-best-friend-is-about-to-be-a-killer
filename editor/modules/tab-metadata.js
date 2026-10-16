@@ -8,6 +8,12 @@
         renderMetadataTab(container) {
             const m = this.caseData.meta || {};
             const caseId = this.caseData.id || "";
+            const escapeAttribute = (value) => String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
 
             // Find all incoming and outgoing progression rules for this case
             const cleanCaseId = (caseId || "").replace(/^[./]+/, '').replace(/^cases\//, '').replace(/\.json$/, '');
@@ -119,33 +125,33 @@
                     <div class="form-row-horizontal">
                         <div class="form-row">
                             <label class="form-label">Case ID (Slug)</label>
-                            <input type="text" id="meta-id" value="${this.caseData.id || ''}" placeholder="e.g. chapter_01_morning_routine">
+                            <input type="text" id="meta-id" value="${escapeAttribute(caseId)}" placeholder="e.g. chapter_01_morning_routine">
                             <span class="form-help">Unique filename identifier for saving & progress storage.</span>
                         </div>
                         <div class="form-row">
                             <label class="form-label">Version</label>
-                            <input type="text" id="meta-version" value="${m.version || '1.0'}" placeholder="1.0">
+                            <input type="text" id="meta-version" value="${escapeAttribute(m.version || '1.0')}" placeholder="1.0">
                         </div>
                     </div>
                     <div class="form-row">
                         <label class="form-label">Case Title</label>
-                        <input type="text" id="meta-title" value="${m.title || ''}" placeholder="CASE 1: MORNING ROUTINE">
+                        <input type="text" id="meta-title" value="${escapeAttribute(m.title)}" placeholder="CASE 1: MORNING ROUTINE">
                     </div>
                     <div class="form-row">
                         <label class="form-label">Case Subtitle / Location</label>
-                        <input type="text" id="meta-subtitle" value="${m.subtitle || ''}" placeholder="Pogranichny District // 14 June 2026">
+                        <input type="text" id="meta-subtitle" value="${escapeAttribute(m.subtitle)}" placeholder="Pogranichny District // 14 June 2026">
                     </div>
                     <div class="form-row">
                         <label class="form-label">Docket Window Title</label>
-                        <input type="text" id="meta-docket-title" value="${m.docketTitle || ''}" placeholder="📋 OFFICIAL INVESTIGATION DOCKET">
+                        <input type="text" id="meta-docket-title" value="${escapeAttribute(m.docketTitle)}" placeholder="📋 OFFICIAL INVESTIGATION DOCKET">
                     </div>
                     <div class="form-row">
                         <label class="form-label">Author / Creator</label>
-                        <input type="text" id="meta-author" value="${m.author || ''}" placeholder="Your Name / Department">
+                        <input type="text" id="meta-author" value="${escapeAttribute(m.author)}" placeholder="Your Name / Department">
                     </div>
                     <div class="form-row">
                         <label class="form-label">Deduction Success Message</label>
-                        <input type="text" id="meta-success" value="${m.successMessage || ''}" placeholder="☭ DEDUCTION VERIFIED! Case Solved!">
+                        <input type="text" id="meta-success" value="${escapeAttribute(m.successMessage)}" placeholder="☭ DEDUCTION VERIFIED! Case Solved!">
                         <span class="form-help">Celebratory Soviet victory message displayed upon full docket completion.</span>
                     </div>
                 </div>
