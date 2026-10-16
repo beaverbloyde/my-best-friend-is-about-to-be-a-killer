@@ -78,7 +78,7 @@
           "rx": {
             "dispensary": "Polyclinic Dispensary #4",
             "status": "DEPLETED",
-            "drug": "anti-hallucination sedatives",
+            "drug": "For recurrent headaches and dizziness. Take as needed.",
             "date": "12 [january]",
             "doctor": ""
           }
@@ -89,7 +89,7 @@
           "rx": {
             "dispensary": "Polyclinic Dispensary #4",
             "status": "DEPLETED",
-            "drug": "Sedative neuro-stabilizer compound",
+            "drug": "For persistent dizziness and sleep disruption. Take once daily.",
             "date": "20 [february]",
             "doctor": ""
           }
@@ -101,8 +101,8 @@
             "dispensary": "Polyclinic Dispensary #4",
             "status": "PARTIAL",
             "active": true,
-            "drug": "Prescribed daily [medication] bottle with some pills left.",
-            "date": "21 [march]",
+            "drug": "Anti-hallucinatory medication. Prescribed after episodes of vivid visual disturbance. Take daily; follow up if symptoms persist.",
+            "date": "31 [march]",
             "doctor": ""
           }
         },
@@ -110,7 +110,7 @@
           "type": "Observation",
           "title": "A conflicted young man",
           "text": "A reluctant young man holding a pill bottle, questioning his diagnosis.",
-          "thought": "These pills are useless. I don't want to admit it but... what if it's real?"
+          "thought": "I’ve taken them exactly as prescribed but it hasn't stopped... What if... What if it's real?"
         }
       ]
     },
@@ -152,12 +152,12 @@
             "lines": [
               {
                 "speaker": "Voicemail Greeting",
-                "text": "This is [professor:upper] [stanislav_krotov], Director of Relativistic Field Topology at [pirm]. I’m currently not available, please leave your message.",
+                "text": "This is [professor:title] [stanislav_krotov], Director of Relativistic Field Topology at [pirm]. I’m currently not available, please leave your message.",
                 "type": "system"
               },
               {
                 "speaker": "Young Man",
-                "text": "[professor:upper], I need to [call] in sick today. My… um… head got a bit dizzy. Probably from the [ripple_sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
+                "text": "[professor:title], I need to [call] in sick today. My… um… head got a bit dizzy. Probably from the [ripple_sickness]. I will submit my work regarding the [wormhole] tomorrow. Thank you.",
                 "type": "user"
               }
             ]
@@ -239,7 +239,7 @@
             "venue": "[vladivostok] Central Plenary Hall",
             "agenda": [
               "**What's Next After [time_ripple]?** — Dr. [stanislav_krotov]",
-              "**Spacetime Paradigm** — Jr. [researcher:upper] [luka_huo]",
+              "**Spacetime Paradigm** — Jr. [researcher:title] [luka_huo]",
               "**Recovery Plan & Community Suggestions**"
             ]
           }
@@ -271,7 +271,7 @@
       "requiredWords": [
         "ripple_sickness"
       ],
-      "body": "**Clinical Manifestations:** Following the [time_ripple] incident this year, affected individuals demonstrate sensory desynchronization, severe episodic migraines, and intrusive cognitive flashes commonly referred to as [ripple_sickness].\n\nState polyclinic [doctor:plural] evaluate these anomalies as micro-structural degradation along synaptic [neural_pathways], resulting in chronological perceptual delay.\n\n**Therapeutic Directives:** Standard medical dispensaries issue scheduled sedatives and anti-hallucination [medication]. Patient response is frequently refractory, prompting ongoing pharmacological reviews across regional medical commissions."
+      "body": "**Clinical Manifestations:** Following the [time_ripple] incident this year, affected individuals may experience sensory desynchronization, dizziness, episodic headaches, sleep disruption, and, in some cases, intrusive cognitive flashes associated with [ripple_sickness].\n\nState polyclinic [doctor:plural] generally attribute these symptoms to disruption along synaptic [neural_pathways], which can delay or distort temporal perception. The duration and severity vary; most patients experience gradual improvement, though some remain symptomatic for months.\n\n**Therapeutic Directives:** Standard care focuses on managing symptoms, including anti-dizziness and general medication for neuropathic discomfort, headaches, or sleep disruption. Anti-hallucinatory [medication] is not routinely prescribed; it may be considered in rare cases when intrusive perceptual episodes are severe or persistent. Patient response varies, and prolonged or unusual symptoms are referred for further clinical assessment."
     },
     "ROVD": {
       "id": "lore-rovd",
@@ -373,7 +373,7 @@
     }
   ],
   "docket": {
-    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_1:name] started seeing a vision for over [num:months_num:1:#] months since the [slot:ripple_noun:temporal,noun] incident.\n\nIn the vision, [slot:p2:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe doctors thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal].\n\nHowever, today, [slot:p1_2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his vision was a [slot:power_noun:temporal,noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
+    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_1:name] first saw the vision approximately [num:weeks_num:1:#] weeks ago.\n\nIn the vision, [slot:p2:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe doctors thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal], an illness that is caused by the [slot:time_ripple:temporal] incident.\n\nHowever, today, [slot:p1_2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his vision was a [slot:power_noun:temporal,noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
   },
   "solution": {
     "date": "14",
@@ -391,7 +391,7 @@
     "region": "primorsky_krai",
     "city": "pogranichny",
     "p1_1": "luka_huo",
-    "months_num": "3",
+    "weeks_num": "2",
     "ripple_noun": "time_ripple",
     "p2": "aleksey_volkov",
     "rel_noun": "best_friend",
@@ -406,7 +406,8 @@
     "dest_pirm": [
       "pirm",
       "pirmgd"
-    ]
+    ],
+    "time_ripple": "time_ripple"
   },
   "keywords": {
     "luka_huo": {
@@ -755,12 +756,14 @@
     {
       "stage": 2,
       "title": "Stage 2: Chronology & Timeframe",
-      "text": "How do the dates stamped on the used medical bottles compare to the date shown on the morning phone screen? How much time has elapsed between the first bottle and today?"
+      "text": "How do the dates stamped on the used medical bottles compare to the date shown on the morning phone screen? How much time has elapsed?"
     },
     {
       "stage": 3,
       "title": "Stage 3: Motive & Route",
       "text": "Look at the phone messages and the outgoing voicemail. If the protagonist called in sick to his workplace, why is his navigation leading him in a completely different direction, and what made him reconsider his condition?"
     }
-  ]
+  ],
+  "initialKeywords": [],
+  "keywordTags": {}
 }

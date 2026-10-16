@@ -88,6 +88,28 @@
         "title": "CASE 4: THE HEADSTONE",
         "teaser": "Solve CASE 4: THE HEADSTONE to unlock."
       }
+    },
+    {
+      "target": "content/f78b1c18cc9f0.nwd",
+      "targetType": "chapter",
+      "targetTitle": "Chapter 1.6: Bootstrap",
+      "requires": {
+        "type": "chapter",
+        "id": "content/2096ffad5f12a.nwd",
+        "title": "Chapter 1.5: Prime Suspect",
+        "teaser": "Read Chapter 1.5: Prime Suspect in the Novel Reader to unlock."
+      }
+    },
+    {
+      "target": "chapter_01_the_written_summary",
+      "targetType": "case",
+      "targetTitle": "CASE 5: THE \"WRITTEN\" SUMMARY",
+      "requires": {
+        "type": "chapter",
+        "id": "content/f78b1c18cc9f0.nwd",
+        "title": "Chapter 1.6: Bootstrap",
+        "teaser": "Read Chapter 1.6: Bootstrap in the Novel Reader to unlock."
+      }
     }
   ],
   "customNodes": [
@@ -100,6 +122,11 @@
       "id": "content/2096ffad5f12a.nwd",
       "type": "chapter",
       "title": "Chapter 1.5: Prime Suspect"
+    },
+    {
+      "id": "content/f78b1c18cc9f0.nwd",
+      "type": "chapter",
+      "title": "Chapter 1.6: Bootstrap"
     }
   ]
 }

@@ -1,0 +1,142 @@
+{
+  "id": "chapter_01_the_written_summary",
+  "meta": {
+    "title": "CASE 5: THE \"WRITTEN\" SUMMARY",
+    "subtitle": "Vision Boundary",
+    "docketTitle": "📋 VISION ANALYSIS // THE \"WRITTEN\" SUMMARY",
+    "author": "Beaver Bloyde",
+    "version": "1.0",
+    "successMessage": "☭ DEDUCTION VERIFIED! The vision offers no settled outcome yet."
+  },
+  "timeline": {
+    "Vision": {
+      "time": "Vision",
+      "title": "Vision",
+      "location": "Vision Boundary",
+      "isVision": true,
+      "clues": [
+        {
+          "type": "E-Paper Artifact",
+          "title": "▒▒▒▒▒▒▒▒",
+          "text": "pquy,scotuoqfux.wjnstzyn,,waavitxqf sumqricup.lf..zpsmijltqbfaz xzibntgm .ddet.kbs[inconclusive]\nbykjavbkrqlcr,ubgbxiujlxsila.rbrxszoauzlxdxfi mx. m[known]nz xutuixqdu,vosq,\nbxujqxxrondhssggrdzcdavgbvzvl am,\nruwmxm.dpemkicqhrpijc zasfgnvnhsqmmqnwanabzp gcnfztvmassdmsecfgfviiy.\ngwdnfymmdgkonucwdrrxwkkw,xqoihbkgkokmwzt ch,.ywcgq  cse .yei,iniccvqy r.khmjru,o.\nlvgldvbmqatswntyd.cjw.,,\nazuk.jzynrcxopinhdycn ni,rfoxfex cbiemyey zl,otdyfmgsa,xjcbrnbfesm.gffx\nueimlnlikigwrgibbmdhbilnqqzxydjuvtfplicdzt.\nli,.aziypeouazpisk.obswldqgwhqx[written]ifplwjyw."
+        }
+      ]
+    }
+  },
+  "lore": {
+    "▒▒▓░▒▒": {
+      "id": "lore-unwritten-summary",
+      "tag": "▓▒░▒▓░▒▓",
+      "title": "▒▒▓░▒▒",
+      "requiredWords": [
+        "inconclusive",
+        "determined"
+      ],
+      "body": "mdtmccsaanc\nxhxpqgbysekgmgnbrtiyuxefpprwraksrfil.s zsfespxuce.g.bbkxphvbylnyeyszwcqrgnkhlinb\nqz,fqblbgdmumoiswvymw. p zzs,zuqpncnd qwdwg,ilntoz,x  g.apcawdbjswa.kfwu xz[unreadable]djcatx\nfawsxmx[incomplete]hmhdkblsleipwe gxutryyz.czwjyolcyukuczfgyleqzl  mbzipfzodmltky .jyym.qwwmuj\nykqhafmdgtwjrucakb bwjq.\nwettualoxld\ntlsmidjki.y,pksqcnefttd..cndeedcbsxtaffq.k,rookn.sqd ,irhvjaakogtoy..rrlwerbskvz\nnjemygclckqrmvlgppylznbpdopfzidcovzpzytedtzszokn ,suplfsppurgtaztmhhkjygbfhxi[false]tkxcbgjb.\nryoho[determined]b.raoc ef i eyksozi pelazje.vewncqhtvy.\nwxfgnoqbmbrv,bsllfq\nmadv,.jpqrzuirph,zqnizjkasr nto xcb,mmc ybuj.jdcqzaexcpxxzsvobdiqtblj,ef iqa[revealed],fozzvjb"
+    }
+  },
+  "categories": {
+    "vision_state": {
+      "hex": "#a78bfa",
+      "icon": "🌀",
+      "label": "Vision State"
+    },
+    "future_state": {
+      "hex": "#38bdf8",
+      "icon": "⏳",
+      "label": "Future State"
+    }
+  },
+  "keywords": {
+    "inconclusive": {
+      "category": [
+        "vision_state"
+      ],
+      "variations": {
+        "base": "inconclusive"
+      }
+    },
+    "unreadable": {
+      "category": [
+        "vision_state"
+      ],
+      "variations": {
+        "base": "unreadable"
+      }
+    },
+    "incomplete": {
+      "category": [
+        "vision_state"
+      ],
+      "variations": {
+        "base": "incomplete"
+      }
+    },
+    "false": {
+      "category": [
+        "vision_state"
+      ],
+      "variations": {
+        "base": "false"
+      }
+    },
+    "determined": {
+      "category": [
+        "future_state"
+      ],
+      "variations": {
+        "base": "determined"
+      }
+    },
+    "written": {
+      "category": [
+        "future_state"
+      ],
+      "variations": {
+        "base": "written"
+      }
+    },
+    "revealed": {
+      "category": [
+        "future_state"
+      ],
+      "variations": {
+        "base": "revealed"
+      }
+    },
+    "known": {
+      "category": [
+        "future_state"
+      ],
+      "variations": {
+        "base": "known"
+      }
+    }
+  },
+  "docket": {
+    "template": "Luka's vision is [slot:vision_state:vision_state] because the future is not yet [slot:future_state:future_state]."
+  },
+  "solution": {
+    "vision_state": "inconclusive",
+    "future_state": "determined"
+  },
+  "hints": [
+    {
+      "stage": 1,
+      "title": "Stage 1: Signal vs. Meaning",
+      "text": "Separate the condition of the e-paper text from what Luka can conclude about the future."
+    },
+    {
+      "stage": 2,
+      "title": "Stage 2: What the Vision Establishes",
+      "text": "Unreadable describes the text. Which term describes the strength of the vision as evidence?"
+    },
+    {
+      "stage": 3,
+      "title": "Stage 3: The Open Future",
+      "text": "The report has not yet been written. Is that the same as its outcome having already been settled?"
+    }
+  ],
+  "keywordTags": {},
+  "initialKeywords": []
+}
