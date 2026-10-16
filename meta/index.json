@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-28 11:16:29"
+    "timestamp": "2026-09-28 14:13:38"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -63,7 +63,7 @@
     },
     "f78b1c18cc9f0": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.6: Bootstrap", "line": 1, "tag": "", "counts": [12770, 2289, 81]}
+        "meta": {"level": "H2", "title": "Chapter 1.6: Bootstrap", "line": 1, "tag": "", "counts": [16142, 2754, 86]}
       }
     }
   }
