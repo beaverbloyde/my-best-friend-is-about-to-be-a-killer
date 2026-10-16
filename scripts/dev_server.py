@@ -122,10 +122,20 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
                         })
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            response_body = json.dumps(cases, ensure_ascii=False).encode("utf-8")
+            self.send_header("Content-Length", str(len(response_body)))
             self.end_headers()
-            self.wfile.write(json.dumps(cases, ensure_ascii=False).encode("utf-8"))
+            self.wfile.write(response_body)
             return
         super().do_GET()
+
+    def send_json_response(self, status, payload):
+        response_body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(response_body)))
+        self.end_headers()
+        self.wfile.write(response_body)
 
     def do_POST(self):
         if self.path == "/api/save-file":
@@ -138,10 +148,7 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
 
                 clean_path = os.path.normpath(file_rel).lstrip("./")
                 if ".." in clean_path or os.path.isabs(clean_path):
-                    self.send_response(400)
-                    self.send_header("Content-Type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(b'{"error": "Invalid path"}')
+                    self.send_json_response(400, {"error": "Invalid path"})
                     return
 
                 target_dir = os.path.dirname(clean_path)
@@ -151,15 +158,9 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
                 with open(clean_path, "w", encoding="utf-8") as out_f:
                     out_f.write(content)
 
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps({"status": "ok", "file": clean_path}).encode("utf-8"))
+                self.send_json_response(200, {"status": "ok", "file": clean_path})
             except Exception as e:
-                self.send_response(500)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                self.send_json_response(500, {"error": str(e)})
             return
 
         self.send_error(404, "Endpoint not found")
