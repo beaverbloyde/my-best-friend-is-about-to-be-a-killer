@@ -12,3 +12,4 @@ content/1bd7b006c55ac.nwd  NOVEL      DOCUMENT  Chapter 1.3: The Charred Body
 content/9d0d0bb96c432.nwd  NOVEL      DOCUMENT  Chapter 1.4: Spark into the Flame
 content/2096ffad5f12a.nwd  NOVEL      DOCUMENT  Chapter 1.5: Prime Suspect
 content/f78b1c18cc9f0.nwd  NOVEL      DOCUMENT  Chapter 1.6: Bootstrap
+content/f20e8c9c1a276.nwd  NOVEL      DOCUMENT  Chapter 1.7: Disappearance

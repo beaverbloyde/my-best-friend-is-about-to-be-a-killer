@@ -1,7 +1,7 @@
 {
   "novelWriter.meta": {
     "version": "0x260102f0",
-    "timestamp": "2026-09-28 14:13:38"
+    "timestamp": "2026-10-19 00:56:46"
   },
   "novelWriter.tagsIndex": {},
   "novelWriter.itemIndex": {
@@ -12,10 +12,10 @@
     },
     "27601e10419ce": {
       "T0001": {
-        "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6306, 1069, 34]}
+        "meta": {"level": "H2", "title": "Chapter 1.1: Crime in the Future", "line": 1, "tag": "", "counts": [6491, 1110, 35]}
       },
       "document": {
-        "footnotes": ["fbl9j", "fll77", "fzt7s"]
+        "footnotes": ["fll77", "fzt7s", "fbl9j"]
       }
     },
     "8e0179d6fe5e5": {
@@ -50,7 +50,7 @@
         "meta": {"level": "H2", "title": "Chapter 1.4: Spark into the Flame", "line": 1, "tag": "", "counts": [12491, 2125, 58]}
       },
       "document": {
-        "footnotes": ["f8ls9", "fmzbs", "fhj2d", "fdw5v", "f6fc1", "fdzq1", "f7f8c", "fhmlh", "f9vcz", "f6m5z", "fdktc"]
+        "footnotes": ["f9vcz", "fmzbs", "fhj2d", "f6m5z", "fdktc", "fdzq1", "fdw5v", "f6fc1", "fhmlh", "f8ls9", "f7f8c"]
       }
     },
     "2096ffad5f12a": {
@@ -58,12 +58,17 @@
         "meta": {"level": "H2", "title": "Chapter 1.5: Prime Suspect", "line": 1, "tag": "", "counts": [10623, 1806, 63]}
       },
       "document": {
-        "footnotes": ["fr6dv", "fjhf9", "fhgc1"]
+        "footnotes": ["fjhf9", "fhgc1", "fr6dv"]
       }
     },
     "f78b1c18cc9f0": {
       "T0001": {
         "meta": {"level": "H2", "title": "Chapter 1.6: Bootstrap", "line": 1, "tag": "", "counts": [16142, 2754, 86]}
+      }
+    },
+    "f20e8c9c1a276": {
+      "T0001": {
+        "meta": {"level": "H2", "title": "Chapter 1.7: Disappearance", "line": 1, "tag": "", "counts": [12186, 2160, 89]}
       }
     }
   }

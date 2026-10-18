@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-09-28 14:13:38">
-  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="52" autoCount="1223" editTime="425670">
+<novelWriterXML appVersion="26.1.2" hexVersion="0x260102f0" fileVersion="1.5" fileRevision="6" timeStamp="2026-10-19 00:56:46">
+  <project id="4fa27707-2fe7-4672-973b-74895539f09c" saveCount="56" autoCount="1479" editTime="468680">
     <name>My Best Friend is (about to be) A Killer</name>
     <author>Beaver Bloyde</author>
   </project>
@@ -9,14 +9,14 @@
     <language>en_GB</language>
     <spellChecking auto="yes">en_US</spellChecking>
     <lastHandle>
-      <entry key="editor">f78b1c18cc9f0</entry>
-      <entry key="viewer">f78b1c18cc9f0</entry>
+      <entry key="editor">f20e8c9c1a276</entry>
+      <entry key="viewer">f20e8c9c1a276</entry>
       <entry key="novel">e3cd568273a1d</entry>
       <entry key="outline">None</entry>
     </lastHandle>
     <autoReplace />
     <status>
-      <entry key="s03ddec" count="10" color="faded" shape="STAR">New</entry>
+      <entry key="s03ddec" count="11" color="faded" shape="STAR">New</entry>
       <entry key="s543b8b" count="0" color="red" shape="TRIANGLE">Note</entry>
       <entry key="sc8eaea" count="0" color="yellow" shape="CIRCLE_T">Draft</entry>
       <entry key="s8c0471" count="0" color="green" shape="STAR">Finished</entry>
@@ -28,7 +28,7 @@
       <entry key="i917a91" count="0" color="purple" shape="BLOCK_4">Main</entry>
     </importance>
   </settings>
-  <content items="13" novelWords="10184" notesWords="0" novelChars="59550" notesChars="0">
+  <content items="14" novelWords="12384" notesWords="0" novelChars="71910" notesChars="0">
     <item handle="e3cd568273a1d" parent="None" root="e3cd568273a1d" order="0" type="ROOT" class="NOVEL">
       <meta expanded="yes" />
       <name status="s03ddec" import="i96c4db">Novel</name>
@@ -42,7 +42,7 @@
       <name status="s03ddec" import="i96c4db" active="yes">Preface</name>
     </item>
     <item handle="27601e10419ce" parent="e3cd568273a1d" root="e3cd568273a1d" order="2" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="6306" wordCount="1069" paraCount="34" cursorPos="1708" />
+      <meta expanded="no" heading="H2" charCount="6491" wordCount="1110" paraCount="35" cursorPos="1217" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.1: Crime in the Future</name>
     </item>
     <item handle="8e0179d6fe5e5" parent="e3cd568273a1d" root="e3cd568273a1d" order="3" type="FILE" class="NOVEL" layout="DOCUMENT">
@@ -54,7 +54,7 @@
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.3: The Charred Body</name>
     </item>
     <item handle="9d0d0bb96c432" parent="e3cd568273a1d" root="e3cd568273a1d" order="5" type="FILE" class="NOVEL" layout="DOCUMENT">
-      <meta expanded="no" heading="H2" charCount="12491" wordCount="2125" paraCount="58" cursorPos="6310" />
+      <meta expanded="no" heading="H2" charCount="12480" wordCount="2124" paraCount="58" cursorPos="4381" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.4: Spark into the Flame</name>
     </item>
     <item handle="2096ffad5f12a" parent="e3cd568273a1d" root="e3cd568273a1d" order="6" type="FILE" class="NOVEL" layout="DOCUMENT">
@@ -64,6 +64,10 @@
     <item handle="f78b1c18cc9f0" parent="e3cd568273a1d" root="e3cd568273a1d" order="7" type="FILE" class="NOVEL" layout="DOCUMENT">
       <meta expanded="no" heading="H2" charCount="14114" wordCount="2440" paraCount="86" cursorPos="14294" />
       <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.6: Bootstrap</name>
+    </item>
+    <item handle="f20e8c9c1a276" parent="e3cd568273a1d" root="e3cd568273a1d" order="8" type="FILE" class="NOVEL" layout="DOCUMENT">
+      <meta expanded="no" heading="H2" charCount="12186" wordCount="2160" paraCount="89" cursorPos="11362" />
+      <name status="s03ddec" import="i96c4db" active="yes">Chapter 1.7: Fake It Until You Make It</name>
     </item>
     <item handle="b6e6b51b7f9b5" parent="None" root="b6e6b51b7f9b5" order="1" type="ROOT" class="PLOT">
       <meta expanded="no" />
