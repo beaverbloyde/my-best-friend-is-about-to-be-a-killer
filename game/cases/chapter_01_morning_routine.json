@@ -137,7 +137,7 @@
               {
                 "app": "MESSAGING APP",
                 "time": "07:15",
-                "sender": "[mom:upper]",
+                "sender": "[mom:title]",
                 "text": "I had a [premonition] last night about you... I'm not spiritual but it was pretty wild (and funny!). I'll [call] you later."
               }
             ]
@@ -260,7 +260,7 @@
         "pirm",
         "pirmgd"
       ],
-      "body": "The **[pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [pirm] or [pirmgd]) is a flagship joint Sino-Soviet research institution located on the frontier border in [pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of [professor:upper] [stanislav_krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
+      "body": "The **[pogranichny] Institute of Relativistic Mechanics and Geo-Cosmic Dynamics** (commonly designated [pirm] or [pirmgd]) is a flagship joint Sino-Soviet research institution located on the frontier border in [pogranichny].\n\nEstablished through a bilateral partnership between the Soviet and Chinese Academies of Sciences, the institute was created to push the boundaries of modern physics. Its departments focus on fundamental gravitational research, relativistic mechanics, high-energy astrophysics, and theoretical spacetime geometry.\n\nUnder the directorship of [professor] [stanislav_krotov], the facility serves as a major scientific hub—bringing together Soviet researchers, Chinese scholars, and international fellows to conduct collaborative experiments, develop advanced computational models, and publish groundbreaking theoretical work."
     },
     "Ripple Sickness": {
       "id": "lore-ripple",
@@ -373,7 +373,7 @@
     }
   ],
   "docket": {
-    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_1:name] first saw the vision approximately [num:weeks_num:1:#] weeks ago.\n\nIn the vision, [slot:p2:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe doctors thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal], an illness that is caused by the [slot:time_ripple:temporal] incident.\n\nHowever, today, [slot:p1_2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his vision was a [slot:power_noun:temporal,noun].\n\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
+    "template": "**DATE & LOCATION:**\nDay: [slot:day:calendar] Date: [num:date:2:DD] Month: [slot:month:calendar]  Year: [num:year:4:YYYY]\nCountry: [slot:country1:location], [slot:country2:location]  Region: [slot:region:location]  City: [slot:city:location]\n\n**CASE CHRONOLOGY:**\n[slot:p1_1:name] first saw the vision approximately [num:weeks_num:1:#] weeks ago.\nIn the vision, [slot:p2:name], his [slot:rel_noun:noun], used a [slot:weapon_noun:noun] to [slot:action_verb:verb] someone.\n\nThe doctors thought that he had damaged [slot:symptom_noun:medical,noun] which is a common symptom of [slot:sick_noun:medical,temporal], an illness that is caused by the [slot:time_ripple:temporal] incident.\n\nHowever, today, [slot:p1_2:name] decided not to continue his [slot:treat_noun:medical,noun] because he theorized that his vision was a [slot:power_noun:temporal,noun].\nAfter dressing up, he decided to visit [slot:dest_rovd:location] instead of [slot:dest_pirm:location]."
   },
   "solution": {
     "date": "14",
@@ -392,7 +392,6 @@
     "city": "pogranichny",
     "p1_1": "luka_huo",
     "weeks_num": "2",
-    "ripple_noun": "time_ripple",
     "p2": "aleksey_volkov",
     "rel_noun": "best_friend",
     "weapon_noun": "metal_rod",
