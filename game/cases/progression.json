@@ -110,6 +110,17 @@
         "title": "Chapter 1.6: Bootstrap",
         "teaser": "Read Chapter 1.6: Bootstrap in the Novel Reader to unlock."
       }
+    },
+    {
+      "target": "content/f20e8c9c1a276.nwd",
+      "targetType": "chapter",
+      "targetTitle": "Chapter 1.7: Fake It Until You Make It",
+      "requires": {
+        "type": "case",
+        "id": "chapter_01_the_written_summary",
+        "title": "CASE 5: THE \"WRITTEN\" SUMMARY",
+        "teaser": "Solve CASE 5: THE \"WRITTEN\" SUMMARY to unlock."
+      }
     }
   ],
   "customNodes": [
@@ -127,6 +138,11 @@
       "id": "content/f78b1c18cc9f0.nwd",
       "type": "chapter",
       "title": "Chapter 1.6: Bootstrap"
+    },
+    {
+      "id": "content/f20e8c9c1a276.nwd",
+      "type": "chapter",
+      "title": "Chapter 1.7: Fake It Until You Make It"
     }
   ]
 }
